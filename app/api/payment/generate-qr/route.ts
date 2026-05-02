@@ -24,9 +24,6 @@ function generatePayload(phoneNumber: string, amount: number): string {
   // Ensure phone is 10 digits, pad with leading zero if needed
   const phone = cleanPhone.length === 9 ? '0' + cleanPhone : cleanPhone;
 
-  // PromptPay merchant identifier (0107 = PromptPay)
-  const merchantId = '0107' + phone;
-
   // Build the EMV payload
   let payload = '00020126';
   payload += '360014th.co.centralpay';
