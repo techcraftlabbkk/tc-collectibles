@@ -383,7 +383,7 @@ export default function AdminPage() {
                       <p className="text-sm text-gray-400 mb-2">Grade: {product.grade}</p>
                       <div className="flex items-center gap-4 text-sm">
                         <span className="text-gray-400">Price: <span className="text-blue-400 font-semibold">฿{product.price.toLocaleString()}</span></span>
-                        <span className="text-gray-400">Stock: <span className={product.quantity > 0 ? 'text-green-400' : 'text-red-400'} className="font-semibold">{product.quantity}</span></span>
+                        <span className="text-gray-400">Stock: <span className={`${product.quantity > 0 ? 'text-green-400' : 'text-red-400'} font-semibold`}>{product.quantity}</span></span>
                         <span className={`px-2 py-1 rounded text-xs ${product.available ? 'bg-green-900 text-green-200' : 'bg-red-900 text-red-200'}`}>
                           {product.available ? 'Available' : 'Out of Stock'}
                         </span>

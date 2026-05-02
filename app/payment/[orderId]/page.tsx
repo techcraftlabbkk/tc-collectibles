@@ -157,7 +157,7 @@ export default function PaymentPage({ params }: { params: { orderId: string } })
             <div className="px-6 py-8 flex flex-col items-center">
               {qrCode && (
                 <div className="bg-white p-4 border-2 border-gray-300 rounded">
-                  <img
+                  <Image
                     src={qrCode}
                     alt="PromptPay QR Code"
                     width={300}
@@ -198,7 +198,7 @@ export default function PaymentPage({ params }: { params: { orderId: string } })
                 </li>
                 <li className="flex gap-3">
                   <span className="font-bold text-blue-400 flex-shrink-0 min-w-6">2.</span>
-                  <span>Select "PromptPay" or "QR Payment"</span>
+                  <span>Select &quot;PromptPay&quot; or &quot;QR Payment&quot;</span>
                 </li>
                 <li className="flex gap-3">
                   <span className="font-bold text-blue-400 flex-shrink-0 min-w-6">3.</span>
