@@ -38,7 +38,7 @@ function generatePayload(phoneNumber: string, amount: number): string {
   return phone + '|' + amount.toFixed(2);
 }
 
-function formatTLV(tag: string, value: string): string {
+function formatTLV(_tag: string, value: string): string {
   const length = value.length.toString().padStart(2, '0');
   return length + value;
 }
