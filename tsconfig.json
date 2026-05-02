@@ -30,6 +30,10 @@
     },
     "allowJs": true,
     "incremental": true,
+    "typeRoots": [
+      "./types",
+      "./node_modules/@types"
+    ],
     "plugins": [
       {
         "name": "next"
