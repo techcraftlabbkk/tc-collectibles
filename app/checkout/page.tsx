@@ -10,7 +10,6 @@ export default function CheckoutPage() {
   const router = useRouter();
   const { items, getTotalPrice, clearCart } = useCartStore();
   const [loading, setLoading] = useState(false);
-  const [_orderCreated, _setOrderCreated] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const [formData, setFormData] = useState({
@@ -127,18 +126,6 @@ export default function CheckoutPage() {
           <Link href="/products" className="btn btn-primary inline-block">
             Continue Shopping
           </Link>
-        </div>
-      </div>
-    );
-  }
-
-  if (orderCreated) {
-    return (
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <h1 className="text-3xl font-bold mb-8">Redirecting to Payment...</h1>
-        <div className="card text-center py-12">
-          <div className="animate-spin inline-block w-8 h-8 border-4 border-gray-700 border-t-blue-400 rounded-full mb-4" />
-          <p className="text-gray-400">Setting up your payment page...</p>
         </div>
       </div>
     );
