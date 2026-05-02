@@ -65,8 +65,11 @@ export type Payment = {
 // Cart item (client-side)
 export type CartItem = {
   product_id: string
-  product: Product
+  title: string
+  grade?: string
+  price: number
   quantity: number
+  image_url?: string
 }
 
 // Checkout form
