@@ -18,7 +18,7 @@ export default function SignupPage() {
     setError('')
     setLoading(true)
 
-    const { data, error: authError } = await signUp(email, password, fullName)
+    const { data: _data, error: authError } = await signUp(email, password, fullName)
 
     if (authError) {
       setError(authError instanceof Error ? authError.message : 'Sign up failed')
