@@ -36,7 +36,7 @@ export default function ProductsPage() {
   };
 
   const handleResetFilters = () => {
-    const defaultFilters = {
+    const defaultFilters: ProductFilters = {
       grade: 'All Grades',
       minPrice: undefined,
       maxPrice: undefined,

@@ -7,7 +7,7 @@ export async function uploadPaymentProof(
 ): Promise<{ url: string | null; error: string | null }> {
   try {
     const fileName = `${orderId}-${Date.now()}.${file.name.split('.').pop()}`
-    const { data, error } = await supabase.storage
+    const { data: _data, error } = await supabase.storage
       .from('payment-proofs')
       .upload(`proofs/${fileName}`, file, {
         cacheControl: '3600',
@@ -35,7 +35,7 @@ export async function uploadProductImage(
 ): Promise<{ url: string | null; error: string | null }> {
   try {
     const fileName = `${productId}-${Date.now()}.${file.name.split('.').pop()}`
-    const { data, error } = await supabase.storage
+    const { data: _data, error } = await supabase.storage
       .from('products')
       .upload(`images/${fileName}`, file, {
         cacheControl: '7200',

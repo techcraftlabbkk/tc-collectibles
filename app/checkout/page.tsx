@@ -10,7 +10,7 @@ export default function CheckoutPage() {
   const router = useRouter();
   const { items, getTotalPrice, clearCart } = useCartStore();
   const [loading, setLoading] = useState(false);
-  const [orderCreated, setOrderCreated] = useState<string | null>(null);
+  const [_orderCreated, _setOrderCreated] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const [formData, setFormData] = useState({
