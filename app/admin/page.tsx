@@ -45,7 +45,6 @@ export default function AdminPage() {
   const [activeTab, setActiveTab] = useState<'dashboard' | 'orders' | 'products'>('dashboard');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [user, setUser] = useState<any>(null);
   const [stats, setStats] = useState<Stats>({
     totalOrders: 0,
     totalRevenue: 0,
@@ -73,7 +72,6 @@ export default function AdminPage() {
         }
 
         // Check if user is admin (for now, we'll just allow access - in production, check role)
-        setUser(session.user);
 
         // Fetch all orders
         const { data: ordersData, error: ordersError } = await supabase
