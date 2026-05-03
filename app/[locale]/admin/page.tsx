@@ -209,7 +209,7 @@ export default function AdminPage() {
           >
             {tab === 'dashboard' && t('dashboard')}
             {tab === 'orders' && `${t('orders')} (${stats.totalOrders})`}
-            {tab === 'products' && `${t('products')} (${stats.total_products || stats.productsCount})`}
+            {tab === 'products' && `${t('products')} (${stats.productsCount})`}
           </button>
         ))}
       </div>

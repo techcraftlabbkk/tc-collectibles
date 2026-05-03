@@ -100,7 +100,7 @@
 - **URL:** https://github.com/techcraftlabbkk/tc-collectibles
 - **Branch:** main
 - **Current Commit:** caedd9a (Fix critical reference error)
-- **Authentication:** Uses PAT token `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`
+- **Authentication:** Uses GitHub Personal Access Token (stored in .env.local)
 
 ### Vercel Deployment
 - **Project:** tc-collectibles on techcraftlabbkk account
