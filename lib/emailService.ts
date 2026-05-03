@@ -236,7 +236,7 @@ class EmailService {
     // Initialize nodemailer transporter
     // In production, configure with your email provider (Gmail, SendGrid, Resend, etc.)
     const emailUser = process.env.SMTP_FROM;
-    const emailPassword = process.env.SMTP_PASSWORD;
+    const emailPassword = process.env.SMTP_PASS;
 
     if (emailUser && emailPassword) {
       this.transporter = nodemailer.createTransport({

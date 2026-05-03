@@ -10,12 +10,16 @@
     "type-check": "tsc --noEmit",
     "test": "jest",
     "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage"
+    "test:coverage": "jest --coverage",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:all": "npm run test && npm run test:e2e"
   },
   "dependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "next": "^14.0.0",
+    "next-intl": "^3.0.0",
     "@supabase/supabase-js": "^2.38.0",
     "@supabase/auth-helpers-nextjs": "^0.7.0",
     "zustand": "^4.4.0",
@@ -41,6 +45,8 @@
     "@testing-library/user-event": "^14.5.0",
     "@types/jest": "^29.5.0",
     "ts-jest": "^29.1.0",
-    "@types/nodemailer": "^6.4.0"
+    "@types/nodemailer": "^6.4.0",
+    "@playwright/test": "^1.40.0",
+    "jest-mock-extended": "^3.0.0"
   }
 }
