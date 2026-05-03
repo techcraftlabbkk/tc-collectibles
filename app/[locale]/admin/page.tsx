@@ -9,6 +9,7 @@ import Link from 'next/link';
 import Card from '@/components/Card';
 import Button from '@/components/Button';
 import Loading from '@/components/Loading';
+import Modal from '@/components/Modal';
 import { getAdminUser } from '@/lib/adminHelpers';
 
 interface Order {
@@ -53,6 +54,7 @@ export default function AdminPage() {
   const router = useRouter();
   const t = useTranslations('pages.admin');
   const tToasts = useTranslations('toasts');
+  const tModals = useTranslations('modals');
   const { toast } = useToast();
 
   const [activeTab, setActiveTab] = useState<'dashboard' | 'orders' | 'products'>('dashboard');
@@ -67,6 +69,7 @@ export default function AdminPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [updatingOrder, setUpdatingOrder] = useState<string | null>(null);
+  const [pendingStatusChange, setPendingStatusChange] = useState<{ orderId: string; newStatus: string } | null>(null);
 
   useEffect(() => {
     const fetchAdminData = async () => {
@@ -158,6 +161,13 @@ export default function AdminPage() {
       setError(err instanceof Error ? err.message : locale === 'en' ? 'Failed to update order' : 'ไม่สามารถอัพเดตคำสั่ง');
     } finally {
       setUpdatingOrder(null);
+    }
+  };
+
+  const handleConfirmStatusChange = async () => {
+    if (pendingStatusChange) {
+      await handleUpdateOrderStatus(pendingStatusChange.orderId, pendingStatusChange.newStatus);
+      setPendingStatusChange(null);
     }
   };
 
@@ -308,7 +318,7 @@ export default function AdminPage() {
                       <td className="px-6 py-4 text-sm">
                         <select
                           value={order.status}
-                          onChange={(e) => handleUpdateOrderStatus(order.id, e.target.value)}
+                          onChange={(e) => setPendingStatusChange({ orderId: order.id, newStatus: e.target.value })}
                           disabled={updatingOrder === order.id}
                           className={`px-3 py-1 rounded-full text-xs font-semibold ${
                             STATUS_COLORS[order.status] || 'bg-gray-100 text-gray-800'
@@ -394,6 +404,18 @@ export default function AdminPage() {
           )}
         </div>
       )}
+
+      {/* Status Change Confirmation Modal */}
+      <Modal
+        isOpen={pendingStatusChange !== null}
+        onClose={() => setPendingStatusChange(null)}
+        onConfirm={handleConfirmStatusChange}
+        isDanger
+        title={tModals('admin.statusChange.title')}
+        description={tModals('admin.statusChange.description')}
+        confirmButtonText={tModals('admin.statusChange.confirm')}
+        closeButtonText={tModals('admin.statusChange.cancel')}
+      />
     </div>
   );
 }

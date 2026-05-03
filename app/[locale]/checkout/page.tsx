@@ -11,6 +11,7 @@ import Link from 'next/link';
 import Card from '@/components/Card';
 import Button from '@/components/Button';
 import Input from '@/components/Input';
+import Modal from '@/components/Modal';
 
 export default function CheckoutPage() {
   const router = useRouter();
@@ -18,12 +19,14 @@ export default function CheckoutPage() {
   const t = useTranslations('pages.checkout');
   const tErr = useTranslations('errors');
   const tToasts = useTranslations('toasts');
+  const tModals = useTranslations('modals');
   const { toast } = useToast();
 
   const { items, getTotalPrice, clearCart } = useCartStore();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [currentStep, setCurrentStep] = useState(1);
+  const [confirmOpen, setConfirmOpen] = useState(false);
 
   const [formData, setFormData] = useState({
     fullName: '',
@@ -69,6 +72,10 @@ export default function CheckoutPage() {
       return;
     }
 
+    setConfirmOpen(true);
+  };
+
+  const handleConfirmPlaceOrder = async () => {
     setLoading(true);
     setError(null);
 
@@ -290,6 +297,17 @@ export default function CheckoutPage() {
               {t('place_order')}
             </Button>
           </form>
+
+          {/* Confirmation Modal */}
+          <Modal
+            isOpen={confirmOpen}
+            onClose={() => setConfirmOpen(false)}
+            onConfirm={handleConfirmPlaceOrder}
+            title={tModals('checkout.placeOrder.title')}
+            description={tModals('checkout.placeOrder.description')}
+            confirmButtonText={tModals('checkout.placeOrder.confirm')}
+            closeButtonText={tModals('checkout.placeOrder.cancel')}
+          />
         </div>
 
         {/* Order Summary */}

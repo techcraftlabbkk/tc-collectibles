@@ -269,5 +269,23 @@
         "description": "Please try uploading proof again."
       }
     }
+  },
+  "modals": {
+    "checkout": {
+      "placeOrder": {
+        "title": "Place this order?",
+        "description": "Once placed, this order is final and cannot be modified.",
+        "confirm": "Place order",
+        "cancel": "Review again"
+      }
+    },
+    "admin": {
+      "statusChange": {
+        "title": "Change order status?",
+        "description": "This update will be visible to the customer immediately.",
+        "confirm": "Update status",
+        "cancel": "Cancel"
+      }
+    }
   }
 }
