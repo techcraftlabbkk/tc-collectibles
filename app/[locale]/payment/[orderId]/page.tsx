@@ -8,6 +8,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import Card from '@/components/Card';
 import Button from '@/components/Button';
+import Loading from '@/components/Loading';
 
 interface Order {
   id: string;
@@ -137,11 +138,8 @@ export default function PaymentPage({ params }: { params: Promise<{ orderId: str
         <h1 className="text-4xl font-bold text-gray-900">
           {locale === 'en' ? 'Payment' : 'การชำระเงิน'}
         </h1>
-        <div className="max-w-4xl mx-auto">
-          <Card className="h-96 animate-pulse">
-            <div className="h-12 bg-gray-300 rounded w-1/3 mb-4" />
-            <div className="h-80 bg-gray-300 rounded" />
-          </Card>
+        <div className="max-w-4xl mx-auto flex items-center justify-center py-20">
+          <Loading type="spinner" size="md" message={t('common.loading')} />
         </div>
       </div>
     );

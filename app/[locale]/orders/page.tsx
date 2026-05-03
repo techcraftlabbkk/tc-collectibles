@@ -127,12 +127,14 @@ export default function OrdersPage() {
       <div className="space-y-8">
         <h1 className="text-4xl font-bold text-gray-900">{t('title')}</h1>
         <div className="space-y-4">
-          {[...Array(3)].map((_, i) => (
-            <Card key={i} className="h-32 animate-pulse">
-              <div className="h-4 bg-gray-300 rounded mb-2 w-1/3" />
-              <div className="h-4 bg-gray-300 rounded mb-2 w-1/4" />
-              <div className="h-4 bg-gray-300 rounded w-1/2" />
-            </Card>
+          {[0, 1, 2].map((i) => (
+            <div key={i} className="rounded-lg border border-gray-200 p-6 animate-pulse">
+              <div className="flex justify-between items-center mb-4">
+                <div className="h-5 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 rounded w-1/3" />
+                <div className="h-6 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 rounded w-20" />
+              </div>
+              <div className="h-4 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 rounded w-1/2" />
+            </div>
           ))}
         </div>
       </div>

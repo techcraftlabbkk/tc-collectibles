@@ -11,6 +11,7 @@ import Card from '@/components/Card';
 import Button from '@/components/Button';
 import Input from '@/components/Input';
 import Image from 'next/image';
+import Loading, { SkeletonCard } from '@/components/Loading';
 
 const GRADE_OPTIONS = ['All Grades', 'PSA 6', 'PSA 7', 'PSA 8', 'PSA 8.5', 'PSA 9', 'PSA 10'];
 
@@ -160,15 +161,7 @@ export default function ProductsPage() {
           )}
 
           {loading ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {[...Array(6)].map((_, i) => (
-                <Card key={i} className="animate-pulse">
-                  <div className="bg-gray-300 h-48 rounded-lg mb-4" />
-                  <div className="bg-gray-300 h-4 rounded mb-2" />
-                  <div className="bg-gray-300 h-4 rounded w-3/4" />
-                </Card>
-              ))}
-            </div>
+            <SkeletonCard count={6} />
           ) : products.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {products.map((product: any) => (

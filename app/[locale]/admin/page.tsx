@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Card from '@/components/Card';
 import Button from '@/components/Button';
+import Loading from '@/components/Loading';
 import { getAdminUser } from '@/lib/adminHelpers';
 
 interface Order {
@@ -178,9 +179,8 @@ export default function AdminPage() {
         <h1 className="text-4xl font-bold text-gray-900">{t('title')}</h1>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           {[...Array(4)].map((_, i) => (
-            <Card key={i} className="h-24 animate-pulse">
-              <div className="h-4 bg-gray-300 rounded mb-2 w-2/3" />
-              <div className="h-6 bg-gray-300 rounded" />
+            <Card key={i} className="h-24 flex items-center justify-center">
+              <Loading type="spinner" size="sm" />
             </Card>
           ))}
         </div>
