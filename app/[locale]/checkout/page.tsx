@@ -6,6 +6,7 @@ import { useTranslations } from 'next-intl';
 import { useLocale } from 'next-intl';
 import { useCartStore } from '@/lib/cartStore';
 import { supabase } from '@/lib/supabase';
+import { useToast } from '@/lib/hooks/useToast';
 import Link from 'next/link';
 import Card from '@/components/Card';
 import Button from '@/components/Button';
@@ -16,6 +17,8 @@ export default function CheckoutPage() {
   const locale = useLocale();
   const t = useTranslations('pages.checkout');
   const tErr = useTranslations('errors');
+  const tToasts = useTranslations('toasts');
+  const { toast } = useToast();
 
   const { items, getTotalPrice, clearCart } = useCartStore();
   const [loading, setLoading] = useState(false);
@@ -96,8 +99,14 @@ export default function CheckoutPage() {
         .select()
         .single();
 
-      if (orderError) throw orderError;
-      if (!order) throw new Error('Failed to create order');
+      if (orderError) {
+        toast.error(tToasts('checkout.create_error.message'), { description: tToasts('checkout.create_error.description') });
+        throw orderError;
+      }
+      if (!order) {
+        toast.error(tToasts('checkout.create_failed.message'), { description: tToasts('checkout.create_failed.description') });
+        throw new Error('Failed to create order');
+      }
 
       // Create order items
       const orderItems = items.map((item) => ({
@@ -109,9 +118,13 @@ export default function CheckoutPage() {
 
       const { error: itemsError } = await supabase.from('order_items').insert(orderItems);
 
-      if (itemsError) throw itemsError;
+      if (itemsError) {
+        toast.error(tToasts('checkout.items_error.message'), { description: tToasts('checkout.items_error.description') });
+        throw itemsError;
+      }
 
       // Clear cart and redirect to payment
+      toast.success(tToasts('checkout.created'));
       clearCart();
       router.push(`/${locale}/payment/${order.id}`);
     } catch (err: any) {

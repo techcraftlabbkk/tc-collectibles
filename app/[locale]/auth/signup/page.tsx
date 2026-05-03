@@ -4,6 +4,7 @@ import { signUp } from '@/lib/auth';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useLocale, useTranslations } from 'next-intl';
+import { useToast } from '@/lib/hooks/useToast';
 import Link from 'next/link';
 import Card from '@/components/Card';
 import Button from '@/components/Button';
@@ -14,6 +15,8 @@ export default function SignupPage() {
   const t = useTranslations('pages.auth.signup');
   const tErr = useTranslations('errors');
   const tSuccess = useTranslations('success');
+  const tToasts = useTranslations('toasts');
+  const { toast } = useToast();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -53,17 +56,22 @@ export default function SignupPage() {
       const { data: _data, error: authError } = await signUp(email, password, fullName);
 
       if (authError) {
-        setError(authError instanceof Error ? authError.message : tErr('network_error'));
+        const message = authError instanceof Error ? authError.message : tErr('network_error');
+        setError(message);
+        toast.error(tToasts('auth.signup_failed.message'), { description: tToasts('auth.signup_failed.description') });
         setLoading(false);
         return;
       }
 
+      toast.success(tToasts('auth.signup_success'));
       setSuccess(true);
       setTimeout(() => {
         router.push(`/${locale}/auth/login`);
       }, 2000);
     } catch (err: any) {
-      setError(err.message || tErr('network_error'));
+      const message = err.message || tErr('network_error');
+      setError(message);
+      toast.error(tToasts('auth.signup_error.message'), { description: tToasts('auth.signup_error.description') });
       setLoading(false);
     }
   };

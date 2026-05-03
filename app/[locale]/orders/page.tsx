@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { supabase } from '@/lib/supabase';
+import { useToast } from '@/lib/hooks/useToast';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import Card from '@/components/Card';
@@ -41,6 +42,8 @@ export default function OrdersPage() {
   const locale = useLocale();
   const router = useRouter();
   const t = useTranslations('pages.orders');
+  const tToasts = useTranslations('toasts');
+  const { toast } = useToast();
 
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
@@ -100,6 +103,12 @@ export default function OrdersPage() {
 
     fetchUserAndOrders();
   }, [locale, router]);
+
+  useEffect(() => {
+    if (error) {
+      toast.error(tToasts('orders.load_error.message'), { description: tToasts('orders.load_error.description') });
+    }
+  }, [error, toast, tToasts]);
 
   const getStatusLabel = (status: string) => {
     const statusMap: Record<string, string> = {

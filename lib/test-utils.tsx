@@ -1,9 +1,10 @@
 import React, { ReactElement } from 'react'
 import { render, RenderOptions } from '@testing-library/react'
+import { ToastProvider } from '@/lib/hooks/useToast'
 
 // Mock provider wrapper for tests
 const AllTheProviders = ({ children }: { children: React.ReactNode }) => {
-  return <>{children}</>
+  return <ToastProvider>{children}</ToastProvider>
 }
 
 const customRender = (

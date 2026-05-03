@@ -4,6 +4,7 @@ import { signIn } from '@/lib/auth';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useLocale, useTranslations } from 'next-intl';
+import { useToast } from '@/lib/hooks/useToast';
 import Link from 'next/link';
 import Card from '@/components/Card';
 import Button from '@/components/Button';
@@ -14,6 +15,8 @@ export default function LoginPage() {
   const t = useTranslations('pages.auth.login');
   const tErr = useTranslations('errors');
   const tSuccess = useTranslations('success');
+  const tToasts = useTranslations('toasts');
+  const { toast } = useToast();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -30,16 +33,21 @@ export default function LoginPage() {
       const { data, error: authError } = await signIn(email, password);
 
       if (authError) {
-        setError(authError instanceof Error ? authError.message : tErr('network_error'));
+        const message = authError instanceof Error ? authError.message : tErr('network_error');
+        setError(message);
+        toast.error(tToasts('auth.login_failed.message'), { description: tToasts('auth.login_failed.description') });
         setLoading(false);
         return;
       }
 
       if (data?.user) {
+        toast.success(tToasts('auth.login_success'));
         router.push(`/${locale}/orders`);
       }
     } catch (err: any) {
-      setError(err.message || tErr('network_error'));
+      const message = err.message || tErr('network_error');
+      setError(message);
+      toast.error(tToasts('auth.login_error.message'), { description: tToasts('auth.login_error.description') });
       setLoading(false);
     }
   };

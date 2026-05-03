@@ -1,11 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { useLocale } from 'next-intl';
 import Link from 'next/link';
 import { useProducts, ProductFilters } from '@/lib/useProducts';
 import { useCartStore } from '@/lib/cartStore';
+import { useToast } from '@/lib/hooks/useToast';
 import Card from '@/components/Card';
 import Button from '@/components/Button';
 import Input from '@/components/Input';
@@ -15,7 +16,9 @@ const GRADE_OPTIONS = ['All Grades', 'PSA 6', 'PSA 7', 'PSA 8', 'PSA 8.5', 'PSA 
 
 export default function ProductsPage() {
   const t = useTranslations('pages.products');
+  const tToasts = useTranslations('toasts');
   const locale = useLocale();
+  const { toast } = useToast();
 
   const [filters, setFilters] = useState<ProductFilters>({
     grade: 'All Grades',
@@ -30,8 +33,15 @@ export default function ProductsPage() {
   const { addToCart } = useCartStore();
   const [addedProduct, setAddedProduct] = useState<string | null>(null);
 
+  useEffect(() => {
+    if (error) {
+      toast.error(tToasts('products.load_error.message'), { description: tToasts('products.load_error.description') });
+    }
+  }, [error, toast, tToasts]);
+
   const handleAddToCart = (product: any) => {
     addToCart(product);
+    toast.success(tToasts('products.added'));
     setAddedProduct(product.id);
     setTimeout(() => setAddedProduct(null), 2000);
   };

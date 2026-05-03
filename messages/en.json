@@ -194,5 +194,80 @@
     "name_required": "Name is required",
     "phone_required": "Phone number is required",
     "address_required": "Address is required"
+  },
+  "toasts": {
+    "cart": {
+      "removed": "Removed from cart"
+    },
+    "products": {
+      "added": "Added to cart",
+      "load_error": {
+        "message": "Could not load products",
+        "description": "Please refresh the page and try again."
+      }
+    },
+    "checkout": {
+      "created": "Order placed",
+      "create_error": {
+        "message": "Could not place order",
+        "description": "Something went wrong while creating your order."
+      },
+      "create_failed": {
+        "message": "Order not created",
+        "description": "No order was returned. Please try again."
+      },
+      "items_error": {
+        "message": "Order items failed",
+        "description": "Your order was created but some items couldn't be saved."
+      }
+    },
+    "auth": {
+      "login_success": "Welcome back",
+      "login_failed": {
+        "message": "Login failed",
+        "description": "Please check your email and password."
+      },
+      "login_error": {
+        "message": "Something went wrong",
+        "description": "Please try again in a moment."
+      },
+      "signup_success": "Account created",
+      "signup_failed": {
+        "message": "Sign up failed",
+        "description": "Please check your details and try again."
+      },
+      "signup_error": {
+        "message": "Something went wrong",
+        "description": "Please try again in a moment."
+      }
+    },
+    "orders": {
+      "load_error": {
+        "message": "Could not load orders",
+        "description": "Please refresh the page and try again."
+      }
+    },
+    "admin": {
+      "access_denied": {
+        "message": "Access denied",
+        "description": "You don't have permission to view this page."
+      },
+      "updated": "Order updated",
+      "update_error": {
+        "message": "Update failed",
+        "description": "Could not update the order. Please try again."
+      }
+    },
+    "payment": {
+      "verified": "Payment confirmed",
+      "load_error": {
+        "message": "Could not load payment details",
+        "description": "Please refresh and try again."
+      },
+      "verify_error": {
+        "message": "Could not confirm payment",
+        "description": "Please try uploading proof again."
+      }
+    }
   }
 }

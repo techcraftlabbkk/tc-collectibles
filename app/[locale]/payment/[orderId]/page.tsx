@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { supabase } from '@/lib/supabase';
+import { useToast } from '@/lib/hooks/useToast';
 import Link from 'next/link';
 import Image from 'next/image';
 import Card from '@/components/Card';
@@ -21,6 +22,7 @@ interface Order {
 export default function PaymentPage({ params }: { params: Promise<{ orderId: string }> }) {
   const locale = useLocale();
   const t = useTranslations();
+  const { toast } = useToast();
   const [orderId, setOrderId] = useState<string>('');
   const [order, setOrder] = useState<Order | null>(null);
   const [qrCode, setQrCode] = useState<string | null>(null);
@@ -55,29 +57,33 @@ export default function PaymentPage({ params }: { params: Promise<{ orderId: str
 
         // Generate QR code if payment is pending
         if (orderData.status === 'pending_payment') {
-          const qrResponse = await fetch('/api/payment/generate-qr', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              orderId: orderData.id,
-              amount: orderData.total_thb,
-            }),
-          });
+          try {
+            const qrResponse = await fetch('/api/payment/generate-qr', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                orderId: orderData.id,
+                amount: orderData.total_thb,
+              }),
+            });
 
-          const qrData = await qrResponse.json();
-          if (qrData.qrCode) {
-            setQrCode(qrData.qrCode);
-            setPromptPayRef(qrData.promptPayRef);
+            const qrData = await qrResponse.json();
+            if (qrData.qrCode) {
+              setQrCode(qrData.qrCode);
+              setPromptPayRef(qrData.promptPayRef);
+            }
+          } catch (qrErr) {
+            toast.error(t('toasts.payment.load_error.message'), { description: t('toasts.payment.load_error.description') });
           }
         }
       } catch (err) {
-        setError(
-          err instanceof Error
-            ? err.message
-            : locale === 'en'
-            ? 'Failed to load payment details'
-            : 'ไม่สามารถโหลดรายละเอียดการชำระเงิน'
-        );
+        const message = err instanceof Error
+          ? err.message
+          : locale === 'en'
+          ? 'Failed to load payment details'
+          : 'ไม่สามารถโหลดรายละเอียดการชำระเงิน';
+        setError(message);
+        toast.error(t('toasts.payment.load_error.message'), { description: t('toasts.payment.load_error.description') });
       } finally {
         setLoading(false);
       }
@@ -96,7 +102,10 @@ export default function PaymentPage({ params }: { params: Promise<{ orderId: str
         .update({ status: 'paid' })
         .eq('id', orderId);
 
-      if (error) throw error;
+      if (error) {
+        toast.error(t('toasts.payment.verify_error.message'), { description: t('toasts.payment.verify_error.description') });
+        throw error;
+      }
 
       const { data: updatedOrder } = await supabase
         .from('orders')
@@ -105,17 +114,18 @@ export default function PaymentPage({ params }: { params: Promise<{ orderId: str
         .single();
 
       if (updatedOrder) {
+        toast.success(t('toasts.payment.verified'));
         setOrder(updatedOrder);
         setQrCode(null);
       }
     } catch (err) {
-      setError(
-        err instanceof Error
-          ? err.message
-          : locale === 'en'
-          ? 'Failed to verify payment'
-          : 'ไม่สามารถยืนยันการชำระเงิน'
-      );
+      const message = err instanceof Error
+        ? err.message
+        : locale === 'en'
+        ? 'Failed to verify payment'
+        : 'ไม่สามารถยืนยันการชำระเงิน';
+      setError(message);
+      toast.error(t('toasts.payment.verify_error.message'), { description: t('toasts.payment.verify_error.description') });
     } finally {
       setVerifyingPayment(false);
     }

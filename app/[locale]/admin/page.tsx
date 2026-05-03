@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { supabase } from '@/lib/supabase';
+import { useToast } from '@/lib/hooks/useToast';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Card from '@/components/Card';
@@ -50,6 +51,8 @@ export default function AdminPage() {
   const locale = useLocale();
   const router = useRouter();
   const t = useTranslations('pages.admin');
+  const tToasts = useTranslations('toasts');
+  const { toast } = useToast();
 
   const [activeTab, setActiveTab] = useState<'dashboard' | 'orders' | 'products'>('dashboard');
   const [loading, setLoading] = useState(true);
@@ -83,6 +86,7 @@ export default function AdminPage() {
         // Check if user is an admin
         const adminUser = await getAdminUser(session.user.id);
         if (!adminUser) {
+          toast.error(tToasts('admin.access_denied.message'), { description: tToasts('admin.access_denied.description') });
           setError(locale === 'en' ? 'Access denied. You are not an admin.' : 'การเข้าถึงถูกปฏิเสธ คุณไม่ใช่ผู้จัดการ');
           setTimeout(() => {
             router.push(`/${locale}`);
@@ -141,9 +145,13 @@ export default function AdminPage() {
 
       const { error } = await supabase.from('orders').update({ status: newStatus }).eq('id', orderId);
 
-      if (error) throw error;
+      if (error) {
+        toast.error(tToasts('admin.update_error.message'), { description: tToasts('admin.update_error.description') });
+        throw error;
+      }
 
       // Update local state
+      toast.success(tToasts('admin.updated'));
       setOrders((prevOrders) => prevOrders.map((o) => (o.id === orderId ? { ...o, status: newStatus } : o)));
     } catch (err) {
       setError(err instanceof Error ? err.message : locale === 'en' ? 'Failed to update order' : 'ไม่สามารถอัพเดตคำสั่ง');

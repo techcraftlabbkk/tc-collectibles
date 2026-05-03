@@ -6,6 +6,7 @@ import { useLocale } from 'next-intl';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useToast } from '@/lib/hooks/useToast';
 import Card from '@/components/Card';
 import Button from '@/components/Button';
 
@@ -13,6 +14,7 @@ export default function CartPage() {
   const router = useRouter();
   const locale = useLocale();
   const t = useTranslations('pages.cart');
+  const { toast } = useToast();
 
   const { items, removeFromCart, updateQuantity, getTotalPrice } = useCartStore();
   const total = getTotalPrice();
@@ -94,7 +96,10 @@ export default function CartPage() {
                         </button>
                       </div>
                       <button
-                        onClick={() => removeFromCart(item.product_id)}
+                        onClick={() => {
+                          removeFromCart(item.product_id);
+                          toast.info(t('toasts.cart.removed'));
+                        }}
                         className="text-sm text-red-600 hover:text-red-700 font-medium mt-2"
                       >
                         {t('remove')}
