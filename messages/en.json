@@ -253,6 +253,8 @@
         "description": "You don't have permission to view this page."
       },
       "updated": "Order updated",
+      "payment_approved": "Payment approved",
+      "payment_rejected": "Payment rejected",
       "update_error": {
         "message": "Update failed",
         "description": "Could not update the order. Please try again."

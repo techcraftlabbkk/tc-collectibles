@@ -33,6 +33,18 @@ interface Product {
   available: boolean;
 }
 
+interface Payment {
+  id: string;
+  order_id: string;
+  method: string;
+  proof_image_url: string | null;
+  status: 'pending' | 'verified' | 'rejected';
+  admin_notes: string | null;
+  verified_at: string | null;
+  created_at: string;
+  order?: Order;
+}
+
 interface Stats {
   totalOrders: number;
   totalRevenue: number;
@@ -57,7 +69,7 @@ export default function AdminPage() {
   const tModals = useTranslations('modals');
   const { toast } = useToast();
 
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'orders' | 'products'>('dashboard');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'orders' | 'products' | 'payments'>('dashboard');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [stats, setStats] = useState<Stats>({
@@ -68,8 +80,11 @@ export default function AdminPage() {
   });
   const [orders, setOrders] = useState<Order[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
+  const [payments, setPayments] = useState<Payment[]>([]);
   const [updatingOrder, setUpdatingOrder] = useState<string | null>(null);
   const [pendingStatusChange, setPendingStatusChange] = useState<{ orderId: string; newStatus: string } | null>(null);
+  const [selectedPayment, setSelectedPayment] = useState<Payment | null>(null);
+  const [paymentNotes, setPaymentNotes] = useState<string>('');
 
   useEffect(() => {
     const fetchAdminData = async () => {
@@ -117,6 +132,16 @@ export default function AdminPage() {
         if (productsError) throw productsError;
 
         setProducts(productsData || []);
+
+        // Fetch all payments with order details
+        const { data: paymentsData, error: paymentsError } = await supabase
+          .from('payments')
+          .select('*, orders(*)')
+          .order('created_at', { ascending: false });
+
+        if (paymentsError) throw paymentsError;
+
+        setPayments(paymentsData || []);
 
         // Calculate stats
         const totalRevenue = (ordersData || [])
@@ -171,6 +196,118 @@ export default function AdminPage() {
     }
   };
 
+  const handleApprovePayment = async (paymentId: string) => {
+    try {
+      const payment = payments.find((p) => p.id === paymentId);
+      if (!payment) return;
+
+      // Update payment status to verified
+      const { error: paymentError } = await supabase
+        .from('payments')
+        .update({
+          status: 'verified',
+          verified_at: new Date().toISOString(),
+          admin_notes: paymentNotes,
+        })
+        .eq('id', paymentId);
+
+      if (paymentError) throw paymentError;
+
+      // Update order status to payment_received
+      const { error: orderError } = await supabase
+        .from('orders')
+        .update({ status: 'payment_received' })
+        .eq('id', payment.order_id);
+
+      if (orderError) throw orderError;
+
+      // Send payment received email to customer
+      const order = orders.find((o) => o.id === payment.order_id);
+      if (order) {
+        try {
+          await fetch('/api/email/send-payment-verified', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              orderId: order.id,
+              customerEmail: order.customer_email,
+              customerName: order.customer_name,
+              orderTotal: order.total_thb,
+            }),
+          });
+        } catch (emailErr) {
+          console.error('[EMAIL] Failed to send payment verified email:', emailErr);
+        }
+      }
+
+      toast.success(tToasts('admin.payment_approved'));
+      setPayments((prev) =>
+        prev.map((p) =>
+          p.id === paymentId
+            ? {
+                ...p,
+                status: 'verified',
+                verified_at: new Date().toISOString(),
+                admin_notes: paymentNotes,
+              }
+            : p
+        )
+      );
+      setSelectedPayment(null);
+      setPaymentNotes('');
+
+      // Refresh orders to update stats
+      const { data: ordersData } = await supabase.from('orders').select('*').order('created_at', { ascending: false });
+      if (ordersData) {
+        setOrders(ordersData);
+        const totalRevenue = (ordersData || [])
+          .filter((o) => o.status !== 'pending_payment' && o.status !== 'cancelled')
+          .reduce((sum, o) => sum + (o.total_thb || 0), 0);
+        const pendingPaymentCount = (ordersData || []).filter((o) => o.status === 'pending_payment').length;
+        setStats((prev) => ({
+          ...prev,
+          totalRevenue,
+          pendingPayment: pendingPaymentCount,
+        }));
+      }
+    } catch (err) {
+      toast.error(tToasts('admin.update_error.message'));
+      setError(err instanceof Error ? err.message : 'Failed to approve payment');
+    }
+  };
+
+  const handleRejectPayment = async (paymentId: string) => {
+    try {
+      const payment = payments.find((p) => p.id === paymentId);
+      if (!payment) return;
+
+      // Update payment status to rejected
+      const { error: paymentError } = await supabase
+        .from('payments')
+        .update({
+          status: 'rejected',
+          admin_notes: paymentNotes,
+        })
+        .eq('id', paymentId);
+
+      if (paymentError) throw paymentError;
+
+      toast.success(tToasts('admin.payment_rejected'));
+      setPayments((prev) =>
+        prev.map((p) =>
+          p.id === paymentId
+            ? { ...p, status: 'rejected', admin_notes: paymentNotes }
+            : p
+        )
+      );
+      setSelectedPayment(null);
+      setPaymentNotes('');
+    } catch (err) {
+      toast.error(tToasts('admin.update_error.message'));
+      setError(err instanceof Error ? err.message : 'Failed to reject payment');
+    }
+  };
+
   const getStatusLabel = (status: string) => {
     const statusMap: Record<string, string> = {
       pending_payment: t('order_status') || locale === 'en' ? 'Awaiting Payment' : 'รอการชำระเงิน',
@@ -214,12 +351,12 @@ export default function AdminPage() {
       )}
 
       {/* Tab Navigation */}
-      <div className="flex gap-6 border-b border-gray-200">
-        {(['dashboard', 'orders', 'products'] as const).map((tab) => (
+      <div className="flex gap-6 border-b border-gray-200 overflow-x-auto">
+        {(['dashboard', 'orders', 'payments', 'products'] as const).map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
-            className={`px-4 py-3 font-semibold border-b-2 transition-colors ${
+            className={`px-4 py-3 font-semibold border-b-2 transition-colors whitespace-nowrap ${
               activeTab === tab
                 ? 'border-blue-600 text-blue-600'
                 : 'border-transparent text-gray-600 hover:text-gray-900'
@@ -227,6 +364,7 @@ export default function AdminPage() {
           >
             {tab === 'dashboard' && t('dashboard')}
             {tab === 'orders' && `${t('orders')} (${stats.totalOrders})`}
+            {tab === 'payments' && `${locale === 'en' ? 'Payments' : 'การชำระเงิน'} (${payments.filter((p) => p.status === 'pending').length})`}
             {tab === 'products' && `${t('products')} (${stats.productsCount})`}
           </button>
         ))}
@@ -349,6 +487,184 @@ export default function AdminPage() {
         </div>
       )}
 
+      {/* Payments Tab */}
+      {activeTab === 'payments' && (
+        <div className="space-y-4">
+          {payments.length === 0 ? (
+            <Card className="text-center py-12">
+              <p className="text-gray-600">{locale === 'en' ? 'No payments found' : 'ไม่พบการชำระเงิน'}</p>
+            </Card>
+          ) : (
+            <div className="space-y-4">
+              {/* Pending Payments */}
+              {payments.filter((p) => p.status === 'pending').length > 0 && (
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                    {locale === 'en' ? 'Pending Verification' : 'รอการยืนยัน'}
+                  </h3>
+                  <div className="overflow-x-auto">
+                    <table className="w-full">
+                      <thead>
+                        <tr className="border-b border-gray-200 bg-yellow-50">
+                          <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
+                            {t('order_id')}
+                          </th>
+                          <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
+                            {locale === 'en' ? 'Customer' : 'ลูกค้า'}
+                          </th>
+                          <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
+                            {t('total')}
+                          </th>
+                          <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
+                            {locale === 'en' ? 'Proof' : 'หลักฐาน'}
+                          </th>
+                          <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
+                            {locale === 'en' ? 'Actions' : 'การกระทำ'}
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {payments
+                          .filter((p) => p.status === 'pending')
+                          .map((payment) => (
+                            <tr key={payment.id} className="border-b border-gray-200 hover:bg-yellow-50">
+                              <td className="px-6 py-4 text-sm font-mono text-gray-900">
+                                {payment.order_id.slice(0, 8)}
+                              </td>
+                              <td className="px-6 py-4 text-sm text-gray-600">
+                                {orders.find((o) => o.id === payment.order_id)?.customer_name}
+                              </td>
+                              <td className="px-6 py-4 text-sm font-semibold text-gray-900">
+                                ฿{(orders.find((o) => o.id === payment.order_id)?.total_thb || 0).toLocaleString()}
+                              </td>
+                              <td className="px-6 py-4 text-sm">
+                                {payment.proof_image_url ? (
+                                  <span className="inline-block px-2 py-1 bg-green-100 text-green-800 text-xs rounded">
+                                    {locale === 'en' ? 'Uploaded' : 'อัพโหลดแล้ว'}
+                                  </span>
+                                ) : (
+                                  <span className="inline-block px-2 py-1 bg-red-100 text-red-800 text-xs rounded">
+                                    {locale === 'en' ? 'Pending' : 'รอดำเนิน'}
+                                  </span>
+                                )}
+                              </td>
+                              <td className="px-6 py-4 text-sm">
+                                <Button
+                                  size="sm"
+                                  onClick={() => setSelectedPayment(payment)}
+                                  className="bg-blue-600 hover:bg-blue-700 text-white"
+                                >
+                                  {locale === 'en' ? 'Review' : 'ตรวจสอบ'}
+                                </Button>
+                              </td>
+                            </tr>
+                          ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+
+              {/* Verified Payments */}
+              {payments.filter((p) => p.status === 'verified').length > 0 && (
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-3 mt-8">
+                    {locale === 'en' ? 'Verified Payments' : 'การชำระเงินที่ยืนยัน'}
+                  </h3>
+                  <div className="overflow-x-auto">
+                    <table className="w-full">
+                      <thead>
+                        <tr className="border-b border-gray-200 bg-green-50">
+                          <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
+                            {t('order_id')}
+                          </th>
+                          <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
+                            {locale === 'en' ? 'Customer' : 'ลูกค้า'}
+                          </th>
+                          <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
+                            {t('total')}
+                          </th>
+                          <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
+                            {locale === 'en' ? 'Verified At' : 'ยืนยันเมื่อ'}
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {payments
+                          .filter((p) => p.status === 'verified')
+                          .map((payment) => (
+                            <tr key={payment.id} className="border-b border-gray-200 hover:bg-green-50">
+                              <td className="px-6 py-4 text-sm font-mono text-gray-900">
+                                {payment.order_id.slice(0, 8)}
+                              </td>
+                              <td className="px-6 py-4 text-sm text-gray-600">
+                                {orders.find((o) => o.id === payment.order_id)?.customer_name}
+                              </td>
+                              <td className="px-6 py-4 text-sm font-semibold text-gray-900">
+                                ฿{(orders.find((o) => o.id === payment.order_id)?.total_thb || 0).toLocaleString()}
+                              </td>
+                              <td className="px-6 py-4 text-sm text-gray-600">
+                                {payment.verified_at ? new Date(payment.verified_at).toLocaleDateString() : '-'}
+                              </td>
+                            </tr>
+                          ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+
+              {/* Rejected Payments */}
+              {payments.filter((p) => p.status === 'rejected').length > 0 && (
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-3 mt-8">
+                    {locale === 'en' ? 'Rejected Payments' : 'การชำระเงินที่ถูกปฏิเสธ'}
+                  </h3>
+                  <div className="overflow-x-auto">
+                    <table className="w-full">
+                      <thead>
+                        <tr className="border-b border-gray-200 bg-red-50">
+                          <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
+                            {t('order_id')}
+                          </th>
+                          <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
+                            {locale === 'en' ? 'Customer' : 'ลูกค้า'}
+                          </th>
+                          <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
+                            {t('total')}
+                          </th>
+                          <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
+                            {locale === 'en' ? 'Reason' : 'เหตุผล'}
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {payments
+                          .filter((p) => p.status === 'rejected')
+                          .map((payment) => (
+                            <tr key={payment.id} className="border-b border-gray-200 hover:bg-red-50">
+                              <td className="px-6 py-4 text-sm font-mono text-gray-900">
+                                {payment.order_id.slice(0, 8)}
+                              </td>
+                              <td className="px-6 py-4 text-sm text-gray-600">
+                                {orders.find((o) => o.id === payment.order_id)?.customer_name}
+                              </td>
+                              <td className="px-6 py-4 text-sm font-semibold text-gray-900">
+                                ฿{(orders.find((o) => o.id === payment.order_id)?.total_thb || 0).toLocaleString()}
+                              </td>
+                              <td className="px-6 py-4 text-sm text-gray-600">{payment.admin_notes || '-'}</td>
+                            </tr>
+                          ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      )}
+
       {/* Products Tab */}
       {activeTab === 'products' && (
         <div className="space-y-4">
@@ -404,6 +720,95 @@ export default function AdminPage() {
           )}
         </div>
       )}
+
+      {/* Payment Verification Modal */}
+      <Modal
+        isOpen={selectedPayment !== null}
+        onClose={() => {
+          setSelectedPayment(null);
+          setPaymentNotes('');
+        }}
+        isDanger={false}
+        title={locale === 'en' ? 'Review Payment' : 'ตรวจสอบการชำระเงิน'}
+        description={locale === 'en' ? 'Review the payment proof and approve or reject' : 'ตรวจสอบหลักฐานการชำระเงินและอนุมัติหรือปฏิเสธ'}
+      >
+        {selectedPayment && (
+          <div className="space-y-4">
+            {/* Payment Details */}
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <p className="text-xs text-gray-600 font-semibold">{locale === 'en' ? 'Order ID' : 'ID คำสั่ง'}</p>
+                <p className="text-sm font-mono text-gray-900">{selectedPayment.order_id.slice(0, 8)}</p>
+              </div>
+              <div>
+                <p className="text-xs text-gray-600 font-semibold">{locale === 'en' ? 'Method' : 'วิธีการ'}</p>
+                <p className="text-sm text-gray-900 capitalize">{selectedPayment.method}</p>
+              </div>
+              <div>
+                <p className="text-xs text-gray-600 font-semibold">{locale === 'en' ? 'Amount' : 'จำนวน'}</p>
+                <p className="text-sm font-semibold text-gray-900">
+                  ฿{(orders.find((o) => o.id === selectedPayment.order_id)?.total_thb || 0).toLocaleString()}
+                </p>
+              </div>
+              <div>
+                <p className="text-xs text-gray-600 font-semibold">{locale === 'en' ? 'Submitted' : 'ส่งเมื่อ'}</p>
+                <p className="text-sm text-gray-900">{new Date(selectedPayment.created_at).toLocaleDateString()}</p>
+              </div>
+            </div>
+
+            {/* Payment Proof Image */}
+            {selectedPayment.proof_image_url && (
+              <div>
+                <p className="text-xs text-gray-600 font-semibold mb-2">{locale === 'en' ? 'Payment Proof' : 'หลักฐานการชำระเงิน'}</p>
+                <img
+                  src={selectedPayment.proof_image_url}
+                  alt="Payment proof"
+                  className="w-full max-h-80 object-contain border border-gray-200 rounded-lg"
+                />
+              </div>
+            )}
+
+            {/* Admin Notes */}
+            <div>
+              <label className="block text-xs text-gray-600 font-semibold mb-2">
+                {locale === 'en' ? 'Admin Notes' : 'หมายเหตุของผู้จัดการ'}
+              </label>
+              <textarea
+                value={paymentNotes}
+                onChange={(e) => setPaymentNotes(e.target.value)}
+                placeholder={locale === 'en' ? 'Add notes...' : 'เพิ่มหมายเหตุ...'}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-sm"
+                rows={3}
+              />
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex gap-3 pt-4">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setSelectedPayment(null);
+                  setPaymentNotes('');
+                }}
+              >
+                {locale === 'en' ? 'Cancel' : 'ยกเลิก'}
+              </Button>
+              <Button
+                className="flex-1 bg-red-600 hover:bg-red-700 text-white"
+                onClick={() => handleRejectPayment(selectedPayment.id)}
+              >
+                {locale === 'en' ? 'Reject' : 'ปฏิเสธ'}
+              </Button>
+              <Button
+                className="flex-1 bg-green-600 hover:bg-green-700 text-white"
+                onClick={() => handleApprovePayment(selectedPayment.id)}
+              >
+                {locale === 'en' ? 'Approve' : 'อนุมัติ'}
+              </Button>
+            </div>
+          </div>
+        )}
+      </Modal>
 
       {/* Status Change Confirmation Modal */}
       <Modal
