@@ -10,8 +10,9 @@ import { useToast } from '@/lib/hooks/useToast';
 import Card from '@/components/Card';
 import Button from '@/components/Button';
 import Input from '@/components/Input';
+import Select from '@/components/Select';
 import Image from 'next/image';
-import Loading, { SkeletonCard } from '@/components/Loading';
+import { SkeletonCard } from '@/components/Loading';
 
 const GRADE_OPTIONS = ['All Grades', 'PSA 6', 'PSA 7', 'PSA 8', 'PSA 8.5', 'PSA 9', 'PSA 10'];
 
@@ -94,17 +95,12 @@ export default function ProductsPage() {
             {/* Grade Filter */}
             <div className="mb-6">
               <label className="block text-sm font-semibold text-gray-900 mb-2">{t('grade')}</label>
-              <select
+              <Select
+                options={GRADE_OPTIONS.map((grade) => ({ value: grade, label: grade }))}
                 value={tempFilters.grade || 'All Grades'}
-                onChange={(e) => handleFilterChange('grade', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              >
-                {GRADE_OPTIONS.map((grade) => (
-                  <option key={grade} value={grade}>
-                    {grade}
-                  </option>
-                ))}
-              </select>
+                onChange={(value) => handleFilterChange('grade', value)}
+                searchable={false}
+              />
             </div>
 
             {/* Price Range */}
@@ -129,15 +125,16 @@ export default function ProductsPage() {
             {/* Sort */}
             <div className="mb-6">
               <label className="block text-sm font-semibold text-gray-900 mb-2">{t('sort')}</label>
-              <select
+              <Select
+                options={[
+                  { value: 'newest', label: t('sort_newest') },
+                  { value: 'price_asc', label: t('sort_price_asc') },
+                  { value: 'price_desc', label: t('sort_price_desc') },
+                ]}
                 value={tempFilters.sortBy || 'newest'}
-                onChange={(e) => handleFilterChange('sortBy', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              >
-                <option value="newest">{t('sort_newest')}</option>
-                <option value="price_asc">{t('sort_price_asc')}</option>
-                <option value="price_desc">{t('sort_price_desc')}</option>
-              </select>
+                onChange={(value) => handleFilterChange('sortBy', value)}
+                searchable={false}
+              />
             </div>
 
             {/* Filter Buttons */}
