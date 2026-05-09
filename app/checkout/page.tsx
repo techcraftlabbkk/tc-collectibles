@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCartStore } from '@/lib/cartStore';
 import { supabase } from '@/lib/supabase';
@@ -11,6 +11,21 @@ export default function CheckoutPage() {
   const { items, getTotalPrice, clearCart } = useCartStore();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [authChecked, setAuthChecked] = useState(false);
+
+  // Rehydrate cart from localStorage and check auth on mount
+  useEffect(() => {
+    useCartStore.persist.rehydrate();
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        router.push('/auth/login?redirect=/checkout');
+        return;
+      }
+      setAuthChecked(true);
+    };
+    checkAuth();
+  }, [router]);
 
   const [formData, setFormData] = useState({
     fullName: '',
@@ -110,12 +125,28 @@ export default function CheckoutPage() {
       // Clear cart and redirect to payment page
       clearCart();
       router.push(`/payment/${order.id}`);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to create order');
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else if (err && typeof err === 'object' && 'message' in err) {
+        setError(String((err as { message: unknown }).message));
+      } else {
+        setError('Failed to create order. Please try again.');
+      }
     } finally {
       setLoading(false);
     }
   };
+
+  if (!authChecked) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="card text-center py-12">
+          <p className="text-gray-400 text-lg">Checking authentication...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (isEmpty) {
     return (

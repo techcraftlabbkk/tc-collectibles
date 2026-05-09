@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
+import Image from 'next/image';
 import { supabase } from '@/lib/supabase';
 import { useToast } from '@/lib/hooks/useToast';
 import { useRouter } from 'next/navigation';
@@ -31,6 +32,7 @@ interface Product {
   price: number;
   quantity: number;
   available: boolean;
+  image_url?: string | null;
 }
 
 interface Payment {
@@ -85,6 +87,7 @@ export default function AdminPage() {
   const [pendingStatusChange, setPendingStatusChange] = useState<{ orderId: string; newStatus: string } | null>(null);
   const [selectedPayment, setSelectedPayment] = useState<Payment | null>(null);
   const [paymentNotes, setPaymentNotes] = useState<string>('');
+  const [uploadingProductId, setUploadingProductId] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchAdminData = async () => {
@@ -166,7 +169,7 @@ export default function AdminPage() {
     };
 
     fetchAdminData();
-  }, [locale, router]);
+  }, [locale, router, tToasts, toast]);
 
   const handleUpdateOrderStatus = async (orderId: string, newStatus: string) => {
     try {
@@ -177,6 +180,42 @@ export default function AdminPage() {
       if (error) {
         toast.error(tToasts('admin.update_error.message'), { description: tToasts('admin.update_error.description') });
         throw error;
+      }
+
+      // Send shipment or delivery email when status changes
+      const order = orders.find((o) => o.id === orderId);
+      if (order) {
+        try {
+          if (newStatus === 'shipped') {
+            // Send shipment email
+            await fetch('/api/orders/send-shipment-email', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                orderId: order.id,
+                customerEmail: order.customer_email,
+                customerName: order.customer_name,
+                orderTotal: order.total_thb,
+                shippingAddress: order.shipping_address,
+              }),
+            });
+          } else if (newStatus === 'delivered') {
+            // Send delivery email
+            await fetch('/api/orders/send-delivery-email', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                orderId: order.id,
+                customerEmail: order.customer_email,
+                customerName: order.customer_name,
+                orderTotal: order.total_thb,
+              }),
+            });
+          }
+        } catch (emailErr) {
+          console.error('[EMAIL] Failed to send status update email:', emailErr);
+          // Don't throw - order status was updated successfully
+        }
       }
 
       // Update local state
@@ -305,6 +344,41 @@ export default function AdminPage() {
     } catch (err) {
       toast.error(tToasts('admin.update_error.message'));
       setError(err instanceof Error ? err.message : 'Failed to reject payment');
+    }
+  };
+
+  const handleUploadProductImage = async (productId: string, file: File) => {
+    try {
+      setUploadingProductId(productId);
+
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('productId', productId);
+
+      const response = await fetch('/api/products/upload-image', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to upload image');
+      }
+
+      const { imageUrl } = await response.json();
+
+      // Update local state
+      setProducts((prevProducts) =>
+        prevProducts.map((p) =>
+          p.id === productId ? { ...p, image_url: imageUrl } : p
+        )
+      );
+
+      toast.success(locale === 'en' ? 'Image uploaded successfully' : 'อัปโหลดรูปภาพสำเร็จ');
+    } catch (err) {
+      toast.error(locale === 'en' ? 'Failed to upload image' : 'ไม่สามารถอัปโหลดรูปภาพ');
+      setError(err instanceof Error ? err.message : 'Image upload error');
+    } finally {
+      setUploadingProductId(null);
     }
   };
 
@@ -678,6 +752,9 @@ export default function AdminPage() {
                 <thead>
                   <tr className="border-b border-gray-200 bg-gray-50">
                     <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
+                      {locale === 'en' ? 'Image' : 'รูปภาพ'}
+                    </th>
+                    <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
                       {locale === 'en' ? 'Title' : 'ชื่อ'}
                     </th>
                     <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
@@ -692,11 +769,27 @@ export default function AdminPage() {
                     <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
                       {locale === 'en' ? 'Status' : 'สถานะ'}
                     </th>
+                    <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
+                      {locale === 'en' ? 'Upload' : 'อัปโหลด'}
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
                   {products.map((product) => (
                     <tr key={product.id} className="border-b border-gray-200 hover:bg-gray-50">
+                      <td className="px-6 py-4">
+                        {product.image_url ? (
+                          <img
+                            src={product.image_url}
+                            alt={product.title}
+                            className="w-12 h-12 object-cover rounded"
+                          />
+                        ) : (
+                          <div className="w-12 h-12 bg-gray-200 rounded flex items-center justify-center">
+                            <span className="text-xs text-gray-500">No image</span>
+                          </div>
+                        )}
+                      </td>
                       <td className="px-6 py-4 text-sm font-medium text-gray-900">{product.title}</td>
                       <td className="px-6 py-4 text-sm text-gray-600">{product.grade}</td>
                       <td className="px-6 py-4 text-sm font-semibold text-gray-900">
@@ -711,6 +804,31 @@ export default function AdminPage() {
                         >
                           {product.available ? (locale === 'en' ? 'Available' : 'มี') : locale === 'en' ? 'Out of Stock' : 'หมด'}
                         </span>
+                      </td>
+                      <td className="px-6 py-4 text-sm">
+                        <label className="cursor-pointer">
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => {
+                              if (e.target.files?.[0]) {
+                                setUploadingProductId(product.id);
+                                handleUploadProductImage(product.id, e.target.files[0]);
+                              }
+                            }}
+                            disabled={uploadingProductId === product.id}
+                            className="hidden"
+                          />
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            disabled={uploadingProductId === product.id}
+                          >
+                            {uploadingProductId === product.id
+                              ? (locale === 'en' ? 'Uploading...' : 'กำลังอัปโหลด...')
+                              : (locale === 'en' ? 'Upload' : 'อัปโหลด')}
+                          </Button>
+                        </label>
                       </td>
                     </tr>
                   ))}
@@ -760,11 +878,14 @@ export default function AdminPage() {
             {selectedPayment.proof_image_url && (
               <div>
                 <p className="text-xs text-gray-600 font-semibold mb-2">{locale === 'en' ? 'Payment Proof' : 'หลักฐานการชำระเงิน'}</p>
-                <img
-                  src={selectedPayment.proof_image_url}
-                  alt="Payment proof"
-                  className="w-full max-h-80 object-contain border border-gray-200 rounded-lg"
-                />
+                <div className="relative w-full h-80 border border-gray-200 rounded-lg overflow-hidden">
+                  <Image
+                    src={selectedPayment.proof_image_url}
+                    alt="Payment proof"
+                    fill
+                    className="object-contain"
+                  />
+                </div>
               </div>
             )}
 

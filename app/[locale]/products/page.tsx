@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { useLocale } from 'next-intl';
-import Link from 'next/link';
 import { useProducts, ProductFilters } from '@/lib/useProducts';
 import { useCartStore } from '@/lib/cartStore';
 import { useToast } from '@/lib/hooks/useToast';
@@ -163,14 +162,18 @@ export default function ProductsPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {products.map((product: any) => (
                 <Card key={product.id} hover shadow="md">
-                  {product.image && (
+                  {product.image_url ? (
                     <div className="relative h-48 mb-4 rounded-lg overflow-hidden bg-gray-100">
                       <Image
-                        src={product.image}
+                        src={product.image_url}
                         alt={product.title}
                         fill
                         className="object-cover"
                       />
+                    </div>
+                  ) : (
+                    <div className="h-48 mb-4 rounded-lg bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
+                      <span className="text-gray-500 text-sm">{locale === 'en' ? 'No image' : 'ไม่มีรูปภาพ'}</span>
                     </div>
                   )}
                   <h3 className="font-bold text-gray-900 mb-1">{product.title}</h3>

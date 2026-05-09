@@ -4,15 +4,19 @@ import { useCartStore } from '@/lib/cartStore';
 import { useTranslations } from 'next-intl';
 import { useLocale } from 'next-intl';
 import Image from 'next/image';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/lib/hooks/useToast';
 import Card from '@/components/Card';
 import Button from '@/components/Button';
+import { useEffect } from 'react';
 
 export default function CartPage() {
   const router = useRouter();
   const locale = useLocale();
+
+  useEffect(() => {
+    useCartStore.persist.rehydrate();
+  }, []);
   const t = useTranslations('pages.cart');
   const { toast } = useToast();
 

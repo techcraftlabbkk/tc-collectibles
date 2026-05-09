@@ -14,6 +14,7 @@ interface OrderItem {
   product_id: string;
   quantity: number;
   price: number;
+  products?: { title: string; grade: string } | null;
 }
 
 interface Order {
@@ -85,7 +86,7 @@ export default function OrdersPage() {
           for (const order of ordersData) {
             const { data: itemsData, error: itemsError } = await supabase
               .from('order_items')
-              .select('*')
+              .select('*, products(title, grade)')
               .eq('order_id', order.id);
 
             if (itemsError) throw itemsError;
@@ -214,10 +215,10 @@ export default function OrdersPage() {
                         <div key={idx} className="flex justify-between text-sm border-b border-gray-200 last:border-0 pb-2 last:pb-0">
                           <div>
                             <p className="text-gray-900 font-medium">
-                              {locale === 'en' ? 'Product ID' : 'รหัสสินค้า'}: {item.product_id.slice(0, 8)}
+                              {item.products?.title || `${locale === 'en' ? 'Product' : 'สินค้า'} #${item.product_id.slice(0, 8)}`}
                             </p>
                             <p className="text-gray-600 text-xs">
-                              {locale === 'en' ? 'Qty' : 'จำนวน'}: {item.quantity}
+                              {item.products?.grade ? `Grade: ${item.products.grade} · ` : ''}{locale === 'en' ? 'Qty' : 'จำนวน'}: {item.quantity}
                             </p>
                           </div>
                           <p className="text-gray-900 font-semibold">

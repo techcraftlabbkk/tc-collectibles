@@ -10,6 +10,7 @@ interface OrderItem {
   product_id: string;
   quantity: number;
   price_at_purchase: number;
+  products?: { title: string; grade: string } | null;
 }
 
 interface Order {
@@ -87,7 +88,7 @@ export default function OrdersPage() {
           for (const order of ordersData) {
             const { data: itemsData, error: itemsError } = await supabase
               .from('order_items')
-              .select('*')
+              .select('*, products(title, grade)')
               .eq('order_id', order.id);
 
             if (itemsError) throw itemsError;
@@ -183,8 +184,10 @@ export default function OrdersPage() {
                       {(orderItems[order.id] || []).map((item, idx) => (
                         <div key={idx} className="flex justify-between text-sm">
                           <div>
-                            <p className="text-gray-300">Product ID: {item.product_id.slice(0, 8)}</p>
-                            <p className="text-gray-500 text-xs">Qty: {item.quantity}</p>
+                            <p className="text-gray-300">{item.products?.title || `Product #${item.product_id.slice(0, 8)}`}</p>
+                            <p className="text-gray-500 text-xs">
+                              {item.products?.grade ? `Grade: ${item.products.grade} · ` : ''}Qty: {item.quantity}
+                            </p>
                           </div>
                           <p className="text-gray-300 font-semibold">฿{(item.price_at_purchase * item.quantity).toLocaleString()}</p>
                         </div>
@@ -225,7 +228,9 @@ export default function OrdersPage() {
 
                   {/* Actions */}
                   {order.status === 'pending_payment' && (
-                    <button className="btn btn-primary w-full">Complete Payment</button>
+                    <Link href={`/payment/${order.id}`} className="btn btn-primary w-full text-center block">
+                      Complete Payment
+                    </Link>
                   )}
 
                   {order.status === 'delivered' && (

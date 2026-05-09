@@ -91,7 +91,7 @@ export default function PaymentPage({ params }: { params: Promise<{ orderId: str
     };
 
     fetchOrderAndQR();
-  }, [orderId, locale]);
+  }, [orderId, locale, t, toast]);
 
   const handleVerifyPayment = async () => {
     try {

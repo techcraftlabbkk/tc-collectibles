@@ -22,6 +22,7 @@ interface Product {
   price: number;
   quantity: number;
   available: boolean;
+  image_url?: string | null;
 }
 
 interface Stats {
@@ -54,6 +55,8 @@ export default function AdminPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [updatingOrder, setUpdatingOrder] = useState<string | null>(null);
+  const [uploadingProductId, setUploadingProductId] = useState<string | null>(null);
+  const [uploadError, setUploadError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchAdminData = async () => {
@@ -187,6 +190,33 @@ export default function AdminPage() {
       setError(err instanceof Error ? err.message : 'Failed to update order');
     } finally {
       setUpdatingOrder(null);
+    }
+  };
+
+  const handleUploadProductImage = async (productId: string, file: File) => {
+    try {
+      setUploadingProductId(productId);
+      setUploadError(null);
+
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('productId', productId);
+
+      const response = await fetch('/api/products/upload-image', {
+        method: 'POST',
+        body: formData,
+      });
+
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || 'Failed to upload image');
+
+      setProducts((prev) =>
+        prev.map((p) => (p.id === productId ? { ...p, image_url: data.imageUrl } : p))
+      );
+    } catch (err) {
+      setUploadError(err instanceof Error ? err.message : 'Image upload failed');
+    } finally {
+      setUploadingProductId(null);
     }
   };
 
@@ -375,11 +405,21 @@ export default function AdminPage() {
             ) : (
               products.map((product) => (
                 <div key={product.id} className="card">
-                  <div className="flex justify-between items-start">
+                  <div className="flex gap-4 items-start">
+                    {/* Product Image */}
+                    <div className="w-20 h-20 bg-dark-800 rounded flex-shrink-0 overflow-hidden flex items-center justify-center">
+                      {product.image_url ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={product.image_url} alt={product.title} className="w-full h-full object-cover" />
+                      ) : (
+                        <span className="text-gray-600 text-xs text-center px-1">No image</span>
+                      )}
+                    </div>
+
                     <div className="flex-1">
                       <h3 className="font-bold text-white mb-1">{product.title}</h3>
                       <p className="text-sm text-gray-400 mb-2">Grade: {product.grade}</p>
-                      <div className="flex items-center gap-4 text-sm">
+                      <div className="flex items-center gap-4 text-sm flex-wrap">
                         <span className="text-gray-400">Price: <span className="text-blue-400 font-semibold">฿{product.price.toLocaleString()}</span></span>
                         <span className="text-gray-400">Stock: <span className={`${product.quantity > 0 ? 'text-green-400' : 'text-red-400'} font-semibold`}>{product.quantity}</span></span>
                         <span className={`px-2 py-1 rounded text-xs ${product.available ? 'bg-green-900 text-green-200' : 'bg-red-900 text-red-200'}`}>
@@ -387,12 +427,29 @@ export default function AdminPage() {
                         </span>
                       </div>
                     </div>
-                    <div className="flex gap-2">
-                      <button className="btn bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 text-sm">
-                        Edit
-                      </button>
+
+                    {/* Image Upload */}
+                    <div className="flex flex-col gap-2 flex-shrink-0">
+                      <label className={`btn text-xs px-3 py-1 cursor-pointer ${uploadingProductId === product.id ? 'opacity-50 cursor-not-allowed' : 'bg-dark-700 hover:bg-dark-600 text-gray-300'}`}>
+                        {uploadingProductId === product.id ? 'Uploading...' : product.image_url ? '↑ Replace' : '↑ Upload'}
+                        <input
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          disabled={uploadingProductId === product.id}
+                          onChange={(e) => {
+                            if (e.target.files?.[0]) {
+                              handleUploadProductImage(product.id, e.target.files[0]);
+                              e.target.value = '';
+                            }
+                          }}
+                        />
+                      </label>
                     </div>
                   </div>
+                  {uploadError && uploadingProductId === product.id && (
+                    <p className="text-red-400 text-xs mt-2">{uploadError}</p>
+                  )}
                 </div>
               ))
             )}

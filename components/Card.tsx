@@ -6,13 +6,15 @@ interface CardProps {
   className?: string;
   hover?: boolean;
   shadow?: 'none' | 'sm' | 'md' | 'lg';
+  onClick?: () => void;
 }
 
 export default function Card({
   children,
   className,
   hover = false,
-  shadow = 'md'
+  shadow = 'md',
+  onClick
 }: CardProps) {
   const shadowStyles = {
     none: '',
@@ -23,6 +25,7 @@ export default function Card({
 
   return (
     <div
+      onClick={onClick}
       className={clsx(
         'bg-white rounded-lg p-6 border border-gray-200',
         shadowStyles[shadow],

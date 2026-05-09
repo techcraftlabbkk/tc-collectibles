@@ -24,7 +24,7 @@ const imageUpdates = [
   { title: 'Ninetales Holographic Base Set', image: 'https://images.pokemontcg.io/base1/12_holo.png' },
 ];
 
-export async function POST(request: NextRequest) {
+export async function POST(_request: NextRequest) {
   try {
     const results = [];
     

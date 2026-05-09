@@ -14,7 +14,6 @@ export default function SignupPage() {
   const locale = useLocale();
   const t = useTranslations('pages.auth.signup');
   const tErr = useTranslations('errors');
-  const tSuccess = useTranslations('success');
   const tToasts = useTranslations('toasts');
   const { toast } = useToast();
 

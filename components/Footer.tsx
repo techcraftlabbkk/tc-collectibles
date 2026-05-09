@@ -2,11 +2,9 @@
 
 import Link from 'next/link';
 import { useLocale } from 'next-intl';
-import { useTranslations } from 'next-intl';
 
 export default function Footer() {
   const locale = useLocale();
-  const t = useTranslations('pages');
 
   const currentYear = new Date().getFullYear();
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { useLocale } from 'next-intl';
@@ -16,6 +16,13 @@ import Modal from '@/components/Modal';
 export default function CheckoutPage() {
   const router = useRouter();
   const locale = useLocale();
+
+  useEffect(() => {
+    useCartStore.persist.rehydrate();
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!session) router.push(`/${locale}/auth/login?redirect=/${locale}/checkout`);
+    });
+  }, [router, locale]);
   const t = useTranslations('pages.checkout');
   const tErr = useTranslations('errors');
   const tToasts = useTranslations('toasts');
@@ -25,7 +32,6 @@ export default function CheckoutPage() {
   const { items, getTotalPrice, clearCart } = useCartStore();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [currentStep, setCurrentStep] = useState(1);
   const [confirmOpen, setConfirmOpen] = useState(false);
 
   const [formData, setFormData] = useState({
@@ -128,6 +134,35 @@ export default function CheckoutPage() {
       if (itemsError) {
         toast.error(tToasts('checkout.items_error.message'), { description: tToasts('checkout.items_error.description') });
         throw itemsError;
+      }
+
+      // Send order confirmation email
+      try {
+        const emailResponse = await fetch('/api/orders/send-confirmation', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            orderId: order.id,
+            customerEmail: formData.email,
+            customerName: formData.fullName,
+            orderTotal: total,
+            orderItems: items.map((item) => ({
+              title: item.title,
+              quantity: item.quantity,
+              price: item.price,
+            })),
+            shippingAddress: `${formData.shippingAddress}, ${formData.shippingCity} ${formData.shippingPostal}`,
+            orderDate: new Date().toLocaleDateString(),
+          }),
+        });
+
+        if (!emailResponse.ok) {
+          console.error('Failed to send order confirmation email');
+          // Don't throw - order was created successfully, email failure shouldn't block
+        }
+      } catch (emailError) {
+        console.error('Error sending order confirmation email:', emailError);
+        // Don't throw - order was created successfully, email failure shouldn't block
       }
 
       // Clear cart and redirect to payment

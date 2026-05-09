@@ -4,11 +4,17 @@ import { useCartStore } from '@/lib/cartStore';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
 export default function CartPage() {
   const router = useRouter();
   const { items, removeFromCart, updateQuantity, getTotalPrice } = useCartStore();
   const total = getTotalPrice();
+
+  // Rehydrate cart from localStorage on mount
+  useEffect(() => {
+    useCartStore.persist.rehydrate();
+  }, []);
   const isEmpty = items.length === 0;
 
   const handleCheckout = () => {
