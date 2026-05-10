@@ -3,6 +3,7 @@
     "home": "Home",
     "products": "Products",
     "cart": "Cart",
+<<<<<<< HEAD
     "orders": "My Orders",
     "admin": "Admin",
     "logout": "Logout",
@@ -18,11 +19,32 @@
     "price": "Price",
     "grade": "Grade",
     "featured": "Featured Cards",
+=======
+    "orders": "Orders",
+    "login": "Login",
+    "signup": "Sign Up"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit"
+  },
+  "products": {
+    "title": "Products",
+    "addToCart": "Add to Cart",
+    "price": "Price",
+    "grade": "Grade",
+>>>>>>> 5ba90b22ffae258d62b7ff24ca18b56f04f361e7
     "noProducts": "No products found"
   },
   "cart": {
     "title": "Shopping Cart",
     "empty": "Your cart is empty",
+<<<<<<< HEAD
     "subtotal": "Subtotal",
     "shipping": "Shipping",
     "tax": "Tax",
@@ -47,12 +69,17 @@
     "confirmOrder": "Are you sure you want to place this order?",
     "processing": "Processing...",
     "agreeToTerms": "I agree to the terms and conditions"
+=======
+    "total": "Total",
+    "checkout": "Proceed to Checkout"
+>>>>>>> 5ba90b22ffae258d62b7ff24ca18b56f04f361e7
   },
   "auth": {
     "login": "Login",
     "signup": "Sign Up",
     "email": "Email",
     "password": "Password",
+<<<<<<< HEAD
     "confirmPassword": "Confirm Password",
     "loginButton": "Login",
     "signupButton": "Sign Up",
@@ -114,5 +141,9 @@
     "next": "Next",
     "submit": "Submit",
     "language": "Language"
+=======
+    "signupText": "Don't have an account?",
+    "loginText": "Already have an account?"
+>>>>>>> 5ba90b22ffae258d62b7ff24ca18b56f04f361e7
   }
 }
