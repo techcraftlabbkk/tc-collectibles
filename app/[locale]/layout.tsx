@@ -1,31 +1,34 @@
-'use client';
-
 import { ReactNode } from 'react';
-import { useLocale } from 'next-intl';
+import { NextIntlClientProvider } from 'next-intl';
+import { getMessages } from 'next-intl/server';
+import { notFound } from 'next/navigation';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { locales } from '@/i18n/config';
 
-export default function LocaleLayout({
-  children,
-}: {
+type Props = {
   children: ReactNode;
   params: { locale: string };
-}) {
-  const locale = useLocale();
+};
 
-  // Validate locale
+export default async function LocaleLayout({ children, params }: Props) {
+  const { locale } = params;
+
   if (!locales.includes(locale as any)) {
-    return null;
+    notFound();
   }
 
+  const messages = await getMessages({ locale });
+
   return (
-    <div className="flex flex-col min-h-screen">
-      <Header />
-      <main className="flex-grow">
-        {children}
-      </main>
-      <Footer />
-    </div>
+    <NextIntlClientProvider locale={locale} messages={messages}>
+      <div className="flex flex-col min-h-screen">
+        <Header />
+        <main className="flex-grow">
+          {children}
+        </main>
+        <Footer />
+      </div>
+    </NextIntlClientProvider>
   );
 }
