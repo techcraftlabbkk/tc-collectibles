@@ -1,11 +1,9 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import { useRouter } from 'next/navigation';
 
 export default function Checkout() {
   const t = useTranslations();
-  const router = useRouter();
 
   return (
     <div className="w-full px-4 py-12">
