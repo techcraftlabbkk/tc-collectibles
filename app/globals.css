@@ -16,7 +16,6 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
-<<<<<<< HEAD
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -24,7 +23,6 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
-=======
 }
 
 /* Premium dark UI */
@@ -88,5 +86,4 @@ textarea {
 
 .badge-info {
   @apply badge bg-blue-900 text-blue-200;
->>>>>>> 5ba90b22ffae258d62b7ff24ca18b56f04f361e7
 }
