@@ -6,7 +6,7 @@ import Link from 'next/link';
 
 export default function Home() {
   const t = useTranslations();
-  const [products, setProducts] = useState<any[]>([]);
+  const [products] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {

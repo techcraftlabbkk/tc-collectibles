@@ -5,8 +5,7 @@ import { useState } from 'react';
 
 export default function Payment({ params }: { params: { orderId: string } }) {
   const t = useTranslations();
-  const [qrCode, setQrCode] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [qrCode] = useState<string | null>(null);
 
   return (
     <div className="w-full px-4 py-12">

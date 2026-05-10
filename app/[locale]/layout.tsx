@@ -8,7 +8,6 @@ import { locales } from '@/i18n/config';
 
 export default function LocaleLayout({
   children,
-  params,
 }: {
   children: ReactNode;
   params: { locale: string };
