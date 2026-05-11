@@ -19,7 +19,6 @@ export default function Checkout() {
     { id: 'confirm', label: 'Confirm Order', icon: '✓' },
   ];
 
-  const currentStepIndex = steps.findIndex((s) => s.id === step);
 
   return (
     <div className="min-h-screen bg-white">

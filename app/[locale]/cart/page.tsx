@@ -47,7 +47,7 @@ export default function Cart() {
             <div className="lg:col-span-2 space-y-4">
               {items.map((item) => (
                 <div
-                  key={item.id}
+                  key={item.product_id}
                   className="bg-white border-2 border-purple-200 rounded-2xl p-6 hover:shadow-lg transition-shadow"
                 >
                   <div className="flex gap-6">
@@ -80,9 +80,6 @@ export default function Cart() {
                             Grade: <span className="font-bold text-gray-900">{item.grade === 'PSA 10' ? 'Gem Mint' : item.grade === 'PSA 9' ? 'Mint' : 'Near Mint'}</span>
                           </span>
                         </div>
-                        {item.description && (
-                          <p className="text-sm text-gray-600">{item.description}</p>
-                        )}
                       </div>
 
                       <div className="flex items-center justify-between pt-4 border-t border-purple-100">
@@ -93,7 +90,7 @@ export default function Cart() {
                           </p>
                         </div>
                         <button
-                          onClick={() => removeFromCart(item.id)}
+                          onClick={() => removeFromCart(item.product_id)}
                           className="text-red-600 hover:text-red-700 font-bold transition-colors"
                         >
                           Remove
