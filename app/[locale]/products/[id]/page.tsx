@@ -4,7 +4,6 @@ import { useLocale } from 'next-intl';
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { useCartStore } from '@/lib/cartStore';
 import { Product } from '@/lib/types';
@@ -20,7 +19,6 @@ const GRADE_STYLES: Record<string, { bg: string; text: string; border: string; d
 
 export default function ProductDetail({ params }: { params: { id: string } }) {
   const locale = useLocale();
-  const router = useRouter();
   const { addToCart } = useCartStore();
 
   const [product, setProduct] = useState<Product | null>(null);
