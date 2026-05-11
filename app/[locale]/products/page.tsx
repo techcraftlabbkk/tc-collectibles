@@ -61,7 +61,7 @@ export default function Products() {
             {t('products.title')}
           </h1>
           <p className="text-lg text-gray-100">
-            Shop verified authentic PSA graded collectibles. Premium selection from Bangkok.
+            Verified authentic. Graded. Shipped from Bangkok.
           </p>
         </div>
       </section>
@@ -76,7 +76,7 @@ export default function Products() {
               onChange={(e) => setSortBy(e.target.value)}
               className="flex-1 px-4 py-3 border-2 border-purple-300 rounded-lg focus:outline-none focus:border-amber-400 font-semibold"
             >
-              <option value="featured">Sort: Featured</option>
+              <option value="featured">Featured</option>
               <option value="price-low">Price: Low to High</option>
               <option value="price-high">Price: High to Low</option>
             </select>
@@ -86,11 +86,11 @@ export default function Products() {
               onChange={(e) => setFilterGrade(e.target.value)}
               className="flex-1 px-4 py-3 border-2 border-purple-300 rounded-lg focus:outline-none focus:border-amber-400 font-semibold"
             >
-              <option value="all">Grade: All</option>
-              <option value="PSA 10">PSA 10 Gem Mint</option>
-              <option value="PSA 9">PSA 9 Mint</option>
-              <option value="PSA 8">PSA 8 NM-MT</option>
-              <option value="PSA 7">PSA 7 Near Mint</option>
+              <option value="all">All Grades</option>
+              <option value="PSA 10">PSA 10</option>
+              <option value="PSA 9">PSA 9</option>
+              <option value="PSA 8">PSA 8</option>
+              <option value="PSA 7">PSA 7</option>
             </select>
 
             <div className="text-right flex items-center">
@@ -153,7 +153,7 @@ export default function Products() {
 
                     <p className="text-gray-600 text-xs mb-3">
                       {product.available ? (
-                        <span className="text-green-600 font-semibold">✓ In Stock</span>
+                        <span className="text-green-600 font-semibold">In Stock</span>
                       ) : (
                         <span className="text-red-600 font-semibold">Sold Out</span>
                       )}
@@ -175,7 +175,7 @@ export default function Products() {
             </div>
           ) : (
             <div className="text-center py-16">
-              <p className="text-xl text-gray-600 mb-6">No products found</p>
+              <p className="text-xl text-gray-600 mb-6">No cards match that filter</p>
               <button
                 onClick={() => {
                   setSortBy('featured');

@@ -22,7 +22,7 @@ export default function Cart() {
             {t('cart.title')}
           </h1>
           <p className="text-lg text-gray-100 mt-2">
-            Review your premium cards before checkout
+            Review your cards before checkout
           </p>
         </div>
       </section>

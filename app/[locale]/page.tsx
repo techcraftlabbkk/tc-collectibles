@@ -51,7 +51,7 @@ export default function Home() {
           <div className="text-center">
             {/* Eyebrow */}
             <p className="text-amber-300 font-bold uppercase tracking-widest text-sm mb-4">
-              ⚡ Authentic • Verified • Trusted
+              ⚡ Verified • Graded • Trusted
             </p>
 
             {/* Main heading */}
@@ -61,7 +61,7 @@ export default function Home() {
 
             {/* Subheading */}
             <p className="text-xl sm:text-2xl text-gray-100 mb-8 max-w-2xl mx-auto leading-relaxed">
-              Verified. Graded. Shipped from Bangkok. The only marketplace you trust for premium collectibles.
+              Verified. Graded. Shipped from Bangkok.
             </p>
 
             {/* CTA Button */}
@@ -89,10 +89,10 @@ export default function Home() {
           {/* Section Header */}
           <div className="text-center mb-12">
             <h2 className="text-4xl sm:text-5xl font-black text-gray-900 mb-3">
-              Featured Cards
+              Premium Cards
             </h2>
             <p className="text-lg text-gray-600">
-              Hand-picked gems. Verified authentic. Ready to own.
+              Verified authentic. Graded. Ready to collect.
             </p>
           </div>
 

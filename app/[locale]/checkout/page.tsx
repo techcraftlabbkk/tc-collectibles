@@ -30,7 +30,7 @@ export default function Checkout() {
             {t('checkout.title')}
           </h1>
           <p className="text-lg text-gray-100 mt-2">
-            Complete your secure checkout in 3 steps
+            Secure checkout in 3 steps
           </p>
         </div>
       </section>
