@@ -102,114 +102,122 @@ export default function ProductDetail({ params }: { params: { id: string } }) {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-5xl mx-auto px-4 py-8">
+    <div className="min-h-screen bg-white">
+      <div className="max-w-6xl mx-auto px-4 py-12">
 
         {/* Breadcrumb */}
-        <nav className="flex items-center gap-2 text-sm text-gray-400 mb-8">
-          <Link href={`/${locale}`} className="hover:text-blue-600 transition-colors">Home</Link>
-          <span>/</span>
-          <Link href={`/${locale}/products`} className="hover:text-blue-600 transition-colors">Products</Link>
-          <span>/</span>
-          <span className="text-gray-700 truncate max-w-[200px]">{product.title}</span>
+        <nav className="flex items-center gap-2 text-sm text-gray-500 mb-12 pb-6 border-b-2 border-purple-100">
+          <Link href={`/${locale}`} className="hover:text-purple-600 transition-colors font-medium">🏠 Home</Link>
+          <span className="text-gray-300">/</span>
+          <Link href={`/${locale}/products`} className="hover:text-purple-600 transition-colors font-medium">Products</Link>
+          <span className="text-gray-300">/</span>
+          <span className="text-gray-900 font-bold truncate max-w-[300px]">{product.title}</span>
         </nav>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
 
-          {/* Image */}
-          <div className="relative aspect-square bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm flex items-center justify-center">
-            {product.image_url ? (
-              <Image
-                src={product.image_url}
-                alt={product.title}
-                fill
-                className="object-contain p-8"
-                priority
-              />
-            ) : (
-              <div className="flex flex-col items-center gap-3 text-gray-300">
-                <span className="text-7xl">🃏</span>
-                <span className="text-sm">No image available</span>
-              </div>
-            )}
-          </div>
-
-          {/* Details */}
-          <div className="flex flex-col">
-            {/* Grade Badge */}
-            {product.grade && gradeStyle && (
-              <div className={`inline-flex items-center gap-2 self-start mb-4 px-3 py-1.5 rounded-full border font-bold text-sm ${gradeStyle.bg} ${gradeStyle.text} ${gradeStyle.border}`}>
-                <span className={`w-2 h-2 rounded-full ${gradeStyle.dot}`} />
-                {product.grade} Graded
-              </div>
-            )}
-
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4 leading-snug">{product.title}</h1>
-
-            {product.description && (
-              <p className="text-gray-500 text-sm leading-relaxed mb-5">{product.description}</p>
-            )}
-
-            {/* Price */}
-            <div className="mb-6 pb-6 border-b border-gray-100">
-              <p className="text-4xl font-extrabold text-blue-600">฿{product.price.toLocaleString()}</p>
-              {product.quantity <= 3 && product.quantity > 0 && (
-                <p className="text-orange-500 text-sm font-semibold mt-1">⚡ Only {product.quantity} left in stock!</p>
-              )}
-              {product.quantity === 0 && (
-                <p className="text-red-500 text-sm font-semibold mt-1">Out of stock</p>
-              )}
-            </div>
-
-            {/* PSA Card Info */}
-            <div className="bg-gray-50 rounded-xl border border-gray-100 p-4 mb-6 space-y-2.5">
-              <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Card Details</h3>
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-500">Certification</span>
-                <span className="font-semibold text-gray-900">PSA</span>
-              </div>
-              {product.grade && (
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-500">Grade</span>
-                  <span className="font-bold text-gray-900">{product.grade}</span>
+          {/* Image - Premium Showcase */}
+          <div className="sticky top-8">
+            <div className="relative aspect-square bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl border-2 border-purple-200 overflow-hidden shadow-lg flex items-center justify-center">
+              {product.image_url ? (
+                <Image
+                  src={product.image_url}
+                  alt={product.title}
+                  fill
+                  className="object-contain p-12 drop-shadow-lg"
+                  priority
+                />
+              ) : (
+                <div className="flex flex-col items-center gap-3 text-gray-300">
+                  <span className="text-9xl">🃏</span>
+                  <span className="text-sm">No image available</span>
                 </div>
               )}
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-500">Condition</span>
-                <span className="font-semibold text-gray-900">{product.grade === 'PSA 10' ? 'Gem Mint' : product.grade === 'PSA 9' ? 'Mint' : 'Near Mint'}</span>
+            </div>
+          </div>
+
+          {/* Details - Premium Layout */}
+          <div className="flex flex-col">
+            {/* Grade Badge - Bold */}
+            {product.grade && gradeStyle && (
+              <div className={`inline-flex items-center gap-2 self-start mb-6 px-4 py-2 rounded-full border-2 font-bold text-sm ${gradeStyle.bg} ${gradeStyle.text} ${gradeStyle.border} shadow-md`}>
+                <span className={`w-3 h-3 rounded-full ${gradeStyle.dot}`} />
+                {product.grade} Gem
               </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-500">Availability</span>
-                <span className={`font-semibold ${product.available && product.quantity > 0 ? 'text-green-600' : 'text-red-500'}`}>
-                  {product.available && product.quantity > 0 ? 'In Stock' : 'Unavailable'}
-                </span>
+            )}
+
+            {/* Title - Bold & Large */}
+            <h1 className="text-4xl sm:text-5xl font-black text-gray-900 mb-4 leading-tight">{product.title}</h1>
+
+            {product.description && (
+              <p className="text-lg text-gray-600 leading-relaxed mb-8 pb-8 border-b-2 border-purple-100">{product.description}</p>
+            )}
+
+            {/* Price - Premium Highlight */}
+            <div className="mb-8">
+              <p className="text-sm text-gray-500 uppercase tracking-widest font-bold mb-2">Price</p>
+              <p className="text-6xl font-black text-purple-600">฿{product.price.toLocaleString()}</p>
+              {product.quantity <= 3 && product.quantity > 0 && (
+                <p className="text-amber-600 text-sm font-bold mt-3">⚡ Only {product.quantity} left in stock!</p>
+              )}
+              {product.quantity === 0 && (
+                <p className="text-red-600 text-sm font-bold mt-3">❌ Out of stock</p>
+              )}
+            </div>
+
+            {/* PSA Card Info - Premium Box */}
+            <div className="bg-gradient-to-br from-purple-50 to-indigo-50 rounded-2xl border-2 border-purple-200 p-6 mb-8 space-y-4">
+              <h3 className="text-sm font-black text-purple-900 uppercase tracking-widest">Card Specifications</h3>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="bg-white rounded-lg p-3 border border-purple-100">
+                  <p className="text-xs text-gray-600 font-semibold mb-1">CERTIFICATION</p>
+                  <p className="text-lg font-black text-gray-900">PSA</p>
+                </div>
+                <div className="bg-white rounded-lg p-3 border border-purple-100">
+                  <p className="text-xs text-gray-600 font-semibold mb-1">GRADE</p>
+                  <p className="text-lg font-black text-purple-600">{product.grade || 'N/A'}</p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="bg-white rounded-lg p-3 border border-purple-100">
+                  <p className="text-xs text-gray-600 font-semibold mb-1">CONDITION</p>
+                  <p className="text-lg font-bold text-gray-900">{product.grade === 'PSA 10' ? 'Gem Mint' : product.grade === 'PSA 9' ? 'Mint' : 'Near Mint'}</p>
+                </div>
+                <div className="bg-white rounded-lg p-3 border border-purple-100">
+                  <p className="text-xs text-gray-600 font-semibold mb-1">STATUS</p>
+                  <p className={`text-lg font-black ${product.available && product.quantity > 0 ? 'text-green-600' : 'text-red-600'}`}>
+                    {product.available && product.quantity > 0 ? '✓ Available' : 'Sold Out'}
+                  </p>
+                </div>
               </div>
             </div>
 
-            {/* Actions */}
-            <div className="flex flex-col gap-3">
+            {/* Actions - Bold CTAs */}
+            <div className="flex flex-col gap-4 mb-8">
               <button
                 onClick={handleAddToCart}
                 disabled={!product.available || product.quantity === 0}
-                className={`flex items-center justify-center gap-2.5 w-full py-3.5 rounded-xl font-bold text-base transition-all ${
+                className={`flex items-center justify-center gap-2.5 w-full py-4 rounded-xl font-bold text-lg transition-all transform ${
                   added
-                    ? 'bg-green-500 text-white scale-[0.98]'
+                    ? 'bg-green-500 text-white scale-95'
                     : product.available && product.quantity > 0
-                    ? 'bg-blue-600 text-white hover:bg-blue-700 active:scale-[0.98] shadow-lg shadow-blue-200'
-                    : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                    ? 'bg-gradient-to-r from-amber-400 to-amber-500 text-gray-900 hover:from-amber-500 hover:to-amber-600 active:scale-95 shadow-xl shadow-amber-200'
+                    : 'bg-gray-200 text-gray-400 cursor-not-allowed'
                 }`}
               >
                 {added ? (
                   <>
-                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                     </svg>
-                    Added to Cart!
+                    Added to Cart! ✓
                   </>
                 ) : (
                   <>
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                     </svg>
                     {product.available && product.quantity > 0 ? 'Add to Cart' : 'Out of Stock'}
                   </>
@@ -219,50 +227,58 @@ export default function ProductDetail({ params }: { params: { id: string } }) {
               {added && (
                 <Link
                   href={`/${locale}/cart`}
-                  className="flex items-center justify-center gap-2 w-full py-3 rounded-xl font-semibold text-base border-2 border-blue-200 text-blue-600 hover:bg-blue-50 transition-colors"
+                  className="flex items-center justify-center gap-2 w-full py-3 rounded-xl font-bold text-base border-2 border-purple-600 text-purple-600 hover:bg-purple-50 transition-colors"
                 >
-                  View Cart →
+                  Continue to Checkout →
                 </Link>
               )}
             </div>
 
-            {/* Trust badges */}
-            <div className="mt-6 grid grid-cols-3 gap-3 text-center">
+            {/* Trust badges - Bold Design */}
+            <div className="mt-auto grid grid-cols-3 gap-3 text-center pt-8 border-t-2 border-purple-100">
               {[
                 { icon: '🛡️', label: 'PSA Certified' },
                 { icon: '📦', label: 'Safe Packing' },
-                { icon: '💬', label: 'Thai Support' },
+                { icon: '🌍', label: 'Bangkok Shipped' },
               ].map((b) => (
-                <div key={b.label} className="bg-gray-50 rounded-xl py-3 px-2 border border-gray-100">
-                  <div className="text-xl mb-1">{b.icon}</div>
-                  <p className="text-xs text-gray-500 font-medium leading-tight">{b.label}</p>
+                <div key={b.label} className="bg-gradient-to-br from-purple-50 to-indigo-50 rounded-xl py-4 px-2 border-2 border-purple-200 hover:shadow-lg transition-shadow">
+                  <div className="text-3xl mb-2">{b.icon}</div>
+                  <p className="text-xs text-gray-700 font-bold leading-tight">{b.label}</p>
                 </div>
               ))}
             </div>
           </div>
         </div>
 
-        {/* Related Products */}
+        {/* Related Products - Bold Grid */}
         {related.length > 0 && (
-          <div className="mt-14">
-            <h2 className="text-xl font-bold text-gray-900 mb-5">More {product.grade} Cards</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+          <div className="mt-20 pt-12 border-t-2 border-purple-200">
+            <h2 className="text-3xl font-black text-gray-900 mb-8">Similar {product.grade} Cards</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {related.map((rel) => (
                 <Link
                   key={rel.id}
                   href={`/${locale}/products/${rel.id}`}
-                  className="bg-white border border-gray-100 rounded-2xl overflow-hidden hover:shadow-lg hover:-translate-y-0.5 transition-all group flex flex-col"
+                  className="bg-white border-2 border-purple-200 rounded-xl overflow-hidden hover:shadow-2xl hover:-translate-y-2 transition-all group flex flex-col cursor-pointer"
                 >
-                  <div className="h-40 bg-gray-50 relative overflow-hidden">
+                  <div className="h-48 bg-gradient-to-br from-gray-50 to-gray-100 relative overflow-hidden">
                     {rel.image_url ? (
-                      <Image src={rel.image_url} alt={rel.title} fill className="object-contain p-3 group-hover:scale-105 transition-transform" />
+                      <Image src={rel.image_url} alt={rel.title} fill className="object-contain p-4 group-hover:scale-110 transition-transform" />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center text-3xl">🃏</div>
+                      <div className="w-full h-full flex items-center justify-center text-5xl">🃏</div>
+                    )}
+                    {rel.grade && (
+                      <div className="absolute top-3 right-3 bg-amber-400 text-gray-900 px-3 py-1 rounded-full font-bold text-sm">
+                        {rel.grade}
+                      </div>
                     )}
                   </div>
-                  <div className="p-3 flex flex-col flex-1">
-                    <p className="text-sm font-semibold text-gray-800 line-clamp-2 mb-2 group-hover:text-blue-600 transition-colors">{rel.title}</p>
-                    <p className="text-blue-600 font-bold mt-auto">฿{rel.price.toLocaleString()}</p>
+                  <div className="p-4 flex flex-col flex-1">
+                    <p className="text-sm font-bold text-gray-800 line-clamp-2 mb-3 group-hover:text-purple-600 transition-colors">{rel.title}</p>
+                    <p className="text-2xl font-black text-purple-600 mt-auto">฿{rel.price.toLocaleString()}</p>
+                    <button className="mt-4 w-full bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-lg font-bold text-sm transition-colors">
+                      View Card →
+                    </button>
                   </div>
                 </Link>
               ))}
