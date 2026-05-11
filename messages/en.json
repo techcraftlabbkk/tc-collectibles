@@ -1,4 +1,65 @@
 {
+  "pages": {
+    "auth": {
+      "login": {
+        "title": "Welcome Back",
+        "subtitle": "Sign in to your TC Collectibles account",
+        "email": "Email Address",
+        "password": "Password",
+        "login_button": "Sign In",
+        "magic_link_button": "Send Magic Link",
+        "magic_link_tab": "Magic Link",
+        "password_tab": "Password",
+        "no_account": "Don't have an account?",
+        "signup_link": "Sign up",
+        "forgot_password": "Forgot password?",
+        "magic_link_sent": "Check your email!",
+        "magic_link_sent_desc": "We sent a sign-in link to your email. Click it to log in instantly — no password needed.",
+        "or_divider": "or",
+        "back_to_login": "Back to login"
+      },
+      "signup": {
+        "title": "Create Account",
+        "subtitle": "Join TC Collectibles today",
+        "name": "Full Name",
+        "email": "Email Address",
+        "password": "Password",
+        "confirm_password": "Confirm Password",
+        "terms": "I agree to the Terms of Service and Privacy Policy",
+        "submit": "Create Account",
+        "have_account": "Already have an account?",
+        "login_link": "Sign in"
+      }
+    }
+  },
+  "errors": {
+    "required_field": "This field is required",
+    "invalid_email": "Please enter a valid email address",
+    "password_too_short": "Password must be at least 6 characters",
+    "password_mismatch": "Passwords do not match",
+    "network_error": "Something went wrong. Please try again."
+  },
+  "toasts": {
+    "auth": {
+      "login_success": "Welcome back!",
+      "login_failed": {
+        "message": "Sign in failed",
+        "description": "Invalid email or password. Please try again."
+      },
+      "magic_link_sent": "Magic link sent! Check your email.",
+      "magic_link_failed": "Failed to send magic link. Please try again.",
+      "signup_success": "Account created! Please check your email to confirm.",
+      "signup_failed": {
+        "message": "Sign up failed",
+        "description": "Could not create your account. Please try again."
+      },
+      "signup_error": {
+        "message": "An error occurred",
+        "description": "Please check your details and try again."
+      },
+      "logout_success": "You have been signed out."
+    }
+  },
   "navigation": {
     "home": "Home",
     "products": "Products",

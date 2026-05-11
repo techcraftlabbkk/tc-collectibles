@@ -35,6 +35,34 @@ export async function signIn(email: string, password: string) {
   }
 }
 
+// Sign in with magic link (passwordless OTP)
+export async function signInWithMagicLink(email: string) {
+  try {
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
+    const { data, error } = await supabase.auth.signInWithOtp({
+      email,
+      options: {
+        emailRedirectTo: `${siteUrl}/auth/callback`,
+      },
+    })
+    if (error) throw error
+    return { data, error: null }
+  } catch (error) {
+    return { data: null, error }
+  }
+}
+
+// Sign out
+export async function signOut() {
+  try {
+    const { error } = await supabase.auth.signOut()
+    if (error) throw error
+    return { error: null }
+  } catch (error) {
+    return { error }
+  }
+}
+
 // Reset password
 export async function resetPassword(email: string) {
   try {

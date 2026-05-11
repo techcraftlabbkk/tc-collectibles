@@ -1,4 +1,65 @@
 {
+  "pages": {
+    "auth": {
+      "login": {
+        "title": "ยินดีต้อนรับกลับ",
+        "subtitle": "เข้าสู่ระบบบัญชี TC Collectibles ของคุณ",
+        "email": "อีเมล",
+        "password": "รหัสผ่าน",
+        "login_button": "เข้าสู่ระบบ",
+        "magic_link_button": "ส่ง Magic Link",
+        "magic_link_tab": "Magic Link",
+        "password_tab": "รหัสผ่าน",
+        "no_account": "ยังไม่มีบัญชี?",
+        "signup_link": "สมัครสมาชิก",
+        "forgot_password": "ลืมรหัสผ่าน?",
+        "magic_link_sent": "ตรวจสอบอีเมลของคุณ!",
+        "magic_link_sent_desc": "เราส่งลิงก์เข้าสู่ระบบไปยังอีเมลของคุณแล้ว คลิกเพื่อเข้าสู่ระบบทันที — ไม่ต้องใช้รหัสผ่าน",
+        "or_divider": "หรือ",
+        "back_to_login": "กลับไปเข้าสู่ระบบ"
+      },
+      "signup": {
+        "title": "สร้างบัญชี",
+        "subtitle": "เข้าร่วม TC Collectibles วันนี้",
+        "name": "ชื่อเต็ม",
+        "email": "อีเมล",
+        "password": "รหัสผ่าน",
+        "confirm_password": "ยืนยันรหัสผ่าน",
+        "terms": "ฉันยอมรับข้อกำหนดการใช้งานและนโยบายความเป็นส่วนตัว",
+        "submit": "สร้างบัญชี",
+        "have_account": "มีบัญชีแล้ว?",
+        "login_link": "เข้าสู่ระบบ"
+      }
+    }
+  },
+  "errors": {
+    "required_field": "กรุณากรอกข้อมูลในช่องนี้",
+    "invalid_email": "กรุณากรอกอีเมลที่ถูกต้อง",
+    "password_too_short": "รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร",
+    "password_mismatch": "รหัสผ่านไม่ตรงกัน",
+    "network_error": "เกิดข้อผิดพลาด กรุณาลองอีกครั้ง"
+  },
+  "toasts": {
+    "auth": {
+      "login_success": "ยินดีต้อนรับกลับ!",
+      "login_failed": {
+        "message": "เข้าสู่ระบบไม่สำเร็จ",
+        "description": "อีเมลหรือรหัสผ่านไม่ถูกต้อง กรุณาลองอีกครั้ง"
+      },
+      "magic_link_sent": "ส่ง Magic Link แล้ว! ตรวจสอบอีเมลของคุณ",
+      "magic_link_failed": "ส่ง Magic Link ไม่สำเร็จ กรุณาลองอีกครั้ง",
+      "signup_success": "สร้างบัญชีสำเร็จ! กรุณาตรวจสอบอีเมลเพื่อยืนยัน",
+      "signup_failed": {
+        "message": "สมัครสมาชิกไม่สำเร็จ",
+        "description": "ไม่สามารถสร้างบัญชีได้ กรุณาลองอีกครั้ง"
+      },
+      "signup_error": {
+        "message": "เกิดข้อผิดพลาด",
+        "description": "กรุณาตรวจสอบข้อมูลและลองอีกครั้ง"
+      },
+      "logout_success": "ออกจากระบบเรียบร้อยแล้ว"
+    }
+  },
   "navigation": {
     "home": "หน้าแรก",
     "products": "สินค้า",
