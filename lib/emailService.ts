@@ -1,5 +1,10 @@
 import nodemailer from 'nodemailer';
 
+// Get the site URL from environment, with fallback
+const getSiteUrl = () => {
+  return process.env.NEXT_PUBLIC_SITE_URL || 'https://tc-collectibles.vercel.app';
+};
+
 interface EmailTemplateData {
   orderId: string;
   customerEmail: string;
@@ -70,7 +75,7 @@ const emailTemplates = {
 
             <h3>Next Steps - Complete Your Payment</h3>
             <p>Your order is ready for payment. Please scan the PromptPay QR code to complete your transaction:</p>
-            <a href="https://tc-collectibles.vercel.app/payment/${data.orderId}" class="button">Pay Now with PromptPay</a>
+            <a href="${getSiteUrl()}/en/payment/${data.orderId}" class="button">Pay Now with PromptPay</a>
 
             <p style="margin-top: 20px; color: #666;">
               Click the button above to view your PromptPay QR code and complete the payment. Once we receive your payment confirmation, we'll begin processing and preparing your order for shipment.
@@ -215,7 +220,7 @@ const emailTemplates = {
               If you have any questions about your order, please don't hesitate to contact us. We'd love to hear your feedback!
             </p>
 
-            <a href="https://tc-collectibles.vercel.app/products" class="button">Shop Again</a>
+            <a href="${getSiteUrl()}/en/products" class="button">Shop Again</a>
           </div>
 
           <div class="footer">
