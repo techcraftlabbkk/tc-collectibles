@@ -1,6 +1,6 @@
 'use client';
 
-import { useTranslations, useLocale } from 'next-intl';
+import { useLocale } from 'next-intl';
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -19,7 +19,6 @@ const GRADE_STYLES: Record<string, { bg: string; text: string; border: string; d
 };
 
 export default function ProductDetail({ params }: { params: { id: string } }) {
-  const t = useTranslations();
   const locale = useLocale();
   const router = useRouter();
   const { addToCart } = useCartStore();
