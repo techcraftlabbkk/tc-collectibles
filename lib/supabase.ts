@@ -1,13 +1,22 @@
 import { createClient } from '@supabase/supabase-js'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
-if (!supabaseUrl || !supabaseKey) {
-  throw new Error('Missing Supabase environment variables')
+// Check if credentials are available
+const hasCredentials = !!(supabaseUrl && supabaseKey)
+
+if (!hasCredentials && typeof window === 'undefined') {
+  // Server-side warning during build
+  console.warn('⚠️  Missing Supabase environment variables')
+  console.warn('   Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY in Vercel or .env.local')
 }
 
-export const supabase = createClient(supabaseUrl, supabaseKey)
+// Create client with fallback dummy values to prevent module load errors
+export const supabase = createClient(
+  supabaseUrl || 'https://placeholder.supabase.co',
+  supabaseKey || 'placeholder-key'
+)
 
 // Helper: Get current user
 export async function getCurrentUser() {
