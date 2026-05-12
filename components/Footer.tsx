@@ -30,19 +30,19 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href={`/${locale}`} className="hover:text-white transition-colors">
+                <Link href={`/${locale}/about`} className="hover:text-white transition-colors">
                   About Us
                 </Link>
               </li>
               <li>
-                <a href="#" className="hover:text-white transition-colors">
+                <Link href={`/${locale}/terms`} className="hover:text-white transition-colors">
                   Terms & Conditions
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="hover:text-white transition-colors">
+                <Link href={`/${locale}/privacy`} className="hover:text-white transition-colors">
                   Privacy Policy
-                </a>
+                </Link>
               </li>
             </ul>
           </div>

@@ -1,12 +1,13 @@
 'use client';
 
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { createClient } from '@supabase/supabase-js';
 
 export default function Products() {
   const t = useTranslations();
+  const locale = useLocale();
   const [products, setProducts] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [sortBy, setSortBy] = useState('featured');
@@ -115,7 +116,7 @@ export default function Products() {
               {products.map((product) => (
                 <Link
                   key={product.id}
-                  href={`/products/${product.id}`}
+                  href={`/${locale}/products/${product.id}`}
                   className="bg-white rounded-xl shadow-md hover:shadow-2xl transition-all duration-300 overflow-hidden group cursor-pointer transform hover:-translate-y-2 border border-gray-100"
                 >
                   {/* Product Image */}
