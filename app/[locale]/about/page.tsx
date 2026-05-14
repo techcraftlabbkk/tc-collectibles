@@ -1,11 +1,10 @@
 'use client';
 
-import { useLocale, useTranslations } from 'next-intl';
+import { useLocale } from 'next-intl';
 import Link from 'next/link';
 
 export default function AboutPage() {
   const locale = useLocale();
-  const t = useTranslations('pages.about');
 
   return (
     <div className="min-h-screen bg-white">
