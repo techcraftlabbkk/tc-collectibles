@@ -39,8 +39,7 @@ export default function AboutPage() {
             {locale === 'en'
               ? 'TC Collectibles is dedicated to providing collectors with a secure, transparent, and trustworthy marketplace for graded Pokémon cards. We believe in the value of authentic collectibles and work tirelessly to ensure every transaction is legitimate and every card is genuine.'
               : 'TC Collectibles มีความมุ่งมั่นในการให้บริการผู้สะสมด้วยตลาดที่ปลอดภัย โปร่งใส และน่าเชื่อถือสำหรับการ์ดโปเกมอนที่ได้รับการจัดอันดับ เราเชื่อในคุณค่าของสินค้าเก่าแท้ และทำงานอย่างไม่เหนื่อยเพื่อให้แน่ใจว่าทุกธุรกรรมเป็นธรรมชาติและการ์ดแต่ละใบเป็นของแท้'}
-            </p>
-          </div>
+          </p>
         </section>
 
         <section className="mb-16">
