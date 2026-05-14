@@ -1,15 +1,42 @@
 'use client';
 
 import Link from 'next/link';
-import { useLocale } from 'next-intl';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import LanguageSwitcher from './LanguageSwitcher';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { supabase } from '@/lib/supabase';
+import type { User } from '@supabase/supabase-js';
 
 export default function Header() {
   const locale = useLocale();
   const t = useTranslations('navigation');
+  const router = useRouter();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
+  const [authLoading, setAuthLoading] = useState(true);
+
+  useEffect(() => {
+    // Get the current session on mount
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+      setAuthLoading(false);
+    });
+
+    // Listen for auth state changes (login, logout, token refresh)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+      setAuthLoading(false);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    router.push(`/${locale}/auth/login`);
+    router.refresh();
+  };
 
   const navLinks = [
     { href: `/${locale}`, label: t('home') },
@@ -45,12 +72,30 @@ export default function Header() {
           <div className="flex items-center space-x-4">
             <LanguageSwitcher />
 
-            <Link
-              href={`/${locale}/auth/login`}
-              className="hidden sm:inline-block bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium"
-            >
-              {t('login')}
-            </Link>
+            {!authLoading && (
+              user ? (
+                /* Logged-in state */
+                <div className="hidden sm:flex items-center space-x-3">
+                  <span className="text-sm text-gray-600 max-w-[150px] truncate">
+                    {user.email}
+                  </span>
+                  <button
+                    onClick={handleSignOut}
+                    className="bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors font-medium text-sm"
+                  >
+                    {t('logout')}
+                  </button>
+                </div>
+              ) : (
+                /* Logged-out state */
+                <Link
+                  href={`/${locale}/auth/login`}
+                  className="hidden sm:inline-block bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                >
+                  {t('login')}
+                </Link>
+              )
+            )}
 
             {/* Mobile Menu Button */}
             <button
@@ -77,13 +122,25 @@ export default function Header() {
                 {link.label}
               </Link>
             ))}
-            <Link
-              href={`/${locale}/auth/login`}
-              className="block px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors font-medium"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              {t('login')}
-            </Link>
+            {user ? (
+              <>
+                <div className="px-4 py-2 text-sm text-gray-500 truncate">{user.email}</div>
+                <button
+                  onClick={handleSignOut}
+                  className="block w-full text-left px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors font-medium"
+                >
+                  {t('logout')}
+                </button>
+              </>
+            ) : (
+              <Link
+                href={`/${locale}/auth/login`}
+                className="block px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                {t('login')}
+              </Link>
+            )}
           </div>
         )}
       </nav>

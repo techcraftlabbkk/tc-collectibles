@@ -36,13 +36,16 @@ export async function signIn(email: string, password: string) {
 }
 
 // Sign in with magic link (passwordless OTP)
-export async function signInWithMagicLink(email: string) {
+// Pass the current locale so the redirect URL includes it directly,
+// bypassing the next-intl middleware redirect (which would strip hash fragments
+// from the URL and break implicit-flow token delivery).
+export async function signInWithMagicLink(email: string, locale: string = 'en') {
   try {
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
     const { data, error } = await supabase.auth.signInWithOtp({
       email,
       options: {
-        emailRedirectTo: `${siteUrl}/auth/callback`,
+        emailRedirectTo: `${siteUrl}/${locale}/auth/callback`,
       },
     })
     if (error) throw error
@@ -64,10 +67,11 @@ export async function signOut() {
 }
 
 // Reset password
-export async function resetPassword(email: string) {
+export async function resetPassword(email: string, locale: string = 'en') {
   try {
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
     const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/callback`,
+      redirectTo: `${siteUrl}/${locale}/auth/callback`,
     })
 
     if (error) throw error

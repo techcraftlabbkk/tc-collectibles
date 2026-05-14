@@ -1,12 +1,10 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { useLocale } from 'next-intl';
 import { supabase } from '@/lib/supabase';
 
 export default function AuthCallbackPage() {
-  const router = useRouter();
   const locale = useLocale();
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
   const [message, setMessage] = useState('Verifying your login...');
@@ -14,53 +12,67 @@ export default function AuthCallbackPage() {
   useEffect(() => {
     const handleCallback = async () => {
       try {
-        // Check for PKCE code in URL query params (Supabase v2 default)
         const urlParams = new URLSearchParams(window.location.search);
-        const code = urlParams.get('code');
-        const errorParam = urlParams.get('error');
-        const errorDescription = urlParams.get('error_description');
+        const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ''));
+
+        const errorParam = urlParams.get('error') || hashParams.get('error');
+        const errorCode = urlParams.get('error_code') || hashParams.get('error_code');
+        const errorDescription =
+          urlParams.get('error_description') || hashParams.get('error_description');
 
         if (errorParam) {
           setStatus('error');
-          setMessage(errorDescription || 'Authentication failed. Please try again.');
-          setTimeout(() => router.push(`/${locale}/auth/login`), 3000);
+          const friendly =
+            errorCode === 'otp_expired'
+              ? 'This sign-in link has expired or was already used. Please request a new one.'
+              : (errorDescription || 'Authentication failed. Please try again.').replace(/\+/g, ' ');
+          setMessage(friendly);
+          setTimeout(() => { window.location.href = `/${locale}/auth/login`; }, 3500);
           return;
         }
 
+        // --- PKCE flow: code in query params ---
+        const code = urlParams.get('code');
         if (code) {
           const { error } = await supabase.auth.exchangeCodeForSession(code);
-          if (error) {
-            setStatus('error');
-            setMessage('Could not verify your login. The link may have expired.');
-            setTimeout(() => router.push(`/${locale}/auth/login`), 3000);
+          if (!error) {
+            setStatus('success');
+            setMessage('Login successful! Redirecting...');
+            // Hard redirect so the full page re-mounts with the new session
+            setTimeout(() => { window.location.href = `/${locale}`; }, 1200);
             return;
           }
-          setStatus('success');
-          setMessage('Login successful! Redirecting...');
-          setTimeout(() => router.push(`/${locale}`), 1500);
-          return;
+          // PKCE exchange failed — fall through to session check below
+          console.warn('exchangeCodeForSession failed:', error.message);
         }
 
-        // Fallback: check if session already exists (hash-based implicit flow)
+        // --- Implicit flow: access_token in URL hash ---
+        // The Supabase client auto-detects hash tokens on init (detectSessionInUrl: true).
+        // Give it a moment to process, then check.
+        await new Promise(r => setTimeout(r, 500));
+
         const { data: { session } } = await supabase.auth.getSession();
         if (session) {
           setStatus('success');
           setMessage('Login successful! Redirecting...');
-          setTimeout(() => router.push(`/${locale}`), 1500);
-        } else {
-          setStatus('error');
-          setMessage('No authentication token found. Please try logging in again.');
-          setTimeout(() => router.push(`/${locale}/auth/login`), 3000);
+          setTimeout(() => { window.location.href = `/${locale}`; }, 1200);
+          return;
         }
-      } catch {
+
+        // Nothing worked
+        setStatus('error');
+        setMessage('No valid authentication token found. Please try logging in again.');
+        setTimeout(() => { window.location.href = `/${locale}/auth/login`; }, 3000);
+      } catch (err) {
+        console.error('Auth callback error:', err);
         setStatus('error');
         setMessage('Something went wrong. Please try again.');
-        setTimeout(() => router.push(`/${locale}/auth/login`), 3000);
+        setTimeout(() => { window.location.href = `/${locale}/auth/login`; }, 3000);
       }
     };
 
     handleCallback();
-  }, [locale, router]);
+  }, [locale]);
 
   return (
     <div className="min-h-screen flex items-center justify-center">

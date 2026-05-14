@@ -64,7 +64,7 @@ export default function LoginPage() {
 
     setLoading(true);
     try {
-      const { error: authError } = await signInWithMagicLink(email);
+      const { error: authError } = await signInWithMagicLink(email, locale);
       if (authError) {
         const msg = authError instanceof Error ? authError.message : 'Failed to send magic link';
         setError(msg);
