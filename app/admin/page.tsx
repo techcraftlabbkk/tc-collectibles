@@ -57,6 +57,16 @@ export default function AdminPage() {
   const [updatingOrder, setUpdatingOrder] = useState<string | null>(null);
   const [uploadingProductId, setUploadingProductId] = useState<string | null>(null);
   const [uploadError, setUploadError] = useState<string | null>(null);
+  const [showAddProduct, setShowAddProduct] = useState(false);
+  const [addingProduct, setAddingProduct] = useState(false);
+  const [newProduct, setNewProduct] = useState({
+    title: '',
+    grade: '',
+    description: '',
+    price: '',
+    quantity: '1',
+    available: true,
+  });
 
   useEffect(() => {
     const fetchAdminData = async () => {
@@ -217,6 +227,40 @@ export default function AdminPage() {
       setUploadError(err instanceof Error ? err.message : 'Image upload failed');
     } finally {
       setUploadingProductId(null);
+    }
+  };
+
+  const handleAddProduct = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      setAddingProduct(true);
+      setError(null);
+
+      const { data, error: insertError } = await supabase
+        .from('products')
+        .insert([
+          {
+            title: newProduct.title.trim(),
+            grade: newProduct.grade.trim(),
+            description: newProduct.description.trim() || null,
+            price: parseFloat(newProduct.price),
+            quantity: parseInt(newProduct.quantity, 10),
+            available: newProduct.available,
+          },
+        ])
+        .select()
+        .single();
+
+      if (insertError) throw insertError;
+
+      setProducts((prev) => [data, ...prev]);
+      setStats((prev) => ({ ...prev, productsCount: prev.productsCount + 1 }));
+      setNewProduct({ title: '', grade: '', description: '', price: '', quantity: '1', available: true });
+      setShowAddProduct(false);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to add product');
+    } finally {
+      setAddingProduct(false);
     }
   };
 
@@ -397,6 +441,111 @@ export default function AdminPage() {
       {/* Products Tab */}
       {activeTab === 'products' && (
         <div>
+          {/* Add Product Button */}
+          <div className="flex justify-end mb-4">
+            <button
+              onClick={() => setShowAddProduct(true)}
+              className="btn bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 text-sm font-semibold"
+            >
+              + Add Product
+            </button>
+          </div>
+
+          {/* Add Product Modal */}
+          {showAddProduct && (
+            <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
+              <div className="bg-dark-900 border border-dark-700 rounded-lg p-6 w-full max-w-md mx-4">
+                <h2 className="text-xl font-bold mb-4">Add New Product</h2>
+                <form onSubmit={handleAddProduct} className="space-y-4">
+                  <div>
+                    <label className="block text-sm text-gray-400 mb-1">Title *</label>
+                    <input
+                      type="text"
+                      required
+                      value={newProduct.title}
+                      onChange={(e) => setNewProduct((p) => ({ ...p, title: e.target.value }))}
+                      placeholder="e.g. Charizard Holographic Base Set"
+                      className="w-full bg-dark-800 border border-dark-600 rounded px-3 py-2 text-sm text-white"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm text-gray-400 mb-1">Grade</label>
+                    <input
+                      type="text"
+                      value={newProduct.grade}
+                      onChange={(e) => setNewProduct((p) => ({ ...p, grade: e.target.value }))}
+                      placeholder="e.g. PSA 9"
+                      className="w-full bg-dark-800 border border-dark-600 rounded px-3 py-2 text-sm text-white"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm text-gray-400 mb-1">Description</label>
+                    <textarea
+                      value={newProduct.description}
+                      onChange={(e) => setNewProduct((p) => ({ ...p, description: e.target.value }))}
+                      placeholder="Optional product description"
+                      rows={2}
+                      className="w-full bg-dark-800 border border-dark-600 rounded px-3 py-2 text-sm text-white resize-none"
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-sm text-gray-400 mb-1">Price (฿) *</label>
+                      <input
+                        type="number"
+                        required
+                        min="0"
+                        step="1"
+                        value={newProduct.price}
+                        onChange={(e) => setNewProduct((p) => ({ ...p, price: e.target.value }))}
+                        placeholder="e.g. 2500"
+                        className="w-full bg-dark-800 border border-dark-600 rounded px-3 py-2 text-sm text-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm text-gray-400 mb-1">Quantity *</label>
+                      <input
+                        type="number"
+                        required
+                        min="0"
+                        step="1"
+                        value={newProduct.quantity}
+                        onChange={(e) => setNewProduct((p) => ({ ...p, quantity: e.target.value }))}
+                        className="w-full bg-dark-800 border border-dark-600 rounded px-3 py-2 text-sm text-white"
+                      />
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      id="available"
+                      checked={newProduct.available}
+                      onChange={(e) => setNewProduct((p) => ({ ...p, available: e.target.checked }))}
+                      className="w-4 h-4"
+                    />
+                    <label htmlFor="available" className="text-sm text-gray-300">List as available for sale</label>
+                  </div>
+                  <div className="flex gap-3 pt-2">
+                    <button
+                      type="button"
+                      onClick={() => setShowAddProduct(false)}
+                      className="flex-1 btn bg-dark-700 hover:bg-dark-600 text-gray-300 py-2 text-sm"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={addingProduct}
+                      className="flex-1 btn bg-blue-600 hover:bg-blue-700 text-white py-2 text-sm font-semibold disabled:opacity-50"
+                    >
+                      {addingProduct ? 'Adding...' : 'Add Product'}
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          )}
+
           <div className="space-y-4">
             {products.length === 0 ? (
               <div className="card text-center py-12">
