@@ -127,46 +127,4 @@ export default function Header() {
         {isMobileMenuOpen && (
           <div className="md:hidden mt-4 space-y-2 border-t border-gray-200 pt-4">
             {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                {link.label}
-              </Link>
-            ))}
-            {isAdmin && (
-              <Link
-                href={`/${locale}/admin`}
-                className="block px-4 py-2 text-purple-600 hover:bg-purple-50 rounded-lg transition-colors font-medium"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                ⚙️ Admin
-              </Link>
-            )}
-            {user ? (
-              <>
-                <div className="px-4 py-2 text-sm text-gray-500 truncate">{user.email}</div>
-                <button
-                  onClick={handleSignOut}
-                  className="block w-full text-left px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors font-medium"
-                >
-                  {t('logout')}
-                </button>
-              </>
-            ) : (
-              <Link
-                href={`/${locale}/auth/login`}
-                className="block px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors font-medium"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                {t('login')}
-              </Link>
-            )}
-          </div>
-        )}
-      </nav>
-    </header>
-  );
-}
+              <Lin
