@@ -19,13 +19,11 @@ export default function Header() {
   const isAdmin = user?.email === 'techcraftlab.bkk@gmail.com';
 
   useEffect(() => {
-    // Get the current session on mount
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
       setAuthLoading(false);
     });
 
-    // Listen for auth state changes (login, logout, token refresh)
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
       setAuthLoading(false);
@@ -88,7 +86,6 @@ export default function Header() {
 
             {!authLoading && (
               user ? (
-                /* Logged-in state */
                 <div className="hidden sm:flex items-center space-x-3">
                   <span className="text-sm text-gray-600 max-w-[150px] truncate">
                     {user.email}
@@ -101,7 +98,6 @@ export default function Header() {
                   </button>
                 </div>
               ) : (
-                /* Logged-out state */
                 <Link
                   href={`/${locale}/auth/login`}
                   className="hidden sm:inline-block bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium"
@@ -127,4 +123,50 @@ export default function Header() {
         {isMobileMenuOpen && (
           <div className="md:hidden mt-4 space-y-2 border-t border-gray-200 pt-4">
             {navLinks.map((link) => (
-              <Lin
+              <Link
+                key={link.href}
+                href={link.href}
+                className="block px-3 py-2 rounded-lg text-gray-700 hover:text-blue-600 hover:bg-gray-50 transition-colors font-medium"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                {link.label}
+              </Link>
+            ))}
+            {isAdmin && (
+              <Link
+                href={`/${locale}/admin`}
+                className="block px-3 py-2 rounded-lg text-purple-600 hover:text-purple-800 hover:bg-purple-50 transition-colors font-medium"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Admin
+              </Link>
+            )}
+            <div className="pt-2 border-t border-gray-100">
+              {!authLoading && (
+                user ? (
+                  <div className="space-y-2">
+                    <p className="px-3 py-1 text-sm text-gray-500 truncate">{user.email}</p>
+                    <button
+                      onClick={() => { handleSignOut(); setIsMobileMenuOpen(false); }}
+                      className="w-full text-left px-3 py-2 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors font-medium"
+                    >
+                      {t('logout')}
+                    </button>
+                  </div>
+                ) : (
+                  <Link
+                    href={`/${locale}/auth/login`}
+                    className="block px-3 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors font-medium text-center"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    {t('login')}
+                  </Link>
+                )
+              )}
+            </div>
+          </div>
+        )}
+      </nav>
+    </header>
+  );
+}
