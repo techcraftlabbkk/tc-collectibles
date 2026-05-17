@@ -71,6 +71,16 @@ export default function AdminPage() {
     quantity: '1',
     available: true,
   });
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [savingProduct, setSavingProduct] = useState(false);
+  const [editForm, setEditForm] = useState({
+    title: '',
+    grade: '',
+    description: '',
+    price: '',
+    quantity: '',
+    available: true,
+  });
 
   useEffect(() => {
     const fetchAdminData = async () => {
@@ -190,6 +200,50 @@ export default function AdminPage() {
       setUploadError(err instanceof Error ? err.message : 'Image upload failed');
     } finally {
       setUploadingProductId(null);
+    }
+  };
+
+  const openEditModal = (product: Product) => {
+    setEditingProduct(product);
+    setEditForm({
+      title: product.title,
+      grade: product.grade || '',
+      description: '',
+      price: String(product.price),
+      quantity: String(product.quantity),
+      available: product.available,
+    });
+  };
+
+  const handleEditProduct = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingProduct) return;
+    try {
+      setSavingProduct(true);
+      setError(null);
+
+      const { data, error: updateError } = await supabase
+        .from('products')
+        .update({
+          title: editForm.title.trim(),
+          grade: editForm.grade.trim(),
+          description: editForm.description.trim() || null,
+          price: parseFloat(editForm.price),
+          quantity: parseInt(editForm.quantity, 10),
+          available: editForm.available,
+        })
+        .eq('id', editingProduct.id)
+        .select()
+        .single();
+
+      if (updateError) throw updateError;
+
+      setProducts((prev) => prev.map((p) => (p.id === editingProduct.id ? data : p)));
+      setEditingProduct(null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to update product');
+    } finally {
+      setSavingProduct(false);
     }
   };
 
@@ -477,6 +531,98 @@ export default function AdminPage() {
             </div>
           )}
 
+          {/* Edit Product Modal */}
+          {editingProduct && (
+            <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+              <div className="bg-white rounded-xl shadow-xl p-6 w-full max-w-md mx-4">
+                <h2 className="text-xl font-bold text-gray-900 mb-4">Edit Product</h2>
+                <form onSubmit={handleEditProduct} className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Title *</label>
+                    <input
+                      type="text"
+                      required
+                      value={editForm.title}
+                      onChange={(e) => setEditForm((p) => ({ ...p, title: e.target.value }))}
+                      className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Grade</label>
+                    <input
+                      type="text"
+                      value={editForm.grade}
+                      onChange={(e) => setEditForm((p) => ({ ...p, grade: e.target.value }))}
+                      placeholder="e.g. PSA 9"
+                      className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                    <textarea
+                      value={editForm.description}
+                      onChange={(e) => setEditForm((p) => ({ ...p, description: e.target.value }))}
+                      rows={2}
+                      className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Price (฿) *</label>
+                      <input
+                        type="number"
+                        required
+                        min="0"
+                        step="1"
+                        value={editForm.price}
+                        onChange={(e) => setEditForm((p) => ({ ...p, price: e.target.value }))}
+                        className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Quantity *</label>
+                      <input
+                        type="number"
+                        required
+                        min="0"
+                        step="1"
+                        value={editForm.quantity}
+                        onChange={(e) => setEditForm((p) => ({ ...p, quantity: e.target.value }))}
+                        className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      id="edit-available"
+                      checked={editForm.available}
+                      onChange={(e) => setEditForm((p) => ({ ...p, available: e.target.checked }))}
+                      className="w-4 h-4 accent-blue-600"
+                    />
+                    <label htmlFor="edit-available" className="text-sm text-gray-700">Listed as available for sale</label>
+                  </div>
+                  <div className="flex gap-3 pt-2">
+                    <button
+                      type="button"
+                      onClick={() => setEditingProduct(null)}
+                      className="flex-1 border border-gray-300 text-gray-700 hover:bg-gray-50 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={savingProduct}
+                      className="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors disabled:opacity-50"
+                    >
+                      {savingProduct ? 'Saving...' : 'Save Changes'}
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          )}
+
           <div className="space-y-4">
           {products.length === 0 ? (
             <div className="bg-white border border-gray-200 rounded-xl text-center py-12">
@@ -505,8 +651,14 @@ export default function AdminPage() {
                       </span>
                     </div>
                   </div>
-                  <div className="flex-shrink-0">
-                    <label className={`cursor-pointer border border-gray-300 hover:bg-gray-50 text-gray-700 text-xs px-3 py-1.5 rounded-lg font-medium transition-colors ${uploadingProductId === product.id ? 'opacity-50 cursor-not-allowed' : ''}`}>
+                  <div className="flex-shrink-0 flex flex-col gap-2">
+                    <button
+                      onClick={() => openEditModal(product)}
+                      className="border border-gray-300 hover:bg-gray-50 text-gray-700 text-xs px-3 py-1.5 rounded-lg font-medium transition-colors"
+                    >
+                      ✏️ Edit
+                    </button>
+                    <label className={`cursor-pointer border border-gray-300 hover:bg-gray-50 text-gray-700 text-xs px-3 py-1.5 rounded-lg font-medium transition-colors text-center ${uploadingProductId === product.id ? 'opacity-50 cursor-not-allowed' : ''}`}>
                       {uploadingProductId === product.id ? 'Uploading...' : product.image_url ? '↑ Replace Image' : '↑ Upload Image'}
                       <input
                         type="file"
