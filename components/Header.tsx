@@ -50,9 +50,9 @@ export default function Header() {
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <Link href={`/${locale}`} className="flex items-center space-x-2 group">
-            <div className="text-2xl font-black text-purple-600 group-hover:text-purple-700 transition-colors">TC</div>
-            <span className="hidden sm:inline text-gray-900 font-bold tracking-tight">Collectibles</span>
+          <Link href={`/${locale}`} className="flex items-center space-x-2">
+            <div className="text-2xl font-bold text-blue-600">TC</div>
+            <span className="hidden sm:inline text-gray-900 font-semibold">Collectibles</span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -100,7 +100,7 @@ export default function Header() {
               ) : (
                 <Link
                   href={`/${locale}/auth/login`}
-                  className="hidden sm:inline-block bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors font-medium"
+                  className="hidden sm:inline-block bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium"
                 >
                   {t('login')}
                 </Link>
@@ -156,7 +156,7 @@ export default function Header() {
                 ) : (
                   <Link
                     href={`/${locale}/auth/login`}
-                    className="block px-3 py-2 rounded-lg bg-purple-600 text-white hover:bg-purple-700 transition-colors font-medium text-center"
+                    className="block px-3 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors font-medium text-center"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     {t('login')}

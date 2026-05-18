@@ -9,18 +9,18 @@ export default function AboutPage() {
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Section */}
-      <div className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-16 px-4 sm:px-6 lg:px-8">
+      <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white py-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto">
           <Link
             href={`/${locale}`}
-            className="text-purple-100 hover:text-white mb-4 inline-block"
+            className="text-blue-100 hover:text-white mb-4 inline-block"
           >
             ← {locale === 'en' ? 'Back to Home' : 'กลับไปที่หน้าแรก'}
           </Link>
           <h1 className="text-4xl font-bold mb-4">
             {locale === 'en' ? 'About TC Collectibles' : 'เกี่ยวกับ TC Collectibles'}
           </h1>
-          <p className="text-xl text-purple-100">
+          <p className="text-xl text-blue-100">
             {locale === 'en'
               ? 'Your trusted marketplace for graded Pokémon cards'
               : 'ตลาดที่เชื่อถือได้ของคุณสำหรับการ์ดโปเกมอนที่ได้รับการจัดอันดับ'}
@@ -46,7 +46,7 @@ export default function AboutPage() {
             {locale === 'en' ? 'Why Choose Us?' : 'ทำไมต้องเลือกเรา?'}
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="bg-purple-50 p-6 rounded-lg">
+            <div className="bg-blue-50 p-6 rounded-lg">
               <h3 className="text-xl font-bold text-gray-900 mb-3">
                 {locale === 'en' ? 'Verified Cards' : 'การ์ดที่ได้รับการตรวจสอบ'}
               </h3>
@@ -57,7 +57,7 @@ export default function AboutPage() {
               </p>
             </div>
 
-            <div className="bg-purple-50 p-6 rounded-lg">
+            <div className="bg-blue-50 p-6 rounded-lg">
               <h3 className="text-xl font-bold text-gray-900 mb-3">
                 {locale === 'en' ? 'Secure Transactions' : 'ธุรกรรมที่ปลอดภัย'}
               </h3>
@@ -68,7 +68,7 @@ export default function AboutPage() {
               </p>
             </div>
 
-            <div className="bg-purple-50 p-6 rounded-lg">
+            <div className="bg-blue-50 p-6 rounded-lg">
               <h3 className="text-xl font-bold text-gray-900 mb-3">
                 {locale === 'en' ? 'Competitive Pricing' : 'ราคาที่มีความสามารถในการแข่งขัน'}
               </h3>
@@ -79,7 +79,7 @@ export default function AboutPage() {
               </p>
             </div>
 
-            <div className="bg-purple-50 p-6 rounded-lg">
+            <div className="bg-blue-50 p-6 rounded-lg">
               <h3 className="text-xl font-bold text-gray-900 mb-3">
                 {locale === 'en' ? '24/7 Support' : 'การสนับสนุน 24/7'}
               </h3>
@@ -108,7 +108,7 @@ export default function AboutPage() {
             </p>
           </section>
 
-        <section className="bg-purple-50 p-8 rounded-lg">
+        <section className="bg-blue-50 p-8 rounded-lg">
           <h2 className="text-3xl font-bold text-gray-900 mb-4">
             {locale === 'en' ? 'Contact Us' : 'ติดต่อเรา'}
           </h2>
@@ -118,7 +118,7 @@ export default function AboutPage() {
               : 'มีคำถามหรือข้อเสนอแนะหรือไม่? เรายินดีที่จะรับฟังจากคุณ!'}
           </p>
           <p className="text-gray-700">
-            <strong>Email:</strong> techcraftlab.bkk@gmail.com
+            <strong>Email:</strong> support@tccollectibles.com
           </p>
         </section>
       </div>

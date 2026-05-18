@@ -1,6 +1,6 @@
 'use client';
 
-import { useTranslations, useLocale } from 'next-intl';
+import { useTranslations } from 'next-intl';
 import { useCartStore } from '@/lib/cartStore';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -9,7 +9,6 @@ export default function Cart() {
   const t = useTranslations();
   const { items, removeFromCart } = useCartStore();
 
-  const locale = useLocale();
   const subtotal = items.reduce((sum, item) => sum + item.price, 0);
   const shipping = items.length > 0 ? 150 : 0;
   const total = subtotal + shipping;
@@ -36,7 +35,7 @@ export default function Cart() {
             <h2 className="text-2xl font-black text-gray-900 mb-3">Your cart is empty</h2>
             <p className="text-gray-600 mb-8 text-lg">{t('cart.empty')}</p>
             <Link
-              href={`/${locale}/products`}
+              href="/products"
               className="inline-block bg-gradient-to-r from-amber-400 to-amber-500 text-gray-900 px-8 py-4 rounded-xl font-bold text-lg hover:from-amber-500 hover:to-amber-600 transition-all transform active:scale-95 shadow-lg shadow-amber-200"
             >
               {t('cart.continueShopping')} →
@@ -132,14 +131,14 @@ export default function Cart() {
                 </div>
 
                 <Link
-                  href={`/${locale}/checkout`}
+                  href="/checkout"
                   className="block w-full bg-gradient-to-r from-amber-400 to-amber-500 text-gray-900 py-4 rounded-xl font-bold text-center transition-all transform hover:from-amber-500 hover:to-amber-600 active:scale-95 shadow-lg shadow-amber-200 mb-3"
                 >
                   Proceed to Checkout →
                 </Link>
 
                 <Link
-                  href={`/${locale}/products`}
+                  href="/products"
                   className="block w-full border-2 border-purple-600 text-purple-600 py-3 rounded-xl font-bold text-center transition-colors hover:bg-purple-50"
                 >
                   Continue Shopping
