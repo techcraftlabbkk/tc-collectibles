@@ -51,12 +51,9 @@ export default function Footer() {
           <div>
             <h4 className="text-white font-semibold mb-4">Contact</h4>
             <p className="text-sm text-gray-400 mb-2">
-              Email: <a href="mailto:support@tccollectibles.com" className="hover:text-white transition-colors">
-                support@tccollectibles.com
+              Email: <a href="mailto:techcraftlab.bkk@gmail.com" className="hover:text-white transition-colors">
+                techcraftlab.bkk@gmail.com
               </a>
-            </p>
-            <p className="text-sm text-gray-400">
-              Available 24/7 for customer support
             </p>
           </div>
         </div>

@@ -1,12 +1,13 @@
 'use client';
 
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { createClient } from '@supabase/supabase-js';
 
 export default function Home() {
   const t = useTranslations();
+  const locale = useLocale();
   const [products, setProducts] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -67,13 +68,13 @@ export default function Home() {
             {/* CTA Button */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
-                href="/products"
+                href={`/${locale}/products`}
                 className="inline-block bg-amber-400 hover:bg-amber-500 text-gray-900 px-8 py-4 rounded-lg font-bold text-lg transition-all duration-200 transform hover:scale-105 shadow-xl"
               >
                 Shop Premium Cards →
               </Link>
               <Link
-                href="/products"
+                href={`/${locale}/products`}
                 className="inline-block border-2 border-white text-white hover:bg-white hover:text-purple-600 px-8 py-4 rounded-lg font-bold text-lg transition-all duration-200"
               >
                 Browse Gallery
@@ -107,7 +108,7 @@ export default function Home() {
               {products.map((product) => (
                 <Link
                   key={product.id}
-                  href={`/products/${product.id}`}
+                  href={`/${locale}/products/${product.id}`}
                   className="bg-white rounded-xl shadow-md hover:shadow-2xl transition-all duration-300 overflow-hidden group cursor-pointer transform hover:-translate-y-2"
                 >
                   {/* Product Image */}
