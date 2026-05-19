@@ -1,0 +1,3 @@
+=== Switching Vercel account === 
+Current account: 
+stoyreo
