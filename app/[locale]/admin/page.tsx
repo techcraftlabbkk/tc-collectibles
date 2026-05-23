@@ -319,7 +319,7 @@ export default function AdminPage() {
             <div className="bg-white border border-gray-200 rounded-xl p-6">
               <h2 className="text-sm font-bold text-gray-700 uppercase tracking-wide mb-4">Order Status Breakdown</h2>
               <div className="space-y-2">
-                {Object.entries(STATUS_CONFIG).map(([key, cfg]) => {
+                {Object.entries(STATUS_CONFIG).map(([key, _cfg]) => {
                   const count = orders.filter((o) => o.status === key).length;
                   if (count === 0) return null;
                   return (
