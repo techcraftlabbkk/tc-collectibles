@@ -76,3 +76,26 @@ export async function POST(request: NextRequest) {
       .single();
 
     if (updateError) {
+      console.error('Database update error:', updateError);
+      return NextResponse.json(
+        { error: 'DB update failed: ' + updateError.message },
+        { status: 500 }
+      );
+    }
+
+    if (!updatedProduct) {
+      return NextResponse.json(
+        { error: `No product found with id ${productId}` },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json({ success: true, imageUrl });
+  } catch (error) {
+    console.error('Image upload error:', error);
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : 'Failed to upload image' },
+      { status: 500 }
+    );
+  }
+}

@@ -561,4 +561,15 @@ export default function AdminPage() {
                   {uploadError && uploadErrorProductId === product.id && (
                     <div className="mt-2 bg-red-50 border border-red-200 rounded-lg px-3 py-2 flex items-start gap-2">
                       <span className="text-red-500 text-sm flex-shrink-0">⚠️</span>
-     
+                      <p className="text-red-700 text-xs font-medium">{uploadError}</p>
+                    </div>
+                  )}
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
