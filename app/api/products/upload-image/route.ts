@@ -18,27 +18,27 @@ export async function POST(request: NextRequest) {
     const buffer = await file.arrayBuffer();
     const ext = file.name.split('.').pop()?.toLowerCase() || 'jpg';
     const filename = `${productId}-${Date.now()}.${ext}`;
-    const filepath = `products/${filename}`;
+    const filepath = `images/${filename}`;
 
     // Upload to Supabase Storage
     const { error: uploadError } = await supabase.storage
-      .from('product-images')
+      .from('products')
       .upload(filepath, buffer, {
         contentType: file.type || 'image/jpeg',
-        upsert: false,
+        upsert: true,
       });
 
     if (uploadError) {
       console.error('Storage upload error:', uploadError);
       return NextResponse.json(
-        { error: 'Failed to upload image to storage' },
+        { error: uploadError.message || 'Failed to upload image to storage' },
         { status: 500 }
       );
     }
 
     // Get public URL
     const { data: publicData } = supabase.storage
-      .from('product-images')
+      .from('products')
       .getPublicUrl(filepath);
 
     const imageUrl = publicData.publicUrl;

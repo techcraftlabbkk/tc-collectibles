@@ -80,6 +80,7 @@ export default function AdminPage() {
   const [updatingOrder, setUpdatingOrder] = useState<string | null>(null);
   const [uploadingProductId, setUploadingProductId] = useState<string | null>(null);
   const [uploadError, setUploadError] = useState<string | null>(null);
+  const [uploadErrorProductId, setUploadErrorProductId] = useState<string | null>(null);
   const [showAddProduct, setShowAddProduct] = useState(false);
   const [addingProduct, setAddingProduct] = useState(false);
   const [newProduct, setNewProduct] = useState({ title: '', grade: '', description: '', price: '', quantity: '1', available: true });
@@ -159,6 +160,7 @@ export default function AdminPage() {
     try {
       setUploadingProductId(productId);
       setUploadError(null);
+      setUploadErrorProductId(null);
       const formData = new FormData();
       formData.append('file', file);
       formData.append('productId', productId);
@@ -168,6 +170,7 @@ export default function AdminPage() {
       setProducts((prev) => prev.map((p) => (p.id === productId ? { ...p, image_url: data.imageUrl } : p)));
     } catch (err) {
       setUploadError(err instanceof Error ? err.message : 'Image upload failed');
+      setUploadErrorProductId(productId);
     } finally {
       setUploadingProductId(null);
     }
@@ -555,7 +558,7 @@ export default function AdminPage() {
                     </div>
                   </div>
 
-                  {uploadError && uploadingProductId === product.id && (
+                  {uploadError && uploadErrorProductId === product.id && (
                     <p className="text-red-500 text-xs mt-2">{uploadError}</p>
                   )}
                 </div>
