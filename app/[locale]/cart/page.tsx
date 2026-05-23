@@ -10,7 +10,7 @@ export default function Cart() {
   const { items, removeFromCart } = useCartStore();
 
   const locale = useLocale();
-  const subtotal = items.reduce((sum, item) => sum + item.price, 0);
+  const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const shipping = items.length > 0 ? 150 : 0;
   const total = subtotal + shipping;
 
@@ -149,6 +149,4 @@ export default function Cart() {
           </div>
         )}
       </div>
-    </div>
-  );
-}
+  

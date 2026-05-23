@@ -30,7 +30,7 @@ export type Order = {
   id: string
   user_id: string
   total: number
-  status: 'pending_payment' | 'payment_received' | 'shipped' | 'delivered' | 'cancelled'
+  status: 'pending_payment' | 'paid' | 'processing' | 'shipped' | 'delivered' | 'cancelled'
   shipping_address: string
   phone: string
   shipping_note?: string
@@ -79,4 +79,3 @@ export type CheckoutForm = {
   postal_code: string
   phone: string
   final_sale_agreed: boolean
-}
