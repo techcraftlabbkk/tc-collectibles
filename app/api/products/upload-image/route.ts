@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
     const filename = `${productId}-${Date.now()}.${ext}`;
     const filepath = `images/${filename}`;
 
-    // Ensure bucket exists (create if missing)
+    // Ensure bucket exists AND is public
     const { data: buckets } = await supabase.storage.listBuckets();
     const bucketExists = buckets?.some((b) => b.name === BUCKET);
     if (!bucketExists) {
@@ -34,6 +34,13 @@ export async function POST(request: NextRequest) {
           { error: 'Storage bucket error: ' + createErr.message },
           { status: 500 }
         );
+      }
+    } else {
+      // Bucket already exists — force it to be public so getPublicUrl works
+      const { error: updateBucketErr } = await supabase.storage.updateBucket(BUCKET, { public: true });
+      if (updateBucketErr) {
+        console.error('Bucket update error:', updateBucketErr);
+        // Non-fatal: log but continue — upload may still work
       }
     }
 
@@ -60,26 +67,12 @@ export async function POST(request: NextRequest) {
 
     const imageUrl = publicData.publicUrl;
 
-    // Update product with image URL
-    const { error: updateError } = await supabase
+    // Update product with image URL — use .select() to confirm the row was found
+    const { data: updatedProduct, error: updateError } = await supabase
       .from('products')
       .update({ image_url: imageUrl })
-      .eq('id', productId);
+      .eq('id', productId)
+      .select('id, image_url')
+      .single();
 
     if (updateError) {
-      console.error('Database update error:', updateError);
-      return NextResponse.json(
-        { error: 'DB update failed: ' + updateError.message },
-        { status: 500 }
-      );
-    }
-
-    return NextResponse.json({ success: true, imageUrl });
-  } catch (error) {
-    console.error('Image upload error:', error);
-    return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Failed to upload image' },
-      { status: 500 }
-    );
-  }
-}
