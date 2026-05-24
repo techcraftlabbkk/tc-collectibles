@@ -263,13 +263,13 @@ export default function Checkout() {
                 <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-2xl p-6">
                   <div className="flex items-center gap-3 mb-3">
                     <span className="text-2xl">📱</span>
-                    <h3 className="font-black text-blue-900">How you'll pay — PromptPay</h3>
+                    <h3 className="font-black text-blue-900">How you&apos;ll pay — PromptPay</h3>
                   </div>
                   <ol className="text-sm text-blue-800 space-y-2 list-decimal list-inside">
                     <li>Click <strong>Place Order</strong> below</li>
-                    <li>You'll be taken to your personal PromptPay QR code</li>
+                    <li>You&apos;ll be taken to your personal PromptPay QR code</li>
                     <li>Scan with any Thai banking app and pay the exact amount</li>
-                    <li>We'll confirm your order within 1–2 hours</li>
+                    <li>We&apos;ll confirm your order within 1–2 hours</li>
                   </ol>
                   <p className="text-xs text-blue-600 mt-3 font-medium">Account name: {process.env.NEXT_PUBLIC_PROMPTPAY_ACCOUNT_NAME || 'TC Collectibles'}</p>
                 </div>

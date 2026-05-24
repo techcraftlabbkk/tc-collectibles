@@ -9,11 +9,10 @@ echo Removing lock files...
 del /f /q ".git\index.lock" 2>nul
 del /f /q ".git\HEAD.lock" 2>nul
 del /f /q ".git\refs\heads\main.lock" 2>nul
-del /f /q ".git\COMMIT_EDITMSG.lock" 2>nul
 
-echo Committing...
+echo Committing ESLint fix...
 git add -A
-git commit -m "push images"
+git commit -m "fix: escape apostrophes in checkout page for ESLint"
 
 echo Pushing to GitHub...
 git push origin main
