@@ -67,30 +67,47 @@ export async function POST(request: NextRequest) {
 
     const imageUrl = publicData.publicUrl;
 
-    // Update product with image URL — use .select() to confirm the row was found
-    const { data: updatedProduct, error: updateError } = await supabase
+    // Fetch current image_urls array (gracefully handle missing column before migration)
+    const { data: current, error: fetchError } = await supabase
       .from('products')
-      .update({ image_url: imageUrl })
+      .select('image_urls')
       .eq('id', productId)
-      .select('id, image_url')
       .single();
 
-    if (updateError) {
-      console.error('Database update error:', updateError);
-      return NextResponse.json(
-        { error: 'DB update failed: ' + updateError.message },
-        { status: 500 }
-      );
-    }
-
-    if (!updatedProduct) {
+    if (!fetchError && !current) {
       return NextResponse.json(
         { error: `No product found with id ${productId}` },
         { status: 404 }
       );
     }
 
-    return NextResponse.json({ success: true, imageUrl });
+    // Build new image_urls array (falls back to single image if column not yet migrated)
+    const existingUrls: string[] = Array.isArray(current?.image_urls) ? current.image_urls : [];
+    const newUrls = [...existingUrls, imageUrl];
+
+    // Try updating with image_urls array; fall back to image_url only if column doesn't exist yet
+    const { error: updateError } = await supabase
+      .from('products')
+      .update({ image_urls: newUrls, image_url: newUrls[0] })
+      .eq('id', productId);
+
+    if (updateError) {
+      // Column may not exist yet — fall back to single image_url update
+      const { error: fallbackError } = await supabase
+        .from('products')
+        .update({ image_url: imageUrl })
+        .eq('id', productId);
+      if (fallbackError) {
+        console.error('Database update error (fallback):', fallbackError);
+        return NextResponse.json(
+          { error: 'DB update failed: ' + fallbackError.message },
+          { status: 500 }
+        );
+      }
+      return NextResponse.json({ success: true, imageUrl, imageUrls: [imageUrl] });
+    }
+
+    return NextResponse.json({ success: true, imageUrl, imageUrls: newUrls });
   } catch (error) {
     console.error('Image upload error:', error);
     return NextResponse.json(

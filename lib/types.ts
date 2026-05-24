@@ -19,6 +19,7 @@ export type Product = {
   description?: string
   price: number
   image_url?: string
+  image_urls?: string[]
   quantity: number
   available: boolean
   created_at: string

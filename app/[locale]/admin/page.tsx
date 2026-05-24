@@ -24,6 +24,7 @@ interface Product {
   quantity: number;
   available: boolean;
   image_url?: string | null;
+  image_urls?: string[] | null;
 }
 
 interface Stats {
@@ -167,12 +168,34 @@ export default function AdminPage() {
       const response = await fetch('/api/products/upload-image', { method: 'POST', body: formData });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || 'Failed to upload image');
-      setProducts((prev) => prev.map((p) => (p.id === productId ? { ...p, image_url: data.imageUrl } : p)));
+      setProducts((prev) => prev.map((p) => (p.id === productId ? { ...p, image_url: data.imageUrl, image_urls: data.imageUrls } : p)));
     } catch (err) {
       setUploadError(err instanceof Error ? err.message : 'Image upload failed');
       setUploadErrorProductId(productId);
     } finally {
       setUploadingProductId(null);
+    }
+  };
+
+  const handleDeleteProductImage = async (productId: string, imageUrl: string) => {
+    try {
+      const response = await fetch('/api/products/delete-image', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ productId, imageUrl }),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || 'Failed to delete image');
+      setProducts((prev) =>
+        prev.map((p) =>
+          p.id === productId
+            ? { ...p, image_urls: data.imageUrls, image_url: data.imageUrls?.[0] ?? null }
+            : p
+        )
+      );
+    } catch (err) {
+      setUploadError(err instanceof Error ? err.message : 'Image delete failed');
+      setUploadErrorProductId(productId);
     }
   };
 
@@ -514,18 +537,8 @@ export default function AdminPage() {
             ) : (
               products.map((product) => (
                 <div key={product.id} className="bg-white border border-gray-200 rounded-xl p-4 hover:border-gray-300 transition-colors">
-                  <div className="flex gap-4 items-center">
-                    {/* Image */}
-                    <div className="w-16 h-16 bg-gray-100 rounded-lg flex-shrink-0 overflow-hidden flex items-center justify-center border border-gray-200">
-                      {product.image_url ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img src={product.image_url} alt={product.title} className="w-full h-full object-cover" />
-                      ) : (
-                        <span className="text-gray-400 text-xs text-center px-1">No image</span>
-                      )}
-                    </div>
-
-                    {/* Info */}
+                  {/* Top row: info + edit button */}
+                  <div className="flex gap-3 items-center mb-3">
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-0.5 flex-wrap">
                         <h3 className="font-bold text-gray-900 text-sm truncate">{product.title}</h3>
@@ -541,21 +554,54 @@ export default function AdminPage() {
                         <span className="text-gray-400 text-xs">Stock: <span className={`font-semibold ${product.quantity > 0 ? 'text-gray-700' : 'text-red-600'}`}>{product.quantity}</span></span>
                       </div>
                     </div>
+                    <button
+                      onClick={() => openEditModal(product)}
+                      className="flex-shrink-0 border border-gray-300 hover:bg-gray-50 text-gray-700 text-xs px-3 py-1.5 rounded-lg font-medium transition-colors"
+                    >
+                      ✏️ Edit
+                    </button>
+                  </div>
 
-                    {/* Actions */}
-                    <div className="flex-shrink-0 flex items-center gap-2">
-                      <button
-                        onClick={() => openEditModal(product)}
-                        className="border border-gray-300 hover:bg-gray-50 text-gray-700 text-xs px-3 py-1.5 rounded-lg font-medium transition-colors"
-                      >
-                        ✏️ Edit
-                      </button>
-                      <label className={`cursor-pointer border border-gray-300 hover:bg-gray-50 text-gray-700 text-xs px-3 py-1.5 rounded-lg font-medium transition-colors text-center whitespace-nowrap ${uploadingProductId === product.id ? 'opacity-50 cursor-not-allowed' : ''}`}>
-                        {uploadingProductId === product.id ? 'Uploading…' : product.image_url ? '↑ Replace' : '↑ Image'}
-                        <input type="file" accept="image/*" className="hidden" disabled={uploadingProductId === product.id}
-                          onChange={(e) => { if (e.target.files?.[0]) { handleUploadProductImage(product.id, e.target.files[0]); e.target.value = ''; } }} />
-                      </label>
-                    </div>
+                  {/* Image gallery row */}
+                  <div className="flex items-center gap-2 flex-wrap">
+                    {/* Existing images */}
+                    {(product.image_urls && product.image_urls.length > 0
+                      ? product.image_urls
+                      : product.image_url ? [product.image_url] : []
+                    ).map((url, idx) => (
+                      <div key={url} className="relative group w-16 h-16 flex-shrink-0">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={url} alt={`${product.title} image ${idx + 1}`} className="w-16 h-16 object-cover rounded-lg border border-gray-200" />
+                        {idx === 0 && (
+                          <span className="absolute top-0.5 left-0.5 bg-purple-600 text-white text-[9px] font-bold px-1 rounded leading-tight">MAIN</span>
+                        )}
+                        <button
+                          onClick={() => handleDeleteProductImage(product.id, url)}
+                          className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-red-500 hover:bg-red-600 text-white rounded-full text-xs font-bold leading-none flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow"
+                          title="Remove image"
+                        >
+                          ×
+                        </button>
+                      </div>
+                    ))}
+
+                    {/* Add image button */}
+                    <label className={`w-16 h-16 flex-shrink-0 flex flex-col items-center justify-center border-2 border-dashed rounded-lg cursor-pointer transition-colors text-center
+                      ${uploadingProductId === product.id
+                        ? 'border-gray-200 text-gray-300 cursor-not-allowed'
+                        : 'border-purple-300 hover:border-purple-500 hover:bg-purple-50 text-purple-400 hover:text-purple-600'
+                      }`}>
+                      {uploadingProductId === product.id ? (
+                        <span className="text-[10px]">Uploading…</span>
+                      ) : (
+                        <>
+                          <span className="text-xl leading-none">+</span>
+                          <span className="text-[10px] font-semibold mt-0.5">Image</span>
+                        </>
+                      )}
+                      <input type="file" accept="image/*" className="hidden" disabled={uploadingProductId === product.id}
+                        onChange={(e) => { if (e.target.files?.[0]) { handleUploadProductImage(product.id, e.target.files[0]); e.target.value = ''; } }} />
+                    </label>
                   </div>
 
                   {uploadError && uploadErrorProductId === product.id && (
