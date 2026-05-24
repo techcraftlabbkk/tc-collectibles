@@ -79,3 +79,4 @@ export type CheckoutForm = {
   postal_code: string
   phone: string
   final_sale_agreed: boolean
+}

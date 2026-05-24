@@ -334,4 +334,28 @@ export default function Checkout() {
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600">Subtotal</span>
                   <span className="font-bold">฿{subtotal.toLocaleString()}</span>
-      
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-600">Shipping</span>
+                  <span className="font-bold">฿{SHIPPING_FEE.toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between items-baseline pt-1 border-t border-purple-200">
+                  <span className="font-black text-gray-900">Total</span>
+                  <span className="text-3xl font-black text-purple-600">฿{total.toLocaleString()}</span>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                {[{ icon: '🔒', text: 'Secure PromptPay' }, { icon: '📦', text: 'Safe packaging' }, { icon: '🛡️', text: 'PSA certified' }].map(b => (
+                  <div key={b.text} className="flex items-center gap-2 text-xs text-gray-600 font-medium">
+                    <span>{b.icon}</span>{b.text}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
