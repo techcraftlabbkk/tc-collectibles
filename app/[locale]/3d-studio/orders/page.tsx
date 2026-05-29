@@ -42,7 +42,6 @@ export default function PrintOrdersPage() {
 
   const [orders, setOrders] = useState<PrintOrder[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selected, setSelected] = useState<PrintOrder | null>(null);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
