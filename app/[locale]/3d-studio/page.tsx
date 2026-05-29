@@ -28,9 +28,7 @@ interface AIJob {
 }
 
 const MATERIALS: { id: Material; label: string; icon: string; desc: string }[] = [
-  { id: 'pla',   label: 'PLA Plastic', icon: '🟦', desc: 'Standard, durable, great for display pieces' },
-  { id: 'resin', label: 'Resin',       icon: '🟪', desc: 'High detail, smooth finish, fragile' },
-  { id: 'metal', label: 'Metal',       icon: '🟨', desc: 'Premium look, heavy, best for collectibles' },
+  { id: 'pla', label: 'PLA Plastic', icon: '🟦', desc: 'Standard, durable, great for display pieces' },
 ];
 
 const COLORS = ['White', 'Black', 'Red', 'Blue', 'Green', 'Gold', 'Silver', 'Transparent'];
@@ -250,11 +248,11 @@ export default function ThreeDStudioPage() {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
         <div className="bg-white rounded-2xl shadow-lg p-8 max-w-md w-full text-center">
           <div className="text-5xl mb-4">🎉</div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Order Placed!</h2>
-          <p className="text-gray-600 mb-2">Order <span className="font-mono font-bold text-purple-600">#{orderSuccess.slice(0, 8)}</span> is in the queue.</p>
+          <h2 className="text-2xl font-bold text-white mb-2">Order Placed!</h2>
+          <p className="text-gray-600 mb-2">Order <span className="font-mono font-bold text-cyan-400">#{orderSuccess.slice(0, 8)}</span> is in the queue.</p>
           <p className="text-sm text-gray-500 mb-6">You&apos;ll receive an email when printing begins.</p>
           <div className="flex gap-3 justify-center">
-            <Link href={`/${locale}/3d-studio/orders`} className="bg-purple-600 text-white px-5 py-2.5 rounded-lg font-semibold hover:bg-purple-700 transition-colors">
+            <Link href={`/${locale}/3d-studio/orders`} className="bg-cyan-500 text-black px-5 py-2.5 rounded-lg font-semibold hover:bg-cyan-400 transition-colors">
               Track Order
             </Link>
             <button onClick={() => { setOrderSuccess(null); setUploadedFile(null); setUploadedUrl(null); setAiJob(null); setPrompt(''); }}
@@ -268,27 +266,30 @@ export default function ThreeDStudioPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-950">
       <div className="max-w-6xl mx-auto px-4 py-8">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-black text-gray-900">🖨️ 3D Print Studio</h1>
-            <p className="text-gray-500 mt-1">Upload a model, generate with AI, or convert a photo</p>
+            <h1 className="text-3xl font-black text-white">3D Printing <span className="text-cyan-400">x</span> TechCraft Lab</h1>
+            <p className="text-gray-400 mt-1">Upload a model, generate with AI, or convert a photo</p>
           </div>
-          <Link href={`/${locale}/3d-studio/wallet`}
-            className="flex items-center gap-2 bg-purple-50 border border-purple-200 text-purple-700 px-4 py-2.5 rounded-xl font-semibold hover:bg-purple-100 transition-colors">
-            <span className="text-lg">⚡</span>
-            <span>{balance !== null ? `${balance} credits` : '...'}</span>
-            <span className="text-purple-400 text-sm">+ Top Up</span>
-          </Link>
+          <div className="flex items-center gap-3">
+            <div className="bg-purple-50 border border-purple-200 text-cyan-300 px-4 py-2.5 rounded-xl font-semibold text-sm">
+              ⚡ {balance !== null ? `${balance} credits` : '—'}
+            </div>
+            <Link href={`/${locale}/3d-studio/wallet`}
+              className="bg-cyan-500 text-black px-4 py-2.5 rounded-xl font-semibold text-sm hover:bg-cyan-400 transition-colors">
+              + Top Up
+            </Link>
+          </div>
         </div>
 
         <div className="grid lg:grid-cols-5 gap-8">
           {/* Left: Model input */}
           <div className="lg:col-span-3 space-y-6">
             {/* Mode tabs */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+            <div className="bg-gray-900 rounded-2xl border border-gray-800 p-6">
               <div className="flex gap-2 mb-6">
                 {([
                   { id: 'upload',   label: '📁 Upload File',   desc: 'STL / OBJ / GLB' },
@@ -298,8 +299,8 @@ export default function ThreeDStudioPage() {
                   <button key={t.id} onClick={() => setTab(t.id)}
                     className={`flex-1 py-2.5 px-3 rounded-xl text-sm font-semibold transition-all ${
                       tab === t.id
-                        ? 'bg-purple-600 text-white shadow-sm'
-                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                        ? 'bg-cyan-500 text-black shadow-sm'
+                        : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
                     }`}>
                     {t.label}
                     <span className="block text-xs opacity-70 mt-0.5">{t.desc}</span>
@@ -315,7 +316,7 @@ export default function ThreeDStudioPage() {
                     <button onClick={() => fileInputRef.current?.click()}
                       className="w-full border-2 border-dashed border-purple-200 rounded-xl py-12 text-center hover:border-purple-400 hover:bg-purple-50 transition-all group">
                       <div className="text-4xl mb-3">📂</div>
-                      <div className="font-semibold text-gray-700 group-hover:text-purple-700">Drop or click to upload your 3D file</div>
+                      <div className="font-semibold text-gray-700 group-hover:text-cyan-300">Drop or click to upload your 3D file</div>
                       <div className="text-sm text-gray-400 mt-1">Supports STL, OBJ, GLB, 3MF · Max 50MB</div>
                     </button>
                   ) : (
@@ -326,7 +327,7 @@ export default function ThreeDStudioPage() {
                         <div className="text-sm text-gray-500">{(uploadedFile.size / 1024 / 1024).toFixed(2)} MB</div>
                       </div>
                       {uploading ? (
-                        <div className="text-sm text-purple-600 font-medium animate-pulse">Uploading...</div>
+                        <div className="text-sm text-cyan-400 font-medium animate-pulse">Uploading...</div>
                       ) : (
                         <div className="flex items-center gap-1 text-green-600 text-sm font-semibold">
                           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7"/></svg>
@@ -354,7 +355,7 @@ export default function ThreeDStudioPage() {
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-2">Art style</label>
                     <select value={artStyle} onChange={e => setArtStyle(e.target.value)}
-                      className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-purple-400">
+                      className="w-full border border-gray-700 bg-gray-800 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-400">
                       <option value="realistic">Realistic</option>
                       <option value="cartoon">Cartoon</option>
                       <option value="sculpture">Sculpture</option>
@@ -364,11 +365,11 @@ export default function ThreeDStudioPage() {
 
                   {!aiJob ? (
                     <button onClick={handleGenerate} disabled={!prompt.trim() || generating}
-                      className="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white py-3 rounded-xl font-semibold hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center justify-center gap-2">
+                      className="w-full bg-gradient-to-r from-cyan-500 to-blue-500 text-white py-3 rounded-xl font-semibold hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center justify-center gap-2">
                       {generating ? <><span className="animate-spin">⏳</span> Starting generation...</> : '✨ Generate 3D Model'}
                     </button>
                   ) : (
-                    <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 space-y-3">
+                    <div className="bg-gray-800 border border-gray-700 rounded-xl p-4 space-y-3">
                       <div className="flex items-center justify-between">
                         <span className="text-sm font-semibold text-gray-700">AI Generation</span>
                         <span className={`text-xs font-bold px-2 py-1 rounded-full ${
@@ -390,7 +391,7 @@ export default function ThreeDStudioPage() {
                         <img src={aiJob.thumbnailUrl} alt="3D preview" className="w-full h-40 object-contain bg-gray-100 rounded-lg" />
                       )}
                       {aiJob.status === 'failed' && (
-                        <button onClick={() => { setAiJob(null); }} className="text-sm text-purple-600 hover:underline">Try again</button>
+                        <button onClick={() => { setAiJob(null); }} className="text-sm text-cyan-400 hover:underline">Try again</button>
                       )}
                     </div>
                   )}
@@ -423,7 +424,7 @@ export default function ThreeDStudioPage() {
                           {imageUploading ? <><span className="animate-spin">⏳</span> Uploading...</> : '📷 Convert to 3D'}
                         </button>
                       ) : (
-                        <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 space-y-3">
+                        <div className="bg-gray-800 border border-gray-700 rounded-xl p-4 space-y-3">
                           <div className="flex items-center justify-between">
                             <span className="text-sm font-semibold text-gray-700">Converting image</span>
                             <span className={`text-xs font-bold px-2 py-1 rounded-full ${
@@ -456,20 +457,26 @@ export default function ThreeDStudioPage() {
           {/* Right: Config + Order panel */}
           <div className="lg:col-span-2 space-y-5">
             {/* Material */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
-              <h3 className="font-bold text-gray-900 mb-3">Material</h3>
+            <div className="bg-gray-900 rounded-2xl border border-gray-800 p-5">
+              <div className="flex items-center gap-2 mb-3">
+                <h3 className="font-bold text-white">Material</h3>
+                <span className="group relative cursor-help">
+                  <span className="w-4 h-4 rounded-full bg-gray-200 text-gray-500 text-xs flex items-center justify-center font-bold">?</span>
+                  <span className="absolute left-6 top-0 z-20 hidden group-hover:block w-56 bg-gray-900 text-white text-xs rounded-xl p-3 shadow-xl leading-relaxed">
+                    Choose the filament your model will be printed in. PLA is the most affordable and durable option for display pieces and prototypes.
+                  </span>
+                </span>
+              </div>
               <div className="space-y-2">
                 {MATERIALS.map(m => (
                   <button key={m.id} onClick={() => setConfig(c => ({ ...c, material: m.id }))}
                     className={`w-full flex items-center gap-3 p-3 rounded-xl border-2 transition-all text-left ${
-                      config.material === m.id
-                        ? 'border-purple-500 bg-purple-50'
-                        : 'border-gray-100 hover:border-gray-200'
+                      config.material === m.id ? 'border-cyan-400 bg-cyan-950' : 'border-gray-700 hover:border-gray-600'
                     }`}>
                     <span className="text-xl">{m.icon}</span>
                     <div>
-                      <div className="font-semibold text-sm text-gray-900">{m.label}</div>
-                      <div className="text-xs text-gray-500">{m.desc}</div>
+                      <div className="font-semibold text-sm text-white">{m.label}</div>
+                      <div className="text-xs text-gray-400">{m.desc}</div>
                     </div>
                   </button>
                 ))}
@@ -477,17 +484,25 @@ export default function ThreeDStudioPage() {
             </div>
 
             {/* Configuration */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 space-y-4">
-              <h3 className="font-bold text-gray-900">Configuration</h3>
+            <div className="bg-gray-900 rounded-2xl border border-gray-800 p-5 space-y-4">
+              <h3 className="font-bold text-white">Configuration</h3>
 
               {/* Color */}
               <div>
-                <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2 block">Colour</label>
+                <div className="flex items-center gap-2 mb-2">
+                  <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Colour</label>
+                  <span className="group relative cursor-help">
+                    <span className="w-4 h-4 rounded-full bg-gray-200 text-gray-500 text-xs flex items-center justify-center font-bold">?</span>
+                    <span className="absolute left-6 top-0 z-20 hidden group-hover:block w-56 bg-gray-900 text-white text-xs rounded-xl p-3 shadow-xl leading-relaxed">
+                      Select the filament colour for your print. Note: colour availability may vary. We will contact you if a substitute is needed.
+                    </span>
+                  </span>
+                </div>
                 <div className="flex flex-wrap gap-2">
                   {COLORS.map(c => (
                     <button key={c} onClick={() => setConfig(cfg => ({ ...cfg, color: c }))}
                       className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-all ${
-                        config.color === c ? 'border-purple-500 bg-purple-50 text-purple-700' : 'border-gray-200 text-gray-600 hover:border-gray-300'
+                        config.color === c ? 'border-cyan-400 bg-cyan-950 text-cyan-300' : 'border-gray-200 text-gray-600 hover:border-gray-300'
                       }`}>{c}</button>
                   ))}
                 </div>
@@ -495,46 +510,76 @@ export default function ThreeDStudioPage() {
 
               {/* Scale */}
               <div>
-                <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2 block flex justify-between">
-                  <span>Scale</span><span className="text-purple-600 normal-case">{config.scaleCm} cm</span>
-                </label>
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center gap-2">
+                    <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Scale</label>
+                    <span className="group relative cursor-help">
+                      <span className="w-4 h-4 rounded-full bg-gray-200 text-gray-500 text-xs flex items-center justify-center font-bold">?</span>
+                      <span className="absolute left-6 top-0 z-20 hidden group-hover:block w-60 bg-gray-900 text-white text-xs rounded-xl p-3 shadow-xl leading-relaxed">
+                        The longest dimension of your printed model. Larger prints use more material and cost more credits. 15cm is a popular size for figurines.
+                      </span>
+                    </span>
+                  </div>
+                  <span className="text-sm font-bold text-cyan-400">{config.scaleCm} cm</span>
+                </div>
                 <input type="range" min={5} max={50} value={config.scaleCm}
                   onChange={e => setConfig(c => ({ ...c, scaleCm: parseInt(e.target.value) }))}
-                  className="w-full accent-purple-600" />
-                <div className="flex justify-between text-xs text-gray-400 mt-1"><span>5cm</span><span>50cm</span></div>
+                  className="w-full accent-cyan-500" />
+                <div className="flex justify-between text-xs text-gray-400 mt-1"><span>5 cm (small)</span><span>50 cm (large)</span></div>
               </div>
 
               {/* Infill */}
               <div>
-                <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2 block">Infill (density)</label>
+                <div className="flex items-center gap-2 mb-2">
+                  <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Infill (density)</label>
+                  <span className="group relative cursor-help">
+                    <span className="w-4 h-4 rounded-full bg-gray-200 text-gray-500 text-xs flex items-center justify-center font-bold">?</span>
+                    <span className="absolute left-6 top-0 z-20 hidden group-hover:block w-64 bg-gray-900 text-white text-xs rounded-xl p-3 shadow-xl leading-relaxed">
+                      How solid the inside of your print is. 10–20% = hollow shell (lighter, cheaper, good for display). 40–60% = sturdy everyday use. 80–100% = maximum strength, heaviest, most credits.
+                    </span>
+                  </span>
+                </div>
                 <div className="grid grid-cols-6 gap-1">
                   {INFILLS.map(v => (
                     <button key={v} onClick={() => setConfig(c => ({ ...c, infillPercent: v }))}
                       className={`py-1.5 rounded-lg text-xs font-bold transition-all ${
-                        config.infillPercent === v ? 'bg-purple-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                        config.infillPercent === v ? 'bg-cyan-500 text-black' : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
                       }`}>{v}%</button>
                   ))}
                 </div>
+                <p className="text-xs text-gray-400 mt-1.5">
+                  {config.infillPercent <= 20 ? 'Light shell — great for display pieces' :
+                   config.infillPercent <= 60 ? 'Balanced — sturdy for everyday handling' :
+                   'Dense — maximum strength and weight'}
+                </p>
               </div>
 
               {/* Quantity */}
               <div>
-                <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2 block">Quantity</label>
+                <div className="flex items-center gap-2 mb-2">
+                  <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Quantity</label>
+                  <span className="group relative cursor-help">
+                    <span className="w-4 h-4 rounded-full bg-gray-200 text-gray-500 text-xs flex items-center justify-center font-bold">?</span>
+                    <span className="absolute left-6 top-0 z-20 hidden group-hover:block w-56 bg-gray-900 text-white text-xs rounded-xl p-3 shadow-xl leading-relaxed">
+                      Number of identical copies to print. Each copy deducts the same credit cost. Max 10 per order.
+                    </span>
+                  </span>
+                </div>
                 <div className="flex items-center gap-3">
                   <button onClick={() => setConfig(c => ({ ...c, quantity: Math.max(1, c.quantity - 1) }))}
-                    className="w-9 h-9 rounded-lg bg-gray-100 text-gray-700 font-bold hover:bg-gray-200 flex items-center justify-center text-lg">−</button>
-                  <span className="text-xl font-bold text-gray-900 w-8 text-center">{config.quantity}</span>
+                    className="w-9 h-9 rounded-lg bg-gray-800 text-gray-200 font-bold hover:bg-gray-700 flex items-center justify-center text-lg">−</button>
+                  <span className="text-xl font-bold text-white w-8 text-center">{config.quantity}</span>
                   <button onClick={() => setConfig(c => ({ ...c, quantity: Math.min(10, c.quantity + 1) }))}
-                    className="w-9 h-9 rounded-lg bg-gray-100 text-gray-700 font-bold hover:bg-gray-200 flex items-center justify-center text-lg">+</button>
+                    className="w-9 h-9 rounded-lg bg-gray-800 text-gray-200 font-bold hover:bg-gray-700 flex items-center justify-center text-lg">+</button>
                 </div>
               </div>
             </div>
 
             {/* Order summary + CTA */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
+            <div className="bg-gray-900 rounded-2xl border border-gray-800 p-5">
               <div className="flex items-center justify-between mb-4">
                 <span className="text-gray-600 text-sm">Estimated cost</span>
-                <span className="text-2xl font-black text-purple-600">⚡ {tokenCost}</span>
+                <span className="text-2xl font-black text-cyan-400">⚡ {tokenCost}</span>
               </div>
               <div className="flex items-center justify-between text-sm text-gray-500 mb-4">
                 <span>Your balance</span>
@@ -555,17 +600,17 @@ export default function ThreeDStudioPage() {
               )}
 
               <button onClick={handlePlaceOrder} disabled={!canOrder || placing}
-                className="w-full bg-purple-600 text-white py-3.5 rounded-xl font-bold text-base hover:bg-purple-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+                className="w-full bg-cyan-500 text-black py-3.5 rounded-xl font-bold text-base hover:bg-cyan-400 transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2">
                 {placing ? <><span className="animate-spin">⏳</span> Placing order...</> :
                  !activeModel ? '← Configure your model first' :
                  `🛒 Place Order · ⚡ ${tokenCost} credits`}
               </button>
 
               <div className="flex gap-3 mt-3">
-                <Link href={`/${locale}/3d-studio/orders`} className="flex-1 text-center text-sm text-gray-500 hover:text-purple-600 py-2 rounded-lg hover:bg-gray-50 transition-colors">
+                <Link href={`/${locale}/3d-studio/orders`} className="flex-1 text-center text-sm text-gray-500 hover:text-cyan-400 py-2 rounded-lg hover:bg-gray-50 transition-colors">
                   📦 My Orders
                 </Link>
-                <Link href={`/${locale}/3d-studio/wallet`} className="flex-1 text-center text-sm text-gray-500 hover:text-purple-600 py-2 rounded-lg hover:bg-gray-50 transition-colors">
+                <Link href={`/${locale}/3d-studio/wallet`} className="flex-1 text-center text-sm text-gray-500 hover:text-cyan-400 py-2 rounded-lg hover:bg-gray-50 transition-colors">
                   💳 Wallet
                 </Link>
               </div>
