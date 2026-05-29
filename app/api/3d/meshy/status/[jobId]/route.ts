@@ -3,7 +3,7 @@ import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 import { getTaskStatus } from '@/lib/meshyClient';
 
-export async function GET(req: NextRequest, { params }: { params: { jobId: string } }) {
+export async function GET(_req: NextRequest, { params }: { params: { jobId: string } }) {
   try {
     const supabase = createRouteHandlerClient({ cookies });
     const { data: { session } } = await supabase.auth.getSession();
