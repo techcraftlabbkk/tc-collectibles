@@ -252,7 +252,7 @@ export default function ThreeDStudioPage() {
           <div className="text-5xl mb-4">🎉</div>
           <h2 className="text-2xl font-bold text-gray-900 mb-2">Order Placed!</h2>
           <p className="text-gray-600 mb-2">Order <span className="font-mono font-bold text-purple-600">#{orderSuccess.slice(0, 8)}</span> is in the queue.</p>
-          <p className="text-sm text-gray-500 mb-6">You'll receive an email when printing begins.</p>
+          <p className="text-sm text-gray-500 mb-6">You&apos;ll receive an email when printing begins.</p>
           <div className="flex gap-3 justify-center">
             <Link href={`/${locale}/3d-studio/orders`} className="bg-purple-600 text-white px-5 py-2.5 rounded-lg font-semibold hover:bg-purple-700 transition-colors">
               Track Order
