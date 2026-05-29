@@ -280,12 +280,20 @@ export default function AdminPage() {
           <h1 className="text-2xl font-black text-gray-900">Admin Dashboard</h1>
           <p className="text-sm text-gray-500 mt-0.5">TC Collectibles · {new Date().toLocaleDateString('en-GB', { dateStyle: 'long' })}</p>
         </div>
-        <Link
-          href={`/${locale}`}
-          className="text-sm text-gray-600 hover:text-gray-900 border border-gray-300 hover:border-gray-400 px-4 py-2 rounded-lg transition-colors flex items-center gap-1.5"
-        >
-          ← Store
-        </Link>
+        <div className="flex items-center gap-3">
+          <Link
+            href={`/${locale}/admin/3d`}
+            className="text-sm bg-purple-600 text-white hover:bg-purple-700 px-4 py-2 rounded-lg transition-colors flex items-center gap-1.5 font-semibold"
+          >
+            🖨️ 3D Print Orders
+          </Link>
+          <Link
+            href={`/${locale}`}
+            className="text-sm text-gray-600 hover:text-gray-900 border border-gray-300 hover:border-gray-400 px-4 py-2 rounded-lg transition-colors flex items-center gap-1.5"
+          >
+            ← Store
+          </Link>
+        </div>
       </div>
 
       {error && (
