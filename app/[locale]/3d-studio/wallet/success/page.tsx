@@ -1,14 +1,12 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useSearchParams, useParams } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import Link from 'next/link';
 
 export default function WalletSuccessPage() {
-  const searchParams = useSearchParams();
   const params = useParams();
   const locale = params?.locale ?? 'en';
-  const sessionId = searchParams.get('session_id');
 
   const [balance, setBalance] = useState<number | null>(null);
 

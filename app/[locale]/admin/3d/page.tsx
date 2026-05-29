@@ -78,21 +78,10 @@ export default function Admin3DPage() {
 
   const fetchOrders = async () => {
     setLoading(true);
-    const url = filter === 'all' ? '/api/3d/orders/all' : `/api/3d/orders/all?status=${filter}`;
-    // Use admin endpoint
-    const { data: { session } } = await supabase.auth.getSession();
-    const res = await fetch(`/api/3d/orders/${filter === 'all' ? 'all' : `all?status=${filter}`}`);
-    // Fallback: directly query via supabase client for admin
-    const { data, error } = await (await import('@/lib/supabaseServer')).createServerSupabaseClient()
-      .then ? { data: null, error: new Error('use supabase') }
-      : { data: null, error: null };
-
-    // Direct Supabase query approach (admin sees all)
-    const sb = (await import('@/lib/supabase')).supabase;
-    let query = sb.from('print_orders').select('*').order('created_at', { ascending: false });
+    let query = supabase.from('print_orders').select('*').order('created_at', { ascending: false });
     if (filter !== 'all') query = query.eq('status', filter);
-    const { data: orders, error: err } = await query;
-    if (!err) setOrders(orders ?? []);
+    const { data: orders, error } = await query;
+    if (!error) setOrders(orders ?? []);
     setLoading(false);
   };
 

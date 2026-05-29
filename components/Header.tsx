@@ -43,7 +43,7 @@ export default function Header() {
     { href: `/${locale}/products`, label: t('products') },
     { href: `/${locale}/cart`, label: t('cart') },
     { href: `/${locale}/orders`, label: t('orders') },
-    { href: `/${locale}/3d-studio`, label: '🖨️ 3D Studio' },
+    { href: `/${locale}/3d-studio`, label: '3D Studio' },
   ];
 
   return (

@@ -4,7 +4,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
-import { calculateTokenCost } from '@/lib/stripeServer';
+import { calculateTokenCost } from '@/lib/printingUtils';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 type Tab = 'upload' | 'ai_text' | 'ai_image';
