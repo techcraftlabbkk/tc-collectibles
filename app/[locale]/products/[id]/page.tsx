@@ -285,4 +285,17 @@ export default function ProductDetail({ params }: { params: { id: string } }) {
                   </div>
                   <div className="p-4 flex flex-col flex-1">
                     <p className="text-sm font-bold text-gray-800 line-clamp-2 mb-3 group-hover:text-purple-600 transition-colors">{rel.title}</p>
-                    <p className="text-2xl font-black text-p
+                    <p className="text-2xl font-black text-purple-600 mt-auto">฿{rel.price.toLocaleString()}</p>
+                    <button className="mt-4 w-full bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-lg font-bold text-sm transition-colors">
+                      View Card →
+                    </button>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}

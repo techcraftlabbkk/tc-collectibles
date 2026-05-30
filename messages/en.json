@@ -1,0 +1,179 @@
+{
+  "pages": {
+    "auth": {
+      "login": {
+        "title": "Welcome Back",
+        "subtitle": "Sign in to your TC Collectibles account",
+        "email": "Email Address",
+        "password": "Password",
+        "login_button": "Sign In",
+        "magic_link_button": "Send Magic Link",
+        "magic_link_tab": "Magic Link",
+        "password_tab": "Password",
+        "no_account": "Don't have an account?",
+        "signup_link": "Sign up",
+        "forgot_password": "Forgot password?",
+        "magic_link_sent": "Check your email!",
+        "magic_link_sent_desc": "We sent a sign-in link to your email. Click it to log in instantly — no password needed.",
+        "or_divider": "or",
+        "back_to_login": "Back to login"
+      },
+      "signup": {
+        "title": "Create Account",
+        "subtitle": "Join TC Collectibles today",
+        "name": "Full Name",
+        "email": "Email Address",
+        "password": "Password",
+        "confirm_password": "Confirm Password",
+        "terms": "I agree to the Terms of Service and Privacy Policy",
+        "submit": "Create Account",
+        "have_account": "Already have an account?",
+        "login_link": "Sign in"
+      }
+    }
+  },
+  "errors": {
+    "required_field": "This field is required",
+    "invalid_email": "Please enter a valid email address",
+    "password_too_short": "Password must be at least 6 characters",
+    "password_mismatch": "Passwords do not match",
+    "network_error": "Something went wrong. Please try again."
+  },
+  "toasts": {
+    "auth": {
+      "login_success": "Welcome back!",
+      "login_failed": {
+        "message": "Sign in failed",
+        "description": "Invalid email or password. Please try again."
+      },
+      "magic_link_sent": "Magic link sent! Check your email.",
+      "magic_link_failed": "Failed to send magic link. Please try again.",
+      "signup_success": "Account created! Please check your email to confirm.",
+      "signup_failed": {
+        "message": "Sign up failed",
+        "description": "Could not create your account. Please try again."
+      },
+      "signup_error": {
+        "message": "An error occurred",
+        "description": "Please check your details and try again."
+      },
+      "logout_success": "You have been signed out."
+    }
+  },
+  "navigation": {
+    "home": "Home",
+    "products": "Products",
+    "cart": "Cart",
+    "orders": "My Orders",
+    "admin": "Admin",
+    "logout": "Logout",
+    "login": "Login",
+    "signup": "Sign Up"
+  },
+  "products": {
+    "title": "Products",
+    "filter": "Filter",
+    "sort": "Sort",
+    "search": "Search",
+    "addToCart": "Add to Cart",
+    "price": "Price",
+    "grade": "Grade",
+    "featured": "Featured Cards",
+    "noProducts": "No products found"
+  },
+  "cart": {
+    "title": "Shopping Cart",
+    "empty": "Your cart is empty",
+    "subtotal": "Subtotal",
+    "shipping": "Shipping",
+    "tax": "Tax",
+    "total": "Total",
+    "checkout": "Proceed to Checkout",
+    "continueShopping": "Continue Shopping",
+    "quantity": "Quantity",
+    "remove": "Remove"
+  },
+  "checkout": {
+    "title": "Checkout",
+    "shippingAddress": "Shipping Address",
+    "fullName": "Full Name",
+    "email": "Email",
+    "phone": "Phone",
+    "address": "Address",
+    "city": "City",
+    "postalCode": "Postal Code",
+    "country": "Country",
+    "orderSummary": "Order Summary",
+    "placeOrder": "Place Order",
+    "confirmOrder": "Are you sure you want to place this order?",
+    "processing": "Processing...",
+    "agreeToTerms": "I agree to the terms and conditions"
+  },
+  "auth": {
+    "login": "Login",
+    "signup": "Sign Up",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "loginButton": "Login",
+    "signupButton": "Sign Up",
+    "noAccount": "Don't have an account?",
+    "haveAccount": "Already have an account?",
+    "forgotPassword": "Forgot password?",
+    "loginError": "Invalid email or password",
+    "emailRequired": "Email is required",
+    "passwordRequired": "Password is required"
+  },
+  "orders": {
+    "title": "My Orders",
+    "orderId": "Order ID",
+    "date": "Date",
+    "total": "Total",
+    "status": "Status",
+    "noOrders": "You have no orders yet",
+    "viewDetails": "View Details",
+    "trackOrder": "Track Order"
+  },
+  "payment": {
+    "title": "Payment",
+    "promptpay": "PromptPay",
+    "scanQR": "Scan this QR code with your banking app",
+    "amount": "Amount",
+    "reference": "Reference",
+    "pending": "Payment Pending",
+    "completed": "Payment Completed",
+    "failed": "Payment Failed"
+  },
+  "admin": {
+    "title": "Admin Dashboard",
+    "orders": "Orders",
+    "payments": "Payments",
+    "products": "Products",
+    "users": "Users",
+    "pending": "Pending",
+    "verified": "Verified",
+    "rejected": "Rejected",
+    "approve": "Approve",
+    "reject": "Reject",
+    "viewDetails": "View Details",
+    "uploadImage": "Upload Image",
+    "deleteProduct": "Delete Product",
+    "editProduct": "Edit Product",
+    "payment_approved": "Payment Approved",
+    "payment_rejected": "Payment Rejected"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "success": "Success",
+    "close": "Close",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "back": "Back",
+    "next": "Next",
+    "submit": "Submit",
+    "language": "Language"
+  }
+}

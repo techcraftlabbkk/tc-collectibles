@@ -30,7 +30,6 @@ export default function Cart() {
 
       <div className="max-w-6xl mx-auto px-4 py-12">
         {items.length === 0 ? (
-          // Empty State
           <div className="bg-gradient-to-br from-purple-50 to-indigo-50 border-2 border-purple-200 rounded-2xl p-16 text-center">
             <div className="text-6xl mb-6">🛒</div>
             <h2 className="text-2xl font-black text-gray-900 mb-3">Your cart is empty</h2>
@@ -87,16 +86,16 @@ export default function Cart() {
                         <div>
                           <p className="text-xs text-gray-500 uppercase tracking-widest font-bold mb-1">Price</p>
                           <p className="text-3xl font-black text-purple-600">
-                            ฿{(item.price * item.quantity).toLocaleString()}
+                            &#3647;{(item.price * item.quantity).toLocaleString()}
                           </p>
                           {item.quantity > 1 && (
                             <p className="text-xs text-gray-500 mt-1">
-                              ฿{item.price.toLocaleString()} × {item.quantity}
+                              &#3647;{item.price.toLocaleString()} &times; {item.quantity}
                             </p>
                           )}
                         </div>
                         <div className="flex flex-col items-end gap-2">
-                          <span className="text-xs text-gray-500 font-semibold">
+                          <span className="text-xs text-gray-500 font-semibold bg-gray-100 px-2 py-1 rounded">
                             Qty: {item.quantity}
                           </span>
                           <button
@@ -113,7 +112,7 @@ export default function Cart() {
               ))}
             </div>
 
-            {/* Order Summary - Premium Box */}
+            {/* Order Summary */}
             <div className="lg:col-span-1 h-fit">
               <div className="bg-gradient-to-br from-purple-50 to-indigo-50 border-2 border-purple-200 rounded-2xl p-8 sticky top-8">
                 <h2 className="text-xl font-black text-gray-900 mb-8 uppercase tracking-widest">
@@ -124,23 +123,41 @@ export default function Cart() {
                   <div className="flex justify-between items-center pb-3 border-b-2 border-purple-200">
                     <span className="text-gray-700 font-semibold">Subtotal</span>
                     <span className="text-lg font-black text-gray-900">
-                      ฿{subtotal.toLocaleString()}
+                      &#3647;{subtotal.toLocaleString()}
                     </span>
                   </div>
                   <div className="flex justify-between items-center pb-3 border-b-2 border-purple-200">
                     <span className="text-gray-700 font-semibold">Shipping</span>
                     <span className="text-lg font-black text-gray-900">
-                      ฿{shipping.toLocaleString()}
+                      &#3647;{shipping.toLocaleString()}
                     </span>
                   </div>
                   <div className="flex justify-between items-center pt-2">
                     <span className="text-gray-900 font-black text-lg">Total</span>
                     <span className="text-4xl font-black text-purple-600">
-                      ฿{total.toLocaleString()}
+                      &#3647;{total.toLocaleString()}
                     </span>
                   </div>
                 </div>
 
                 <Link
                   href={`/${locale}/checkout`}
-                  className="block w-full bg-gradient-to-r from-amber-400 to-amber-500 text-gray-900 py-4 rounded-xl font-bold text-center transition-all transform hover:from-amber-50
+                  className="block w-full bg-gradient-to-r from-amber-400 to-amber-500 text-gray-900 py-4 rounded-xl font-bold text-center transition-all transform hover:from-amber-500 hover:to-amber-600 active:scale-95 shadow-lg shadow-amber-200 mb-3"
+                >
+                  Proceed to Checkout &rarr;
+                </Link>
+
+                <Link
+                  href={`/${locale}/products`}
+                  className="block w-full border-2 border-purple-600 text-purple-600 py-3 rounded-xl font-bold text-center transition-colors hover:bg-purple-50"
+                >
+                  Continue Shopping
+                </Link>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}

@@ -88,20 +88,40 @@ export default function Checkout() {
       const shippingAddress = `${form.address}, ${form.city} ${form.postalCode}`;
 
       // 1. Create order
-      const { data: order, error: orderErr } = await supabase
+      // Build order payload — only include customer_name/email if the columns exist
+      // (migration 20260502_add_customer_info_to_orders.sql must be run in Supabase first)
+      const orderPayload: Record<string, unknown> = {
+        user_id: session.user.id,
+        total,
+        status: 'pending_payment',
+        shipping_address: shippingAddress,
+        phone: form.phone,
+        shipping_note: form.note || null,
+      };
+
+      // Try inserting with optional columns first, fall back without them on schema error
+      let order: { id: string } | null = null;
+      let orderErr: { message: string } | null = null;
+
+      const withExtra = await supabase
         .from('orders')
-        .insert({
-          user_id: session.user.id,
-          total,
-          status: 'pending_payment',
-          shipping_address: shippingAddress,
-          phone: form.phone,
-          shipping_note: form.note || null,
-          customer_name: form.name,
-          customer_email: form.email,
-        })
+        .insert({ ...orderPayload, customer_name: form.name, customer_email: form.email })
         .select()
         .single();
+
+      if (withExtra.error?.message?.includes('schema cache') || withExtra.error?.message?.includes('customer_')) {
+        // Columns not yet in DB — insert without them
+        const withoutExtra = await supabase
+          .from('orders')
+          .insert(orderPayload)
+          .select()
+          .single();
+        order = withoutExtra.data;
+        orderErr = withoutExtra.error;
+      } else {
+        order = withExtra.data;
+        orderErr = withExtra.error;
+      }
 
       if (orderErr || !order) throw new Error(orderErr?.message ?? 'Failed to create order');
 
@@ -347,4 +367,38 @@ export default function Checkout() {
               <div className="space-y-3 mb-5">
                 {items.map(item => (
                   <div key={item.product_id} className="flex justify-between items-center text-sm">
-                    <
+                    <span className="text-gray-600 truncate max-w-[140px]">{item.title} {item.quantity > 1 ? `×${item.quantity}` : ''}</span>
+                    <span className="font-bold text-gray-900 flex-shrink-0">฿{(item.price * item.quantity).toLocaleString()}</span>
+                  </div>
+                ))}
+              </div>
+
+              <div className="border-t-2 border-purple-200 pt-4 space-y-2 mb-5">
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-600">Subtotal</span>
+                  <span className="font-bold">฿{subtotal.toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-600">Shipping</span>
+                  <span className="font-bold">฿{SHIPPING_FEE.toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between items-baseline pt-1 border-t border-purple-200">
+                  <span className="font-black text-gray-900">Total</span>
+                  <span className="text-3xl font-black text-purple-600">฿{total.toLocaleString()}</span>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                {[{ icon: '🔒', text: 'Secure PromptPay' }, { icon: '📦', text: 'Safe packaging' }, { icon: '🛡️', text: 'PSA certified' }].map(b => (
+                  <div key={b.text} className="flex items-center gap-2 text-xs text-gray-600 font-medium">
+                    <span>{b.icon}</span>{b.text}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

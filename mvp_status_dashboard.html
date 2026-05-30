@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TC Collectibles MVP Status - May 16 Launch</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.js" integrity="sha384-iU8HYtnGQ8Cy4zl7gbNMOhsDTTKX02BTXptVP/vqAWIaTfM7isw76iyZCsjL2eVi" crossorigin="anonymous"></script>
+    <style>
+        :root {
+            color-scheme: light;
+            --primary: #3b82f6;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --bg: #ffffff;
+            --text: #1f2937;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f9fafb;
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        h1 { font-size: 28px; margin-bottom: 8px; }
+        .subtitle { font-size: 14px; opacity: 0.9; }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: var(--bg);
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .stat-label { font-size: 12px; color: #6b7280; font-weight: 600; }
+        .stat-value { font-size: 24px; font-weight: bold; margin-top: 5px; }
+
+        .progress-bar {
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--primary);
+            transition: width 0.3s ease;
+        }
+
+        .section {
+            background: var(--bg);
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        h2 { font-size: 18px; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 2px solid #e5e7eb; }
+        h3 { font-size: 14px; margin: 15px 0 8px; color: #374151; }
+
+        .task-list {
+            list-style: none;
+        }
+
+        .task-item {
+            padding: 10px 0;
+            border-bottom: 1px solid #f3f4f6;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .task-item:last-child { border-bottom: none; }
+
+        .checkbox {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            border: 2px solid #d1d5db;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 12px;
+        }
+
+        .checkbox.done {
+            background: var(--success);
+            border-color: var(--success);
+            color: white;
+        }
+
+        .checkbox.critical {
+            background: var(--danger);
+            border-color: var(--danger);
+            color: white;
+        }
+
+        .task-text { flex: 1; }
+        .task-text.done { opacity: 0.6; text-decoration: line-through; }
+
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .badge.success { background: #d1fae5; color: #065f46; }
+        .badge.critical { background: #fee2e2; color: #7f1d1d; }
+        .badge.pending { background: #fef3c7; color: #78350f; }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .grid-2 { grid-template-columns: 1fr; }
+            .stats { grid-template-columns: 1fr 1fr; }
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+        }
+
+        .timeline-item {
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e5e7eb;
+            position: relative;
+        }
+
+        .timeline-item:last-child { border-bottom: none; }
+
+        .timeline-dot {
+            width: 12px;
+            height: 12px;
+            background: var(--primary);
+            border-radius: 50%;
+            position: absolute;
+            left: -21px;
+            top: 5px;
+        }
+
+        .timeline-dot.done { background: var(--success); }
+        .timeline-dot.critical { background: var(--danger); }
+
+        .timeline-label { font-weight: 600; font-size: 13px; color: #6b7280; }
+        .timeline-title { font-weight: 600; margin: 3px 0; }
+        .timeline-desc { font-size: 13px; color: #6b7280; margin-top: 5px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚀 TC Collectibles MVP Launch</h1>
+            <div class="subtitle">Target: May 16, 2026 | Days Remaining: 8 | Status: On Track</div>
+        </header>
+
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-label">COMPLETION</div>
+                <div class="stat-value">62%</div>
+                <div class="progress-bar"><div class="progress-fill" style="width: 62%"></div></div>
+            </div>
+            <div class="stat-card" style="border-left-color: var(--success);">
+                <div class="stat-label">SHIPPED FEATURES</div>
+                <div class="stat-value">5</div>
+                <div style="font-size: 12px; margin-top: 8px; color: #6b7280;">Toast, Modal, Skeleton, Select, Payment Verification</div>
+            </div>
+            <div class="stat-card" style="border-left-color: var(--danger);">
+                <div class="stat-label">CRITICAL BLOCKING</div>
+                <div class="stat-value">3</div>
+                <div style="font-size: 12px; margin-top: 8px; color: #6b7280;">Email, Images, Validation</div>
+            </div>
+            <div class="stat-card" style="border-left-color: var(--warning);">
+                <div class="stat-label">GIT COMMITS</div>
+                <div class="stat-value">5</div>
+                <div style="font-size: 12px; margin-top: 8px; color: #6b7280;">Phase 4 + Payment Verification</div>
+            </div>
+        </div>
+
+        <div class="grid-2">
+            <div class="section">
+                <h2>✅ Completed (Session 2)</h2>
+                <ul class="task-list">
+                    <li class="task-item">
+                        <div class="checkbox done">✓</div>
+                        <div class="task-text done">Admin Payment Verification UI</div>
+                        <span class="badge success">SHIPPED</span>
+                    </li>
+                    <li class="task-item">
+                        <div class="checkbox done">✓</div>
+                        <div class="task-text done">PromptPay QR Configuration</div>
+                        <span class="badge success">READY</span>
+                    </li>
+                    <li class="task-item">
+                        <div class="checkbox done">✓</div>
+                        <div class="task-text done">Phase 4 Tier 1 Components</div>
+                        <span class="badge success">SHIPPED</span>
+                    </li>
+                    <li class="task-item">
+                        <div class="checkbox done">✓</div>
+                        <div class="task-text done">Payment Email Endpoint</div>
+                        <span class="badge success">WIRED</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="section">
+                <h2>🔴 Critical Path (Next 8 Days)</h2>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-dot critical"></div>
+                        <div class="timeline-label">Days 1-2</div>
+                        <div class="timeline-title">Email Notifications</div>
+                        <div class="timeline-desc">Wire checkout confirmation, test delivery</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-dot critical"></div>
+                        <div class="timeline-label">Days 3-4</div>
+                        <div class="timeline-title">Product Images</div>
+                        <div class="timeline-desc">Supabase Storage, admin upload, display</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-dot critical"></div>
+                        <div class="timeline-label">Days 4-5</div>
+                        <div class="timeline-title">Form Validation</div>
+                        <div class="timeline-desc">Quantity limits, price checks, edge cases</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-label">Days 5-6</div>
+                        <div class="timeline-title">Admin Dashboard</div>
+                        <div class="timeline-desc">Revenue calc, CSV export, RLS review</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-label">Days 7-8</div>
+                        <div class="timeline-title">Testing & Deploy</div>
+                        <div class="timeline-desc">E2E flow, mobile check, production verify</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>📋 Feature Status Dashboard</h2>
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr style="border-bottom: 2px solid #e5e7eb;">
+                        <th style="text-align: left; padding: 10px; font-weight: 600;">Feature</th>
+                        <th style="text-align: left; padding: 10px; font-weight: 600;">Status</th>
+                        <th style="text-align: left; padding: 10px; font-weight: 600;">Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="border-bottom: 1px solid #f3f4f6;">
+                        <td style="padding: 12px;">Browse Products</td>
+                        <td><span class="badge success">✓ DONE</span></td>
+                        <td style="font-size: 13px; color: #6b7280;">Filter, sort, detail page</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #f3f4f6;">
+                        <td style="padding: 12px;">Add to Cart</td>
+                        <td><span class="badge success">✓ DONE</span></td>
+                        <td style="font-size: 13px; color: #6b7280;">Quantity, remove, Zustand store</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #f3f4f6;">
+                        <td style="padding: 12px;">Checkout</td>
+                        <td><span class="badge success">✓ DONE</span></td>
+                        <td style="font-size: 13px; color: #6b7280;">Address capture, final-sale checkbox</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #f3f4f6;">
+                        <td style="padding: 12px;">Payment Page & QR</td>
+                        <td><span class="badge success">✓ READY</span></td>
+                        <td style="font-size: 13px; color: #6b7280;">PromptPay configured, needs test</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #f3f4f6;">
+                        <td style="padding: 12px;">Payment Verification</td>
+                        <td><span class="badge success">✓ SHIPPED</span></td>
+                        <td style="font-size: 13px; color: #6b7280;">Admin dashboard, approve/reject</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #f3f4f6;">
+                        <td style="padding: 12px;">Order Confirmation Email</td>
+                        <td><span class="badge pending">⏳ PENDING</span></td>
+                        <td style="font-size: 13px; color: #6b7280;">CRITICAL — needs checkout hook</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #f3f4f6;">
+                        <td style="padding: 12px;">Payment Verified Email</td>
+                        <td><span class="badge success">✓ WIRED</span></td>
+                        <td style="font-size: 13px; color: #6b7280;">Triggers on admin approval</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #f3f4f6;">
+                        <td style="padding: 12px;">Product Images</td>
+                        <td><span class="badge pending">⏳ TODO</span></td>
+                        <td style="font-size: 13px; color: #6b7280;">Supabase Storage needed</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 12px;">Form Validation</td>
+                        <td><span class="badge pending">⏳ TODO</span></td>
+                        <td style="font-size: 13px; color: #6b7280;">Quantity, price, edge cases</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="section">
+            <h2>🔑 Key Information</h2>
+            <div class="grid-2">
+                <div>
+                    <h3>Environment</h3>
+                    <ul class="task-list">
+                        <li style="padding: 8px 0; border: none;"><strong>GitHub:</strong> techcraftlabbkk/tc-collectibles</li>
+                        <li style="padding: 8px 0; border: none;"><strong>Live:</strong> tc-collectibles.vercel.app</li>
+                        <li style="padding: 8px 0; border: none;"><strong>Email:</strong> techcraftlab.bkk@gmail.com</li>
+                        <li style="padding: 8px 0; border: none;"><strong>PromptPay:</strong> 0809429441</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3>Next Steps</h3>
+                    <ul class="task-list">
+                        <li style="padding: 8px 0; border: none;">1. Wire email on checkout (CRITICAL)</li>
+                        <li style="padding: 8px 0; border: none;">2. Test full payment flow</li>
+                        <li style="padding: 8px 0; border: none;">3. Set up product images</li>
+                        <li style="padding: 8px 0; border: none;">4. Add validation logic</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

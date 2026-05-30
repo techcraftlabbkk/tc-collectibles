@@ -1,0 +1,179 @@
+{
+  "pages": {
+    "auth": {
+      "login": {
+        "title": "ยินดีต้อนรับกลับ",
+        "subtitle": "เข้าสู่ระบบบัญชี TC Collectibles ของคุณ",
+        "email": "อีเมล",
+        "password": "รหัสผ่าน",
+        "login_button": "เข้าสู่ระบบ",
+        "magic_link_button": "ส่ง Magic Link",
+        "magic_link_tab": "Magic Link",
+        "password_tab": "รหัสผ่าน",
+        "no_account": "ยังไม่มีบัญชี?",
+        "signup_link": "สมัครสมาชิก",
+        "forgot_password": "ลืมรหัสผ่าน?",
+        "magic_link_sent": "ตรวจสอบอีเมลของคุณ!",
+        "magic_link_sent_desc": "เราส่งลิงก์เข้าสู่ระบบไปยังอีเมลของคุณแล้ว คลิกเพื่อเข้าสู่ระบบทันที — ไม่ต้องใช้รหัสผ่าน",
+        "or_divider": "หรือ",
+        "back_to_login": "กลับไปเข้าสู่ระบบ"
+      },
+      "signup": {
+        "title": "สร้างบัญชี",
+        "subtitle": "เข้าร่วม TC Collectibles วันนี้",
+        "name": "ชื่อเต็ม",
+        "email": "อีเมล",
+        "password": "รหัสผ่าน",
+        "confirm_password": "ยืนยันรหัสผ่าน",
+        "terms": "ฉันยอมรับข้อกำหนดการใช้งานและนโยบายความเป็นส่วนตัว",
+        "submit": "สร้างบัญชี",
+        "have_account": "มีบัญชีแล้ว?",
+        "login_link": "เข้าสู่ระบบ"
+      }
+    }
+  },
+  "errors": {
+    "required_field": "กรุณากรอกข้อมูลในช่องนี้",
+    "invalid_email": "กรุณากรอกอีเมลที่ถูกต้อง",
+    "password_too_short": "รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร",
+    "password_mismatch": "รหัสผ่านไม่ตรงกัน",
+    "network_error": "เกิดข้อผิดพลาด กรุณาลองอีกครั้ง"
+  },
+  "toasts": {
+    "auth": {
+      "login_success": "ยินดีต้อนรับกลับ!",
+      "login_failed": {
+        "message": "เข้าสู่ระบบไม่สำเร็จ",
+        "description": "อีเมลหรือรหัสผ่านไม่ถูกต้อง กรุณาลองอีกครั้ง"
+      },
+      "magic_link_sent": "ส่ง Magic Link แล้ว! ตรวจสอบอีเมลของคุณ",
+      "magic_link_failed": "ส่ง Magic Link ไม่สำเร็จ กรุณาลองอีกครั้ง",
+      "signup_success": "สร้างบัญชีสำเร็จ! กรุณาตรวจสอบอีเมลเพื่อยืนยัน",
+      "signup_failed": {
+        "message": "สมัครสมาชิกไม่สำเร็จ",
+        "description": "ไม่สามารถสร้างบัญชีได้ กรุณาลองอีกครั้ง"
+      },
+      "signup_error": {
+        "message": "เกิดข้อผิดพลาด",
+        "description": "กรุณาตรวจสอบข้อมูลและลองอีกครั้ง"
+      },
+      "logout_success": "ออกจากระบบเรียบร้อยแล้ว"
+    }
+  },
+  "navigation": {
+    "home": "หน้าแรก",
+    "products": "สินค้า",
+    "cart": "รถเข็น",
+    "orders": "คำสั่งซื้อของฉัน",
+    "admin": "ผู้ดูแล",
+    "logout": "ออกจากระบบ",
+    "login": "เข้าสู่ระบบ",
+    "signup": "สมัครสมาชิก"
+  },
+  "products": {
+    "title": "สินค้า",
+    "filter": "ตัวกรอง",
+    "sort": "เรียงลำดับ",
+    "search": "ค้นหา",
+    "addToCart": "เพิ่มไปยังรถเข็น",
+    "price": "ราคา",
+    "grade": "เกรด",
+    "featured": "การ์ดที่นิยม",
+    "noProducts": "ไม่พบสินค้า"
+  },
+  "cart": {
+    "title": "รถเข็นช้อปปิ้ง",
+    "empty": "รถเข็นของคุณว่างเปล่า",
+    "subtotal": "รวมย่อย",
+    "shipping": "ค่าจัดส่ง",
+    "tax": "ภาษี",
+    "total": "รวม",
+    "checkout": "ดำเนินการชำระเงิน",
+    "continueShopping": "ดำเนินการช้อปปิ้งต่อ",
+    "quantity": "จำนวน",
+    "remove": "ลบ"
+  },
+  "checkout": {
+    "title": "ชำระเงิน",
+    "shippingAddress": "ที่อยู่ในการจัดส่ง",
+    "fullName": "ชื่อเต็ม",
+    "email": "อีเมล",
+    "phone": "โทรศัพท์",
+    "address": "ที่อยู่",
+    "city": "เมือง",
+    "postalCode": "รหัสไปรษณีย์",
+    "country": "ประเทศ",
+    "orderSummary": "สรุปการสั่งซื้อ",
+    "placeOrder": "วางการสั่งซื้อ",
+    "confirmOrder": "คุณแน่ใจหรือว่าต้องการวางการสั่งซื้อนี้?",
+    "processing": "กำลังดำเนินการ...",
+    "agreeToTerms": "ฉันยอมรับเงื่อนไขและข้อกำหนด"
+  },
+  "auth": {
+    "login": "เข้าสู่ระบบ",
+    "signup": "สมัครสมาชิก",
+    "email": "อีเมล",
+    "password": "รหัสผ่าน",
+    "confirmPassword": "ยืนยันรหัสผ่าน",
+    "loginButton": "เข้าสู่ระบบ",
+    "signupButton": "สมัครสมาชิก",
+    "noAccount": "ยังไม่มีบัญชี?",
+    "haveAccount": "มีบัญชีแล้ว?",
+    "forgotPassword": "ลืมรหัสผ่าน?",
+    "loginError": "อีเมลหรือรหัสผ่านไม่ถูกต้อง",
+    "emailRequired": "จำเป็นต้องใส่อีเมล",
+    "passwordRequired": "จำเป็นต้องใส่รหัสผ่าน"
+  },
+  "orders": {
+    "title": "คำสั่งซื้อของฉัน",
+    "orderId": "ID การสั่งซื้อ",
+    "date": "วันที่",
+    "total": "รวม",
+    "status": "สถานะ",
+    "noOrders": "คุณยังไม่มีคำสั่งซื้อ",
+    "viewDetails": "ดูรายละเอียด",
+    "trackOrder": "ติดตามการสั่งซื้อ"
+  },
+  "payment": {
+    "title": "การชำระเงิน",
+    "promptpay": "พร้อมเพย์",
+    "scanQR": "สแกน QR code นี้ด้วยแอพธนาคารของคุณ",
+    "amount": "จำนวนเงิน",
+    "reference": "อ้างอิง",
+    "pending": "รอการชำระเงิน",
+    "completed": "ชำระเงินแล้ว",
+    "failed": "ชำระเงินล้มเหลว"
+  },
+  "admin": {
+    "title": "แผงควบคุมผู้ดูแล",
+    "orders": "คำสั่งซื้อ",
+    "payments": "การชำระเงิน",
+    "products": "สินค้า",
+    "users": "ผู้ใช้",
+    "pending": "รอดำเนินการ",
+    "verified": "ยืนยันแล้ว",
+    "rejected": "ปฏิเสธแล้ว",
+    "approve": "อนุมัติ",
+    "reject": "ปฏิเสธ",
+    "viewDetails": "ดูรายละเอียด",
+    "uploadImage": "อัปโหลดภาพ",
+    "deleteProduct": "ลบสินค้า",
+    "editProduct": "แก้ไขสินค้า",
+    "payment_approved": "ชำระเงินได้รับการอนุมัติ",
+    "payment_rejected": "ชำระเงินถูกปฏิเสธ"
+  },
+  "common": {
+    "loading": "กำลังโหลด...",
+    "error": "เกิดข้อผิดพลาด",
+    "success": "สำเร็จ",
+    "close": "ปิด",
+    "save": "บันทึก",
+    "cancel": "ยกเลิก",
+    "delete": "ลบ",
+    "edit": "แก้ไข",
+    "back": "กลับ",
+    "next": "ถัดไป",
+    "submit": "ส่ง",
+    "language": "ภาษา"
+  }
+}
