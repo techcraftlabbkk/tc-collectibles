@@ -3,7 +3,6 @@ import { stripe } from '@/lib/stripeServer';
 import { createClient } from '@supabase/supabase-js';
 import Stripe from 'stripe';
 
-// Use service-role client to bypass RLS
 const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
@@ -27,42 +26,53 @@ export async function POST(req: NextRequest) {
 
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object as Stripe.Checkout.Session;
-    const { userId, tokens } = session.metadata ?? {};
+    const { type, userId, tokens, orderId } = session.metadata ?? {};
 
-    if (!userId || !tokens) {
-      console.error('Missing metadata in Stripe session', session.id);
+    // ── PSA Card Order payment ──────────────────────────────────────────────
+    if (type === 'card_order' && orderId) {
+      const { error: updateErr } = await supabaseAdmin
+        .from('orders')
+        .update({ status: 'payment_received', updated_at: new Date().toISOString() })
+        .eq('id', orderId);
+
+      if (updateErr) {
+        console.error('Failed to update order status:', updateErr);
+        return NextResponse.json({ error: 'Order update failed' }, { status: 500 });
+      }
+
+      console.log(`✅ Card payment confirmed for order ${orderId}`);
       return NextResponse.json({ received: true });
     }
 
-    const tokenAmount = parseInt(tokens, 10);
+    // ── 3D Studio wallet top-up ─────────────────────────────────────────────
+    if (userId && tokens) {
+      const tokenAmount = parseInt(tokens, 10);
 
-    // Credit tokens to wallet (upsert in case row doesn't exist yet)
-    const { error: walletErr } = await supabaseAdmin
-      .from('user_tokens')
-      .upsert({ user_id: userId, balance: tokenAmount }, { onConflict: 'user_id' });
+      const { error: walletErr } = await supabaseAdmin
+        .from('user_tokens')
+        .upsert({ user_id: userId, balance: tokenAmount }, { onConflict: 'user_id' });
 
-    if (walletErr) {
-      // Row exists — increment instead
-      const { error: rpcErr } = await supabaseAdmin.rpc('increment_user_tokens', {
-        p_user_id: userId,
-        p_amount: tokenAmount,
-      });
-      if (rpcErr) {
-        console.error('Failed to credit tokens:', rpcErr);
-        return NextResponse.json({ error: 'Token credit failed' }, { status: 500 });
+      if (walletErr) {
+        const { error: rpcErr } = await supabaseAdmin.rpc('increment_user_tokens', {
+          p_user_id: userId,
+          p_amount: tokenAmount,
+        });
+        if (rpcErr) {
+          console.error('Failed to credit tokens:', rpcErr);
+          return NextResponse.json({ error: 'Token credit failed' }, { status: 500 });
+        }
       }
+
+      await supabaseAdmin.from('token_ledger').insert({
+        user_id: userId,
+        amount: tokenAmount,
+        type: 'topup',
+        description: `Purchased ${tokenAmount} tokens via Stripe`,
+        stripe_session_id: session.id,
+      });
+
+      console.log(`✅ Credited ${tokenAmount} tokens to user ${userId}`);
     }
-
-    // Log to ledger
-    await supabaseAdmin.from('token_ledger').insert({
-      user_id: userId,
-      amount: tokenAmount,
-      type: 'topup',
-      description: `Purchased ${tokenAmount} tokens via Stripe`,
-      stripe_session_id: session.id,
-    });
-
-    console.log(`✅ Credited ${tokenAmount} tokens to user ${userId}`);
   }
 
   return NextResponse.json({ received: true });
