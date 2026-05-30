@@ -29,7 +29,7 @@ const STATUS_COLORS: Record<string, string> = {
   pending_payment: 'bg-yellow-900 text-yellow-200',
   paid: 'bg-green-900 text-green-200',
   processing: 'bg-blue-900 text-blue-200',
-  shipped: 'bg-emerald-900 text-emerald-200',
+  shipped: 'bg-purple-900 text-purple-200',
   delivered: 'bg-green-900 text-green-200',
   cancelled: 'bg-red-900 text-red-200',
 };

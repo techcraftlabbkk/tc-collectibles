@@ -38,7 +38,7 @@ const STATUS_CONFIG: Record<string, { bg: string; text: string; dot: string; lab
   pending_payment: { bg: 'bg-amber-50',   text: 'text-amber-800',   dot: 'bg-amber-400',   label: 'Pending Payment' },
   paid:            { bg: 'bg-emerald-50', text: 'text-emerald-800', dot: 'bg-emerald-400', label: 'Paid' },
   processing:      { bg: 'bg-blue-50',    text: 'text-blue-800',    dot: 'bg-blue-400',    label: 'Processing' },
-  shipped:         { bg: 'bg-emerald-50',  text: 'text-emerald-800',  dot: 'bg-emerald-400',  label: 'Shipped' },
+  shipped:         { bg: 'bg-purple-50',  text: 'text-purple-800',  dot: 'bg-purple-400',  label: 'Shipped' },
   delivered:       { bg: 'bg-green-50',   text: 'text-green-800',   dot: 'bg-green-400',   label: 'Delivered' },
   cancelled:       { bg: 'bg-red-50',     text: 'text-red-800',     dot: 'bg-red-400',     label: 'Cancelled' },
 };
@@ -255,7 +255,7 @@ export default function AdminPage() {
     }
   };
 
-  const inputCls = 'w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition';
+  const inputCls = 'w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition';
 
   if (loading) {
     return (
@@ -283,7 +283,7 @@ export default function AdminPage() {
         <div className="flex items-center gap-3">
           <Link
             href={`/${locale}/admin/3d`}
-            className="text-sm bg-emerald-600 text-white hover:bg-emerald-700 px-4 py-2 rounded-lg transition-colors flex items-center gap-1.5 font-semibold"
+            className="text-sm bg-purple-600 text-white hover:bg-purple-700 px-4 py-2 rounded-lg transition-colors flex items-center gap-1.5 font-semibold"
           >
             🖨️ 3D Print Orders
           </Link>
@@ -327,7 +327,7 @@ export default function AdminPage() {
             <StatCard label="Total Orders"     value={String(stats.totalOrders)}                                                                   icon="📦" color="bg-blue-50" />
             <StatCard label="Total Revenue"    value={`฿${stats.totalRevenue.toLocaleString()}`}                                                    icon="💰" color="bg-emerald-50" />
             <StatCard label="Pending Payment"  value={String(stats.pendingPayment)}                                                                 icon="⏳" color="bg-amber-50" />
-            <StatCard label="Total Products"   value={String(stats.productsCount)}                                                                  icon="🃏" color="bg-emerald-50" />
+            <StatCard label="Total Products"   value={String(stats.productsCount)}                                                                  icon="🃏" color="bg-purple-50" />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -393,7 +393,7 @@ export default function AdminPage() {
                       <p className="text-xs text-gray-400 mt-0.5 max-w-xs truncate">{order.shipping_address}</p>
                     )}
                   </div>
-                  <p className="font-black text-lg text-emerald-600">฿{order.total.toLocaleString()}</p>
+                  <p className="font-black text-lg text-purple-600">฿{order.total.toLocaleString()}</p>
                 </div>
 
                 {order.status === 'pending_payment' && (
@@ -436,7 +436,7 @@ export default function AdminPage() {
             <p className="text-sm text-gray-500">{products.length} product{products.length !== 1 ? 's' : ''} · {availableCount} available</p>
             <button
               onClick={() => setShowAddProduct(true)}
-              className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors flex items-center gap-1.5"
+              className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors flex items-center gap-1.5"
             >
               + Add Product
             </button>
@@ -474,12 +474,12 @@ export default function AdminPage() {
                     </div>
                   </div>
                   <label className="flex items-center gap-2 cursor-pointer">
-                    <input type="checkbox" checked={newProduct.available} onChange={(e) => setNewProduct((p) => ({ ...p, available: e.target.checked }))} className="w-4 h-4 accent-emerald-600" />
+                    <input type="checkbox" checked={newProduct.available} onChange={(e) => setNewProduct((p) => ({ ...p, available: e.target.checked }))} className="w-4 h-4 accent-purple-600" />
                     <span className="text-sm text-gray-700">List as available for sale</span>
                   </label>
                   <div className="flex gap-3 pt-2">
                     <button type="button" onClick={() => setShowAddProduct(false)} className="flex-1 border border-gray-300 text-gray-700 hover:bg-gray-50 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors">Cancel</button>
-                    <button type="submit" disabled={addingProduct} className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2.5 rounded-lg text-sm font-semibold disabled:opacity-50 transition-colors">
+                    <button type="submit" disabled={addingProduct} className="flex-1 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2.5 rounded-lg text-sm font-semibold disabled:opacity-50 transition-colors">
                       {addingProduct ? 'Adding…' : 'Add Product'}
                     </button>
                   </div>
@@ -520,12 +520,12 @@ export default function AdminPage() {
                     </div>
                   </div>
                   <label className="flex items-center gap-2 cursor-pointer">
-                    <input type="checkbox" id="edit-available" checked={editForm.available} onChange={(e) => setEditForm((p) => ({ ...p, available: e.target.checked }))} className="w-4 h-4 accent-emerald-600" />
+                    <input type="checkbox" id="edit-available" checked={editForm.available} onChange={(e) => setEditForm((p) => ({ ...p, available: e.target.checked }))} className="w-4 h-4 accent-purple-600" />
                     <span className="text-sm text-gray-700">Listed as available for sale</span>
                   </label>
                   <div className="flex gap-3 pt-2">
                     <button type="button" onClick={() => setEditingProduct(null)} className="flex-1 border border-gray-300 text-gray-700 hover:bg-gray-50 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors">Cancel</button>
-                    <button type="submit" disabled={savingProduct} className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2.5 rounded-lg text-sm font-semibold disabled:opacity-50 transition-colors">
+                    <button type="submit" disabled={savingProduct} className="flex-1 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2.5 rounded-lg text-sm font-semibold disabled:opacity-50 transition-colors">
                       {savingProduct ? 'Saving…' : 'Save Changes'}
                     </button>
                   </div>
@@ -540,7 +540,7 @@ export default function AdminPage() {
               <div className="bg-white border border-gray-200 rounded-xl text-center py-16">
                 <p className="text-4xl mb-3">📭</p>
                 <p className="text-gray-500 font-medium">No products yet</p>
-                <button onClick={() => setShowAddProduct(true)} className="mt-4 text-emerald-600 hover:text-emerald-800 text-sm font-semibold">+ Add your first product</button>
+                <button onClick={() => setShowAddProduct(true)} className="mt-4 text-purple-600 hover:text-purple-800 text-sm font-semibold">+ Add your first product</button>
               </div>
             ) : (
               products.map((product) => (
@@ -558,7 +558,7 @@ export default function AdminPage() {
                         </span>
                       </div>
                       <div className="flex items-center gap-4 text-sm flex-wrap">
-                        <span className="font-black text-emerald-600">฿{product.price.toLocaleString()}</span>
+                        <span className="font-black text-purple-600">฿{product.price.toLocaleString()}</span>
                         <span className="text-gray-400 text-xs">Stock: <span className={`font-semibold ${product.quantity > 0 ? 'text-gray-700' : 'text-red-600'}`}>{product.quantity}</span></span>
                       </div>
                     </div>
@@ -581,7 +581,7 @@ export default function AdminPage() {
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img src={url} alt={`${product.title} image ${idx + 1}`} className="w-16 h-16 object-cover rounded-lg border border-gray-200" />
                         {idx === 0 && (
-                          <span className="absolute top-0.5 left-0.5 bg-emerald-600 text-white text-[9px] font-bold px-1 rounded leading-tight">MAIN</span>
+                          <span className="absolute top-0.5 left-0.5 bg-purple-600 text-white text-[9px] font-bold px-1 rounded leading-tight">MAIN</span>
                         )}
                         <button
                           onClick={() => handleDeleteProductImage(product.id, url)}
@@ -597,7 +597,7 @@ export default function AdminPage() {
                     <label className={`w-16 h-16 flex-shrink-0 flex flex-col items-center justify-center border-2 border-dashed rounded-lg cursor-pointer transition-colors text-center
                       ${uploadingProductId === product.id
                         ? 'border-gray-200 text-gray-300 cursor-not-allowed'
-                        : 'border-emerald-300 hover:border-emerald-500 hover:bg-emerald-50 text-emerald-400 hover:text-emerald-600'
+                        : 'border-purple-300 hover:border-purple-500 hover:bg-purple-50 text-purple-400 hover:text-purple-600'
                       }`}>
                       {uploadingProductId === product.id ? (
                         <span className="text-[10px]">Uploading…</span>

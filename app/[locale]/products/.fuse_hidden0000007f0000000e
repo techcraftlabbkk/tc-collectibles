@@ -56,7 +56,7 @@ export default function Products() {
   return (
     <div className="w-full bg-white">
       {/* Page Header */}
-      <section className="w-full px-4 py-12 bg-gradient-to-r from-emerald-600 to-teal-600 text-white">
+      <section className="w-full px-4 py-12 bg-gradient-to-r from-purple-600 to-indigo-600 text-white">
         <div className="max-w-6xl mx-auto">
           <h1 className="text-4xl sm:text-5xl font-black mb-3">
             {t('products.title')}
@@ -71,11 +71,11 @@ export default function Products() {
       <section className="w-full px-4 py-12">
         <div className="max-w-6xl mx-auto">
           {/* Filters & Sort Bar */}
-          <div className="flex flex-col sm:flex-row gap-4 mb-8 pb-6 border-b-2 border-emerald-200">
+          <div className="flex flex-col sm:flex-row gap-4 mb-8 pb-6 border-b-2 border-purple-200">
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="flex-1 px-4 py-3 border-2 border-emerald-300 rounded-lg focus:outline-none focus:border-amber-400 font-semibold"
+              className="flex-1 px-4 py-3 border-2 border-purple-300 rounded-lg focus:outline-none focus:border-amber-400 font-semibold"
             >
               <option value="featured">Featured</option>
               <option value="price-low">Price: Low to High</option>
@@ -85,7 +85,7 @@ export default function Products() {
             <select
               value={filterGrade}
               onChange={(e) => setFilterGrade(e.target.value)}
-              className="flex-1 px-4 py-3 border-2 border-emerald-300 rounded-lg focus:outline-none focus:border-amber-400 font-semibold"
+              className="flex-1 px-4 py-3 border-2 border-purple-300 rounded-lg focus:outline-none focus:border-amber-400 font-semibold"
             >
               <option value="all">All Grades</option>
               <option value="PSA 10">PSA 10</option>
@@ -148,7 +148,7 @@ export default function Products() {
 
                   {/* Product Info */}
                   <div className="p-4">
-                    <h3 className="font-bold text-gray-900 text-sm mb-2 line-clamp-2 group-hover:text-emerald-600 transition-colors">
+                    <h3 className="font-bold text-gray-900 text-sm mb-2 line-clamp-2 group-hover:text-purple-600 transition-colors">
                       {product.title}
                     </h3>
 
@@ -161,13 +161,13 @@ export default function Products() {
                     </p>
 
                     <div className="flex items-center justify-between mb-3">
-                      <span className="text-2xl font-black text-emerald-600">
+                      <span className="text-2xl font-black text-purple-600">
                         ฿{product.price?.toLocaleString() || '0'}
                       </span>
                     </div>
 
                     {/* CTA */}
-                    <button className="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white py-2 rounded-lg font-bold text-sm transition-all transform hover:scale-105 active:scale-95">
+                    <button className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white py-2 rounded-lg font-bold text-sm transition-all transform hover:scale-105 active:scale-95">
                       View Details →
                     </button>
                   </div>
@@ -182,7 +182,7 @@ export default function Products() {
                   setSortBy('featured');
                   setFilterGrade('all');
                 }}
-                className="inline-block bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-3 rounded-lg font-bold transition-colors"
+                className="inline-block bg-purple-600 hover:bg-purple-700 text-white px-8 py-3 rounded-lg font-bold transition-colors"
               >
                 Clear Filters
               </button>

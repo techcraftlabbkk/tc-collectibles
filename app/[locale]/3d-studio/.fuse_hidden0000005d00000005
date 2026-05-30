@@ -275,7 +275,7 @@ export default function ThreeDStudioPage() {
             <p className="text-gray-400 mt-1">Upload a model, generate with AI, or convert a photo</p>
           </div>
           <div className="flex items-center gap-3">
-            <div className="bg-emerald-50 border border-emerald-200 text-cyan-300 px-4 py-2.5 rounded-xl font-semibold text-sm">
+            <div className="bg-purple-50 border border-purple-200 text-cyan-300 px-4 py-2.5 rounded-xl font-semibold text-sm">
               ⚡ {balance !== null ? `${balance} credits` : '—'}
             </div>
             <Link href={`/${locale}/3d-studio/wallet`}
@@ -314,13 +314,13 @@ export default function ThreeDStudioPage() {
                   <input ref={fileInputRef} type="file" accept=".stl,.obj,.glb,.3mf" className="hidden" onChange={handleFileUpload} />
                   {!uploadedFile ? (
                     <button onClick={() => fileInputRef.current?.click()}
-                      className="w-full border-2 border-dashed border-emerald-200 rounded-xl py-12 text-center hover:border-emerald-400 hover:bg-emerald-50 transition-all group">
+                      className="w-full border-2 border-dashed border-purple-200 rounded-xl py-12 text-center hover:border-purple-400 hover:bg-purple-50 transition-all group">
                       <div className="text-4xl mb-3">📂</div>
                       <div className="font-semibold text-gray-700 group-hover:text-cyan-300">Drop or click to upload your 3D file</div>
                       <div className="text-sm text-gray-400 mt-1">Supports STL, OBJ, GLB, 3MF · Max 50MB</div>
                     </button>
                   ) : (
-                    <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4 flex items-center gap-4">
+                    <div className="bg-purple-50 border border-purple-200 rounded-xl p-4 flex items-center gap-4">
                       <div className="text-3xl">📄</div>
                       <div className="flex-1 min-w-0">
                         <div className="font-semibold text-gray-900 truncate">{uploadedFile.name}</div>
@@ -350,7 +350,7 @@ export default function ThreeDStudioPage() {
                     <label className="block text-sm font-semibold text-gray-700 mb-2">Describe your model</label>
                     <textarea value={prompt} onChange={e => setPrompt(e.target.value)}
                       placeholder="e.g. A detailed Pikachu figurine standing on a Pokéball, game-accurate proportions..."
-                      className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm resize-none h-24 focus:outline-none focus:ring-2 focus:ring-emerald-400" />
+                      className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm resize-none h-24 focus:outline-none focus:ring-2 focus:ring-purple-400" />
                   </div>
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-2">Art style</label>
@@ -384,7 +384,7 @@ export default function ThreeDStudioPage() {
                       </div>
                       {aiJob.status !== 'succeeded' && aiJob.status !== 'failed' && (
                         <div className="w-full bg-gray-200 rounded-full h-2">
-                          <div className="bg-emerald-600 h-2 rounded-full transition-all" style={{ width: `${aiJob.progress}%` }} />
+                          <div className="bg-purple-600 h-2 rounded-full transition-all" style={{ width: `${aiJob.progress}%` }} />
                         </div>
                       )}
                       {aiJob.thumbnailUrl && (

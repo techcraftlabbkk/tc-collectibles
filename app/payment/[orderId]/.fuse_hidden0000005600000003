@@ -137,7 +137,7 @@ export default function PaymentPage({ params }: { params: { orderId: string } })
           {/* PromptPay Payment Slip */}
           <div className="bg-white text-black rounded-lg shadow-xl overflow-hidden mb-8">
             {/* SCB Header */}
-            <div className="bg-emerald-600 py-6 text-center">
+            <div className="bg-purple-600 py-6 text-center">
               <p className="text-white text-3xl font-bold">SCB</p>
             </div>
 
@@ -183,7 +183,7 @@ export default function PaymentPage({ params }: { params: { orderId: string } })
             </div>
 
             {/* Footer */}
-            <div className="bg-emerald-600 h-8" />
+            <div className="bg-purple-600 h-8" />
           </div>
 
           {/* Instructions */}

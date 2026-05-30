@@ -32,16 +32,16 @@ export default function WalletSuccessPage() {
         <h1 className="text-2xl font-black text-gray-900 mb-2">Payment Successful!</h1>
         <p className="text-gray-600 mb-4">Your tokens have been added to your wallet.</p>
         {balance !== null ? (
-          <div className="bg-emerald-50 border border-emerald-200 rounded-xl py-4 px-6 mb-6 inline-block">
-            <div className="text-xs font-semibold text-emerald-500 uppercase tracking-wide mb-1">New Balance</div>
-            <div className="text-4xl font-black text-emerald-700">⚡ {balance}</div>
+          <div className="bg-purple-50 border border-purple-200 rounded-xl py-4 px-6 mb-6 inline-block">
+            <div className="text-xs font-semibold text-purple-500 uppercase tracking-wide mb-1">New Balance</div>
+            <div className="text-4xl font-black text-purple-700">⚡ {balance}</div>
           </div>
         ) : (
           <div className="text-gray-400 text-sm mb-6 animate-pulse">Updating balance...</div>
         )}
         <div className="flex gap-3 justify-center">
           <Link href={`/${locale}/3d-studio`}
-            className="bg-emerald-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-emerald-700 transition-colors">
+            className="bg-purple-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-purple-700 transition-colors">
             Start Printing
           </Link>
           <Link href={`/${locale}/3d-studio/wallet`}
