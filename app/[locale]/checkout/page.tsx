@@ -55,18 +55,18 @@ export default function Checkout() {
   const set = (field: keyof FormData, value: string | boolean) =>
     setForm(f => ({ ...f, [field]: value }));
 
-  const validateAddress = () => {
-    if (!form.name.trim())       return 'Full name is required';
-    if (!form.email.trim())      return 'Email is required';
-    if (!form.phone.trim())      return 'Phone number is required';
-    if (!form.address.trim())    return 'Address is required';
-    if (!form.city.trim())       return 'City is required';
-    if (!form.postalCode.trim()) return 'Postal code is required';
+  const validateAddress = (data: FormData = form) => {
+    if (!data.name.trim())       return 'Full name is required';
+    if (!data.email.trim())      return 'Email is required';
+    if (!data.phone.trim())      return 'Phone number is required';
+    if (!data.address.trim())    return 'Address is required';
+    if (!data.city.trim())       return 'City is required';
+    if (!data.postalCode.trim()) return 'Postal code is required';
     return null;
   };
 
-  const handleContinue = () => {
-    const err = validateAddress();
+  const handleContinue = (data: FormData = form) => {
+    const err = validateAddress(data);
     if (err) {
       setError(err);
       // Scroll the error into view so the user sees it regardless of scroll position
@@ -247,21 +247,25 @@ export default function Checkout() {
                 <button
                   type="button"
                   onClick={() => {
-                    // Capture any browser-autofilled values before validating
+                    // Capture any browser-autofilled values that never fired React's
+                    // onChange. Build the values synchronously so validation sees them
+                    // immediately (setState is async and would otherwise lag a click).
+                    const captured: FormData = { ...form };
                     if (formRef.current) {
                       const inputs = formRef.current.querySelectorAll<HTMLInputElement>('input');
                       inputs.forEach(input => {
                         const ac = input.getAttribute('autocomplete');
                         if (!input.value) return;
-                        if (ac === 'name') set('name', input.value);
-                        else if (ac === 'email') set('email', input.value);
-                        else if (ac === 'tel') set('phone', input.value);
-                        else if (ac === 'street-address') set('address', input.value);
-                        else if (ac === 'address-level2') set('city', input.value);
-                        else if (ac === 'postal-code') set('postalCode', input.value);
+                        if (ac === 'name') captured.name = input.value;
+                        else if (ac === 'email') captured.email = input.value;
+                        else if (ac === 'tel') captured.phone = input.value;
+                        else if (ac === 'street-address') captured.address = input.value;
+                        else if (ac === 'address-level2') captured.city = input.value;
+                        else if (ac === 'postal-code') captured.postalCode = input.value;
                       });
+                      setForm(captured);
                     }
-                    handleContinue();
+                    handleContinue(captured);
                   }}
                   className="w-full bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-gray-900 py-4 rounded-xl font-bold text-base transition-all active:scale-95 shadow-lg shadow-amber-100 mt-2"
                 >
