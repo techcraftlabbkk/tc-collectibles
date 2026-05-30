@@ -1,4 +1,4 @@
-{
+﻿{
   "compilerOptions": {
     "target": "es2020",
     "useDefineForClassFields": true,
@@ -55,5 +55,4 @@
     "jest.config.ts",
     "jest.setup.ts"
   ]
-}
 }
