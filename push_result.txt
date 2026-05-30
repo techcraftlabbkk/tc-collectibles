@@ -1,2 +1,0 @@
-Everything up-to-date
-Exit code: 0 

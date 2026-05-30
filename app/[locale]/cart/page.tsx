@@ -87,15 +87,25 @@ export default function Cart() {
                         <div>
                           <p className="text-xs text-gray-500 uppercase tracking-widest font-bold mb-1">Price</p>
                           <p className="text-3xl font-black text-purple-600">
-                            ฿{item.price.toLocaleString()}
+                            ฿{(item.price * item.quantity).toLocaleString()}
                           </p>
+                          {item.quantity > 1 && (
+                            <p className="text-xs text-gray-500 mt-1">
+                              ฿{item.price.toLocaleString()} × {item.quantity}
+                            </p>
+                          )}
                         </div>
-                        <button
-                          onClick={() => removeFromCart(item.product_id)}
-                          className="text-red-600 hover:text-red-700 font-bold transition-colors"
-                        >
-                          Remove
-                        </button>
+                        <div className="flex flex-col items-end gap-2">
+                          <span className="text-xs text-gray-500 font-semibold">
+                            Qty: {item.quantity}
+                          </span>
+                          <button
+                            onClick={() => removeFromCart(item.product_id)}
+                            className="text-red-600 hover:text-red-700 font-bold transition-colors"
+                          >
+                            Remove
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -133,22 +143,4 @@ export default function Cart() {
 
                 <Link
                   href={`/${locale}/checkout`}
-                  className="block w-full bg-gradient-to-r from-amber-400 to-amber-500 text-gray-900 py-4 rounded-xl font-bold text-center transition-all transform hover:from-amber-500 hover:to-amber-600 active:scale-95 shadow-lg shadow-amber-200 mb-3"
-                >
-                  Proceed to Checkout →
-                </Link>
-
-                <Link
-                  href={`/${locale}/products`}
-                  className="block w-full border-2 border-purple-600 text-purple-600 py-3 rounded-xl font-bold text-center transition-colors hover:bg-purple-50"
-                >
-                  Continue Shopping
-                </Link>
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
+                  className="block w-full bg-gradient-to-r from-amber-400 to-amber-500 text-gray-900 py-4 rounded-xl font-bold text-center transition-all transform hover:from-amber-50

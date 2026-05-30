@@ -96,7 +96,7 @@ export default function Products() {
 
             <div className="text-right flex items-center">
               <span className="font-semibold text-gray-600">
-                {products.length} cards
+                {isLoading ? 'Loading...' : `${products.length} cards`}
               </span>
             </div>
           </div>
@@ -189,7 +189,4 @@ export default function Products() {
             </div>
           )}
         </div>
-      </section>
-    </div>
-  );
-}
+   

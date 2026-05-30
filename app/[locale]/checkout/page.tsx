@@ -1,7 +1,7 @@
 'use client';
 
 import { useTranslations, useLocale } from 'next-intl';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
@@ -31,6 +31,8 @@ export default function Checkout() {
   const [step, setStep] = useState<Step>('address');
   const [placing, setPlacing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const errorRef = useRef<HTMLDivElement>(null);
+  const formRef = useRef<HTMLDivElement>(null);
   const [form, setForm] = useState<FormData>({
     name: '', email: '', phone: '', address: '', city: '', postalCode: '', note: '', agreeTerms: false,
   });
@@ -65,7 +67,12 @@ export default function Checkout() {
 
   const handleContinue = () => {
     const err = validateAddress();
-    if (err) { setError(err); return; }
+    if (err) {
+      setError(err);
+      // Scroll the error into view so the user sees it regardless of scroll position
+      setTimeout(() => errorRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 50);
+      return;
+    }
     setError(null);
     setStep('review');
   };
@@ -161,7 +168,7 @@ export default function Checkout() {
 
         {/* Error banner */}
         {error && (
-          <div className="mb-6 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm flex items-center gap-2">
+          <div ref={errorRef} className="mb-6 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm flex items-center gap-2">
             ⚠️ {error}
             <button onClick={() => setError(null)} className="ml-auto text-red-400 hover:text-red-600 font-bold">✕</button>
           </div>
@@ -174,7 +181,7 @@ export default function Checkout() {
 
             {/* STEP 1 — Address */}
             {step === 'address' && (
-              <div className="bg-white border-2 border-purple-100 rounded-2xl p-8 space-y-5">
+              <div ref={formRef} className="bg-white border-2 border-purple-100 rounded-2xl p-8 space-y-5">
                 <div className="flex items-center gap-3 pb-5 border-b-2 border-purple-50">
                   <span className="text-2xl">📍</span>
                   <h2 className="text-xl font-black text-gray-900">{t('checkout.shippingAddress')}</h2>
@@ -182,33 +189,33 @@ export default function Checkout() {
 
                 <div>
                   <label className={label}>{t('checkout.fullName')}</label>
-                  <input type="text" value={form.name} onChange={e => set('name', e.target.value)} placeholder="Somchai Rakdee" className={inp} />
+                  <input type="text" value={form.name} onChange={e => set('name', e.target.value)} onBlur={e => set('name', e.target.value)} autoComplete="name" placeholder="Somchai Rakdee" className={inp} />
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className={label}>{t('checkout.email')}</label>
-                    <input type="email" value={form.email} onChange={e => set('email', e.target.value)} placeholder="you@email.com" className={inp} />
+                    <input type="email" value={form.email} onChange={e => set('email', e.target.value)} onBlur={e => set('email', e.target.value)} autoComplete="email" placeholder="you@email.com" className={inp} />
                   </div>
                   <div>
                     <label className={label}>{t('checkout.phone')}</label>
-                    <input type="tel" value={form.phone} onChange={e => set('phone', e.target.value)} placeholder="08x-xxx-xxxx" className={inp} />
+                    <input type="tel" value={form.phone} onChange={e => set('phone', e.target.value)} onBlur={e => set('phone', e.target.value)} autoComplete="tel" placeholder="08x-xxx-xxxx" className={inp} />
                   </div>
                 </div>
 
                 <div>
                   <label className={label}>{t('checkout.address')}</label>
-                  <input type="text" value={form.address} onChange={e => set('address', e.target.value)} placeholder="123 Sukhumvit Rd, Watthana" className={inp} />
+                  <input type="text" value={form.address} onChange={e => set('address', e.target.value)} onBlur={e => set('address', e.target.value)} autoComplete="street-address" placeholder="123 Sukhumvit Rd, Watthana" className={inp} />
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className={label}>{t('checkout.city')}</label>
-                    <input type="text" value={form.city} onChange={e => set('city', e.target.value)} placeholder="Bangkok" className={inp} />
+                    <input type="text" value={form.city} onChange={e => set('city', e.target.value)} onBlur={e => set('city', e.target.value)} autoComplete="address-level2" placeholder="Bangkok" className={inp} />
                   </div>
                   <div>
                     <label className={label}>{t('checkout.postalCode')}</label>
-                    <input type="text" value={form.postalCode} onChange={e => set('postalCode', e.target.value)} placeholder="10110" className={inp} />
+                    <input type="text" value={form.postalCode} onChange={e => set('postalCode', e.target.value)} onBlur={e => set('postalCode', e.target.value)} autoComplete="postal-code" placeholder="10110" className={inp} />
                   </div>
                 </div>
 
@@ -219,7 +226,23 @@ export default function Checkout() {
 
                 <button
                   type="button"
-                  onClick={handleContinue}
+                  onClick={() => {
+                    // Capture any browser-autofilled values before validating
+                    if (formRef.current) {
+                      const inputs = formRef.current.querySelectorAll<HTMLInputElement>('input');
+                      inputs.forEach(input => {
+                        const ac = input.getAttribute('autocomplete');
+                        if (!input.value) return;
+                        if (ac === 'name') set('name', input.value);
+                        else if (ac === 'email') set('email', input.value);
+                        else if (ac === 'tel') set('phone', input.value);
+                        else if (ac === 'street-address') set('address', input.value);
+                        else if (ac === 'address-level2') set('city', input.value);
+                        else if (ac === 'postal-code') set('postalCode', input.value);
+                      });
+                    }
+                    handleContinue();
+                  }}
                   className="w-full bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-gray-900 py-4 rounded-xl font-bold text-base transition-all active:scale-95 shadow-lg shadow-amber-100 mt-2"
                 >
                   Review Order →
@@ -324,38 +347,4 @@ export default function Checkout() {
               <div className="space-y-3 mb-5">
                 {items.map(item => (
                   <div key={item.product_id} className="flex justify-between items-center text-sm">
-                    <span className="text-gray-600 truncate max-w-[140px]">{item.title} {item.quantity > 1 ? `×${item.quantity}` : ''}</span>
-                    <span className="font-bold text-gray-900 flex-shrink-0">฿{(item.price * item.quantity).toLocaleString()}</span>
-                  </div>
-                ))}
-              </div>
-
-              <div className="border-t-2 border-purple-200 pt-4 space-y-2 mb-5">
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">Subtotal</span>
-                  <span className="font-bold">฿{subtotal.toLocaleString()}</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">Shipping</span>
-                  <span className="font-bold">฿{SHIPPING_FEE.toLocaleString()}</span>
-                </div>
-                <div className="flex justify-between items-baseline pt-1 border-t border-purple-200">
-                  <span className="font-black text-gray-900">Total</span>
-                  <span className="text-3xl font-black text-purple-600">฿{total.toLocaleString()}</span>
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                {[{ icon: '🔒', text: 'Secure PromptPay' }, { icon: '📦', text: 'Safe packaging' }, { icon: '🛡️', text: 'PSA certified' }].map(b => (
-                  <div key={b.text} className="flex items-center gap-2 text-xs text-gray-600 font-medium">
-                    <span>{b.icon}</span>{b.text}
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
+                    <

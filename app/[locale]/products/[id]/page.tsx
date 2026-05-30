@@ -26,6 +26,7 @@ export default function ProductDetail({ params }: { params: { id: string } }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [added, setAdded] = useState(false);
+  const [alreadyInCart, setAlreadyInCart] = useState(false);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -60,9 +61,14 @@ export default function ProductDetail({ params }: { params: { id: string } }) {
 
   const handleAddToCart = () => {
     if (!product) return;
-    addToCart(product);
-    setAdded(true);
-    setTimeout(() => setAdded(false), 2500);
+    const result = addToCart(product);
+    if (result === 'already_in_cart') {
+      setAlreadyInCart(true);
+      setTimeout(() => setAlreadyInCart(false), 2500);
+    } else {
+      setAdded(true);
+      setTimeout(() => setAdded(false), 2500);
+    }
   };
 
   const gradeStyle = product?.grade ? (GRADE_STYLES[product.grade] ?? GRADE_STYLES['PSA 6']) : null;
@@ -202,6 +208,8 @@ export default function ProductDetail({ params }: { params: { id: string } }) {
                 className={`flex items-center justify-center gap-2.5 w-full py-4 rounded-xl font-bold text-lg transition-all transform ${
                   added
                     ? 'bg-green-500 text-white scale-95'
+                    : alreadyInCart
+                    ? 'bg-blue-500 text-white'
                     : product.available && product.quantity > 0
                     ? 'bg-gradient-to-r from-amber-400 to-amber-500 text-gray-900 hover:from-amber-500 hover:to-amber-600 active:scale-95 shadow-xl shadow-amber-200'
                     : 'bg-gray-200 text-gray-400 cursor-not-allowed'
@@ -214,6 +222,8 @@ export default function ProductDetail({ params }: { params: { id: string } }) {
                     </svg>
                     Added to Cart! ✓
                   </>
+                ) : alreadyInCart ? (
+                  <>🛒 Already in Cart — Go to Cart to Checkout</>
                 ) : (
                   <>
                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -275,17 +285,4 @@ export default function ProductDetail({ params }: { params: { id: string } }) {
                   </div>
                   <div className="p-4 flex flex-col flex-1">
                     <p className="text-sm font-bold text-gray-800 line-clamp-2 mb-3 group-hover:text-purple-600 transition-colors">{rel.title}</p>
-                    <p className="text-2xl font-black text-purple-600 mt-auto">฿{rel.price.toLocaleString()}</p>
-                    <button className="mt-4 w-full bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-lg font-bold text-sm transition-colors">
-                      View Card →
-                    </button>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
+                    <p className="text-2xl font-black text-p

@@ -6,7 +6,7 @@ import { CartItem, Product } from './types';
 
 export interface CartStore {
   items: CartItem[];
-  addToCart: (product: Product) => void;
+  addToCart: (product: Product) => 'added' | 'already_in_cart';
   removeFromCart: (productId: string) => void;
   updateQuantity: (productId: string, quantity: number) => void;
   clearCart: () => void;
@@ -20,22 +20,25 @@ export const useCartStore = create<CartStore>()(
       items: [],
 
       addToCart: (product: Product) => {
-        set((state) => {
-          const existingItem = state.items.find((item) => item.product_id === product.id);
+        const state = get();
+        const existingItem = state.items.find((item) => item.product_id === product.id);
 
-          if (existingItem) {
-            // Update quantity if product already in cart
-            return {
-              items: state.items.map((item) =>
-                item.product_id === product.id ? { ...item, quantity: item.quantity + 1 } : item
-              ),
-            };
-          }
+        // PSA collectibles are unique — cap at stock quantity (typically 1)
+        const stockLimit = product.quantity ?? 1;
+        if (existingItem && existingItem.quantity >= stockLimit) {
+          return 'already_in_cart';
+        }
 
-          // Add new item to cart
-          return {
+        if (existingItem) {
+          set((s) => ({
+            items: s.items.map((item) =>
+              item.product_id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+            ),
+          }));
+        } else {
+          set((s) => ({
             items: [
-              ...state.items,
+              ...s.items,
               {
                 product_id: product.id,
                 title: product.title,
@@ -45,8 +48,9 @@ export const useCartStore = create<CartStore>()(
                 image_url: product.image_url,
               },
             ],
-          };
-        });
+          }));
+        }
+        return 'added';
       },
 
       removeFromCart: (productId: string) => {
@@ -77,13 +81,4 @@ export const useCartStore = create<CartStore>()(
         return state.items.reduce((total, item) => total + item.price * item.quantity, 0);
       },
 
-      getItemCount: () => {
-        const state = get();
-        return state.items.reduce((count, item) => count + item.quantity, 0);
-      },
-    }),
-    {
-      name: 'cart-store',
-    }
-  )
-);
+ 
