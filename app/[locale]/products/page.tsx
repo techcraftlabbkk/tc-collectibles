@@ -3,7 +3,7 @@
 import { useTranslations, useLocale } from 'next-intl';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { createClient } from '@supabase/supabase-js';
+import { supabase } from '@/lib/supabase';
 
 export default function Products() {
   const t = useTranslations();
@@ -16,11 +16,6 @@ export default function Products() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const supabase = createClient(
-          process.env.NEXT_PUBLIC_SUPABASE_URL!,
-          process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-        );
-
         let query = supabase.from('products').select('*');
 
         if (filterGrade !== 'all') {

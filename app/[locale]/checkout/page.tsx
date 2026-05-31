@@ -31,6 +31,7 @@ export default function Checkout() {
   const [step, setStep] = useState<Step>('address');
   const [placing, setPlacing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const placedRef = useRef(false); // prevents items=0 redirect after cart cleared on success
   const errorRef = useRef<HTMLDivElement>(null);
   const formRef = useRef<HTMLDivElement>(null);
   const [form, setForm] = useState<FormData>({
@@ -41,16 +42,21 @@ export default function Checkout() {
   const total = subtotal + (items.length > 0 ? SHIPPING_FEE : 0);
 
   // Auth guard + prefill
+  // NOTE: items.length intentionally excluded from deps — we only need to guard on mount/locale
+  // change. Including it caused a race condition where clearCart() (called on successful order)
+  // triggered this effect and router.push('/products') would race against router.push('/payment/...')
   useEffect(() => {
+    // Check empty cart synchronously BEFORE any async call so placedRef is read immediately
+    if (items.length === 0 && !placedRef.current) { router.push(`/${locale}/products`); return; }
     const init = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) { router.push(`/${locale}/auth/login`); return; }
-      if (items.length === 0) { router.push(`/${locale}/products`); return; }
       // Pre-fill email from auth
       setForm(f => ({ ...f, email: session.user.email ?? '' }));
     };
     init();
-  }, [router, locale, items.length]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router, locale]);
 
   const set = (field: keyof FormData, value: string | boolean) =>
     setForm(f => ({ ...f, [field]: value }));
@@ -134,9 +140,21 @@ export default function Checkout() {
           price_at_purchase: item.price,
         }))
       );
-      if (itemsErr) throw new Error(itemsErr.message);
+      if (itemsErr) {
+        // Clean up the orphaned order row before surfacing the error
+        await supabase.from('orders').delete().eq('id', order.id);
+        throw new Error(itemsErr.message);
+      }
 
-      // 3. Clear cart and redirect to payment
+      // 3. Send order confirmation email (fire-and-forget)
+      fetch('/api/orders/send-confirmation', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ orderId: order.id, customerEmail: form.email, customerName: form.name, total, items }),
+      }).catch(() => {});
+
+      // 4. Clear cart and redirect to payment
+      placedRef.current = true;
       clearCart();
       router.push(`/${locale}/payment/${order.id}`);
     } catch (err) {
