@@ -64,9 +64,15 @@ export default function Payment({ params }: { params: { orderId: string } }) {
     setCardLoading(true);
     setError(null);
     try {
+      // Pass access token so the API route can authenticate without cookies
+      const { data: { session: authSession } } = await supabase.auth.getSession();
       const res = await fetch('/api/payment/create-card-checkout', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'x-locale': locale },
+        headers: {
+          'Content-Type': 'application/json',
+          'x-locale': locale,
+          ...(authSession?.access_token ? { 'Authorization': `Bearer ${authSession.access_token}` } : {}),
+        },
         body: JSON.stringify({ orderId: params.orderId }),
       });
       const data = await res.json();

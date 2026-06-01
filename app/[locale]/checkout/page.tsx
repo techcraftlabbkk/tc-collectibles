@@ -64,6 +64,7 @@ export default function Checkout() {
   const validateAddress = (data: FormData = form) => {
     if (!data.name.trim())       return 'Full name is required';
     if (!data.email.trim())      return 'Email is required';
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email.trim())) return 'Please enter a valid email address';
     if (!data.phone.trim())      return 'Phone number is required';
     if (!data.address.trim())    return 'Address is required';
     if (!data.city.trim())       return 'City is required';
