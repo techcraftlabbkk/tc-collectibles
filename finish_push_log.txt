@@ -1,0 +1,301 @@
+===== clearing stale locks =====
+===== removing generated tsbuildinfo from commit =====
+fatal: pathspec 'tsconfig.tsbuildinfo' did not match any files
+===== staging resolved package.json =====
+===== continuing rebase =====
+app/[locale]/about/page.tsx: needs merge
+app/[locale]/admin/page.tsx: needs merge
+app/[locale]/cart/page.tsx: needs merge
+app/[locale]/checkout/page.tsx: needs merge
+app/[locale]/orders/page.tsx: needs merge
+app/[locale]/page.tsx: needs merge
+app/[locale]/payment/[orderId]/page.tsx: needs merge
+app/[locale]/products/[id]/page.tsx: needs merge
+app/[locale]/products/page.tsx: needs merge
+app/admin/page.tsx: needs merge
+app/api/products/upload-image/route.ts: needs merge
+app/globals.css: needs merge
+app/orders/page.tsx: needs merge
+app/payment/[orderId]/page.tsx: needs merge
+components/Button.tsx: needs merge
+components/Footer.tsx: needs merge
+components/Header.tsx: needs merge
+docs/scripts/commit_and_push.bat: needs merge
+lib/cartStore.ts: needs merge
+lib/types.ts: needs merge
+next.config.js: needs merge
+package-lock.json: needs merge
+You must edit all merge conflicts and then
+mark them as resolved using git add
+===== ignoring tsbuildinfo going forward =====
+U	app/[locale]/about/page.tsx
+U	app/[locale]/admin/page.tsx
+U	app/[locale]/cart/page.tsx
+U	app/[locale]/checkout/page.tsx
+U	app/[locale]/orders/page.tsx
+U	app/[locale]/page.tsx
+U	app/[locale]/payment/[orderId]/page.tsx
+U	app/[locale]/products/[id]/page.tsx
+U	app/[locale]/products/page.tsx
+U	app/admin/page.tsx
+U	app/api/products/upload-image/route.ts
+U	app/globals.css
+U	app/orders/page.tsx
+U	app/payment/[orderId]/page.tsx
+U	components/Button.tsx
+U	components/Footer.tsx
+U	components/Header.tsx
+U	docs/scripts/commit_and_push.bat
+U	lib/cartStore.ts
+U	lib/types.ts
+U	next.config.js
+U	package-lock.json
+===== status =====
+interactive rebase in progress; onto acb7234
+Last command done (1 command done):
+   pick e0bb685 # fix: apply enhancement scan fixes
+Next command to do (1 remaining command):
+   pick fa253ea # 3D Studio: free-model catalogue tab with real previews, grams/hours, importer
+  (use "git rebase --edit-todo" to view and edit)
+You are currently rebasing branch 'main' on 'acb7234'.
+  (fix conflicts and then run "git rebase --continue")
+  (use "git rebase --skip" to skip this patch)
+  (use "git rebase --abort" to check out the original branch)
+
+Changes to be committed:
+  (use "git restore --staged <file>..." to unstage)
+	modified:   .env.example
+	modified:   .eslintrc.json
+	modified:   .gitignore
+	new file:   .vercel-url
+	new file:   .vercel/README.txt
+	new file:   .vercel/project.json
+	modified:   README.md
+	modified:   __tests__/api/payment.test.ts
+	modified:   __tests__/components/Button.test.tsx
+	modified:   __tests__/components/Card.test.tsx
+	modified:   __tests__/components/Footer.test.tsx
+	modified:   __tests__/components/Header.test.tsx
+	modified:   __tests__/components/Input.test.tsx
+	modified:   __tests__/components/LanguageSwitcher.test.tsx
+	modified:   __tests__/components/Loading.test.tsx
+	modified:   __tests__/components/Modal.test.tsx
+	modified:   __tests__/components/Select.test.tsx
+	modified:   __tests__/components/Toast.test.tsx
+	modified:   __tests__/hooks/useToast.test.tsx
+	modified:   __tests__/integration/auth.integration.test.ts
+	modified:   __tests__/integration/cart-flow.test.ts
+	modified:   __tests__/integration/checkout.test.ts
+	modified:   __tests__/integration/order-management.integration.test.ts
+	modified:   __tests__/lib/cartStore.test.ts
+	modified:   __tests__/lib/emailService.test.ts
+	modified:   app/[locale]/auth/callback/page.tsx
+	modified:   app/[locale]/auth/login/page.tsx
+	modified:   app/[locale]/auth/signup/page.tsx
+	modified:   app/[locale]/layout.tsx
+	modified:   app/[locale]/privacy/page.tsx
+	modified:   app/[locale]/terms/page.tsx
+	modified:   app/api/admin/update-images/route.ts
+	modified:   app/api/email/send-payment-verified/route.ts
+	modified:   app/api/orders/send-confirmation/route.ts
+	modified:   app/api/orders/send-delivery-email/route.ts
+	modified:   app/api/orders/send-payment-email/route.ts
+	modified:   app/api/orders/send-shipment-email/route.ts
+	modified:   app/api/payment/generate-qr/route.ts
+	modified:   app/auth/login/page.tsx
+	modified:   app/auth/signup/page.tsx
+	modified:   app/cart/page.tsx
+	modified:   app/checkout/page.tsx
+	modified:   app/i18n.ts
+	modified:   app/layout.tsx
+	modified:   app/page.tsx
+	modified:   app/products/page.tsx
+	deleted:    commit_and_push.bat
+	modified:   components/Card.tsx
+	modified:   components/EmailLayout.tsx
+	modified:   components/Input.tsx
+	modified:   components/LanguageSwitcher.tsx
+	modified:   components/Loading.tsx
+	modified:   components/Modal.tsx
+	modified:   components/Select.tsx
+	modified:   components/Toast.tsx
+	modified:   database/001_create_tables.sql
+	modified:   database/002_create_admins_table.sql
+	modified:   database/002_create_rls_policies.sql
+	modified:   database/003_sample_products.sql
+	renamed:    ADMIN_SETUP_GUIDE.md -> docs/ADMIN_SETUP_GUIDE.md
+	renamed:    BOOTSTRAP_COMPLETE.md -> docs/BOOTSTRAP_COMPLETE.md
+	renamed:    CRITICAL_FIXES_SUMMARY.md -> docs/CRITICAL_FIXES_SUMMARY.md
+	renamed:    DELIVERABLES_TRACKER.md -> docs/DELIVERABLES_TRACKER.md
+	renamed:    DEPLOYMENT_FIX_SUMMARY.md -> docs/DEPLOYMENT_FIX_SUMMARY.md
+	renamed:    DEPLOYMENT_GUIDE.md -> docs/DEPLOYMENT_GUIDE.md
+	renamed:    DEPLOYMENT_STEPS_LIVE.md -> docs/DEPLOYMENT_STEPS_LIVE.md
+	renamed:    DEVELOPMENT_SUMMARY_MAY2_2026.md -> docs/DEVELOPMENT_SUMMARY_MAY2_2026.md
+	renamed:    EMAIL_COPY_REVIEW.md -> docs/EMAIL_COPY_REVIEW.md
+	renamed:    FINAL_PROJECT_STATUS.md -> docs/FINAL_PROJECT_STATUS.md
+	renamed:    FINAL_STATUS_DAY3.md -> docs/FINAL_STATUS_DAY3.md
+	renamed:    FIX_GUIDE.md -> docs/FIX_GUIDE.md
+	renamed:    GITHUB_DESKTOP_SETUP.md -> docs/GITHUB_DESKTOP_SETUP.md
+	renamed:    HAIKU_HANDOFF_STATUS.md -> docs/HAIKU_HANDOFF_STATUS.md
+	renamed:    HANDOFF.md -> docs/HANDOFF.md
+	renamed:    HANDOFF_2026_05_08.md -> docs/HANDOFF_2026_05_08.md
+	renamed:    HANDOFF_2026_05_09_FOR_HAIKU.md -> docs/HANDOFF_2026_05_09_FOR_HAIKU.md
+	renamed:    HANDOFF_2026_05_10_DEPLOYMENT_FIX.md -> docs/HANDOFF_2026_05_10_DEPLOYMENT_FIX.md
+	renamed:    HANDOFF_2026_05_11_FOR_HAIKU.md -> docs/HANDOFF_2026_05_11_FOR_HAIKU.md
+	renamed:    HANDOFF_NEXT_SESSION.md -> docs/HANDOFF_NEXT_SESSION.md
+	renamed:    HANDOFF_SESSION_2026_05_08_COMPLETE.md -> docs/HANDOFF_SESSION_2026_05_08_COMPLETE.md
+	renamed:    HANDOFF_SESSION_2026_05_08_SESSION_3.md -> docs/HANDOFF_SESSION_2026_05_08_SESSION_3.md
+	renamed:    IMPLEMENTATION_PLAN_i18n_UX.md -> docs/IMPLEMENTATION_PLAN_i18n_UX.md
+	renamed:    IMPLEMENTATION_SESSION_2026_05_08.md -> docs/IMPLEMENTATION_SESSION_2026_05_08.md
+	renamed:    IMPLEMENTATION_SETUP_GUIDE.md -> docs/IMPLEMENTATION_SETUP_GUIDE.md
+	renamed:    IMPLEMENTATION_STATUS.md -> docs/IMPLEMENTATION_STATUS.md
+	renamed:    MIGRATION_COMPLETE.md -> docs/MIGRATION_COMPLETE.md
+	renamed:    MVP_COMPLETION_PLAN.md -> docs/MVP_COMPLETION_PLAN.md
+	renamed:    MVP_ROADMAP.md -> docs/MVP_ROADMAP.md
+	renamed:    NEXT_SESSION_TASKS.md -> docs/NEXT_SESSION_TASKS.md
+	renamed:    PHASE2_3D_PRINTING_ROADMAP.md -> docs/PHASE2_3D_PRINTING_ROADMAP.md
+	renamed:    PHASE2_IMPLEMENTATION_PLAN.md -> docs/PHASE2_IMPLEMENTATION_PLAN.md
+	renamed:    PHASE_2_COMPLETE.md -> docs/PHASE_2_COMPLETE.md
+	renamed:    PHASE_3_TESTING_COMPLETE.md -> docs/PHASE_3_TESTING_COMPLETE.md
+	renamed:    PHASE_4_IMPLEMENTATION_PLAN.md -> docs/PHASE_4_IMPLEMENTATION_PLAN.md
+	renamed:    PHASE_4_STARTUP_COMPLETE.md -> docs/PHASE_4_STARTUP_COMPLETE.md
+	renamed:    PRODUCTION_READINESS_CHECKLIST.md -> docs/PRODUCTION_READINESS_CHECKLIST.md
+	renamed:    QUICKSTART_5MIN.md -> docs/QUICKSTART_5MIN.md
+	renamed:    QUICK_DEPLOY_STEPS.md -> docs/QUICK_DEPLOY_STEPS.md
+	renamed:    QUICK_REFERENCE.md -> docs/QUICK_REFERENCE.md
+	renamed:    SESSION_SUMMARY_PHASE_3_FINAL.md -> docs/SESSION_SUMMARY_PHASE_3_FINAL.md
+	renamed:    SETUP_GUIDE.md -> docs/SETUP_GUIDE.md
+	renamed:    TESTING_GUIDE.md -> docs/TESTING_GUIDE.md
+	renamed:    TESTING_NOTES_2026_05_02.md -> docs/TESTING_NOTES_2026_05_02.md
+	renamed:    TESTING_SUMMARY_HAIKU_ROUND1.md -> docs/TESTING_SUMMARY_HAIKU_ROUND1.md
+	renamed:    TEST_EXECUTION_SUMMARY.md -> docs/TEST_EXECUTION_SUMMARY.md
+	renamed:    TEST_RUNNING_GUIDE.md -> docs/TEST_RUNNING_GUIDE.md
+	renamed:    TONE_AND_VOICE_APPLIED.md -> docs/TONE_AND_VOICE_APPLIED.md
+	renamed:    UI_POLISH_DAY1_COMPLETE.md -> docs/UI_POLISH_DAY1_COMPLETE.md
+	renamed:    UI_POLISH_DAY2_COMPLETE.md -> docs/UI_POLISH_DAY2_COMPLETE.md
+	renamed:    UI_POLISH_DAY3_COMPLETE.md -> docs/UI_POLISH_DAY3_COMPLETE.md
+	renamed:    UI_UX_POLISH_PLAN.md -> docs/UI_UX_POLISH_PLAN.md
+	renamed:    automation-report-20260508-220028.md -> docs/automation-report-20260508-220028.md
+	renamed:    automation-report-20260508-220141.md -> docs/automation-report-20260508-220141.md
+	renamed:    automation-report-20260508-220438.md -> docs/automation-report-20260508-220438.md
+	renamed:    automation-report-20260508-220655.md -> docs/automation-report-20260508-220655.md
+	renamed:    deploy-report-20260508-220028.md -> docs/deploy-report-20260508-220028.md
+	renamed:    deploy-report-20260508-220141.md -> docs/deploy-report-20260508-220141.md
+	renamed:    deploy-report-20260508-220438.md -> docs/deploy-report-20260508-220438.md
+	renamed:    deploy-report-20260508-220655.md -> docs/deploy-report-20260508-220655.md
+	renamed:    haiku-handoff-email-copy-fixes.md -> docs/haiku-handoff-email-copy-fixes.md
+	renamed:    mvp_status_dashboard.html -> docs/mvp_status_dashboard.html
+	renamed:    DEPLOYMENT_COMMANDS.sh -> docs/scripts/DEPLOYMENT_COMMANDS.sh
+	renamed:    SETUP_GIT_WINDOWS.bat -> docs/scripts/SETUP_GIT_WINDOWS.bat
+	renamed:    automated-test.js -> docs/scripts/automated-test.js
+	renamed:    clear_git_credentials.bat -> docs/scripts/clear_git_credentials.bat
+	renamed:    complete_push.ps1 -> docs/scripts/complete_push.ps1
+	renamed:    copy_and_push_fix.bat -> docs/scripts/copy_and_push_fix.bat
+	renamed:    fix_admin_push.bat -> docs/scripts/fix_admin_push.bat
+	renamed:    fix_and_push.bat -> docs/scripts/fix_and_push.bat
+	renamed:    fix_css_and_push.bat -> docs/scripts/fix_css_and_push.bat
+	renamed:    git_commit_and_push.bat -> docs/scripts/git_commit_and_push.bat
+	renamed:    init_and_push.bat -> docs/scripts/init_and_push.bat
+	renamed:    init_and_push_final.bat -> docs/scripts/init_and_push_final.bat
+	renamed:    just_push.bat -> docs/scripts/just_push.bat
+	renamed:    link-tester.js -> docs/scripts/link-tester.js
+	renamed:    pull_and_push.bat -> docs/scripts/pull_and_push.bat
+	renamed:    push-changes.bat -> docs/scripts/push-changes.bat
+	renamed:    push_final.py -> docs/scripts/push_final.py
+	renamed:    push_final_fix.bat -> docs/scripts/push_final_fix.bat
+	renamed:    push_i18n_fix.ps1 -> docs/scripts/push_i18n_fix.ps1
+	renamed:    push_to_github.py -> docs/scripts/push_to_github.py
+	renamed:    push_with_pat.bat -> docs/scripts/push_with_pat.bat
+	renamed:    push_with_token.bat -> docs/scripts/push_with_token.bat
+	renamed:    resolve_conflicts.bat -> docs/scripts/resolve_conflicts.bat
+	renamed:    resolve_conflicts.ps1 -> docs/scripts/resolve_conflicts.ps1
+	renamed:    run_final_push.bat -> docs/scripts/run_final_push.bat
+	renamed:    run_push.bat -> docs/scripts/run_push.bat
+	renamed:    sync_and_push.bat -> docs/scripts/sync_and_push.bat
+	renamed:    update_images.js -> docs/scripts/update_images.js
+	modified:   e2e/admin.spec.ts
+	modified:   e2e/auth.spec.ts
+	modified:   e2e/checkout.spec.ts
+	modified:   e2e/payment.spec.ts
+	modified:   e2e/products.spec.ts
+	modified:   i18n/config.ts
+	modified:   jest.config.js
+	modified:   jest.config.ts
+	modified:   jest.setup.js
+	modified:   jest.setup.ts
+	modified:   lib/adminHelpers.ts
+	modified:   lib/auth.ts
+	modified:   lib/email/copy.ts
+	modified:   lib/emailService.ts
+	modified:   lib/hooks/useToast.tsx
+	modified:   lib/storage.ts
+	modified:   lib/supabase.ts
+	modified:   lib/supabaseServer.ts
+	modified:   lib/test-utils.tsx
+	modified:   lib/useProducts.ts
+	modified:   messages/en.json
+	modified:   messages/th.json
+	modified:   middleware.ts
+	modified:   next-env.d.ts
+	modified:   playwright.config.ts
+	modified:   postcss.config.js
+	modified:   scripts/automated-deploy.sh
+	modified:   scripts/automated-testing.sh
+	modified:   scripts/generate-admin-link.js
+	modified:   scripts/run-all.sh
+	modified:   scripts/seed-products.js
+	modified:   scripts/setup-admin.js
+	modified:   scripts/verify-setup.js
+	new file:   supabase/migrations/0002_email_infra_apply.sql
+	modified:   supabase/migrations/20260502_add_customer_info_to_orders.sql
+	modified:   supabase/migrations/20260503_add_product_images.sql
+	modified:   tailwind.config.ts
+	modified:   tsconfig.json
+	modified:   tsconfig.node.json
+	deleted:    tsconfig.tsbuildinfo
+	new file:   types/nodemailer.d.ts
+	modified:   types/qrcode.d.ts
+	new file:   vercel token 20260421.txt
+	modified:   vercel.json
+
+Unmerged paths:
+  (use "git restore --staged <file>..." to unstage)
+  (use "git add <file>..." to mark resolution)
+	both modified:   app/[locale]/about/page.tsx
+	both modified:   app/[locale]/admin/page.tsx
+	both modified:   app/[locale]/cart/page.tsx
+	both modified:   app/[locale]/checkout/page.tsx
+	both modified:   app/[locale]/orders/page.tsx
+	both modified:   app/[locale]/page.tsx
+	both modified:   app/[locale]/payment/[orderId]/page.tsx
+	both modified:   app/[locale]/products/[id]/page.tsx
+	both modified:   app/[locale]/products/page.tsx
+	both modified:   app/admin/page.tsx
+	both modified:   app/api/products/upload-image/route.ts
+	both modified:   app/globals.css
+	both modified:   app/orders/page.tsx
+	both modified:   app/payment/[orderId]/page.tsx
+	both modified:   components/Button.tsx
+	both modified:   components/Footer.tsx
+	both modified:   components/Header.tsx
+	both modified:   docs/scripts/commit_and_push.bat
+	both modified:   lib/cartStore.ts
+	both modified:   lib/types.ts
+	both modified:   next.config.js
+	both modified:   package-lock.json
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	finish_push.bat
+	finish_push_log.txt
+
+===== pushing to origin main =====
+To https://github.com/techcraftlabbkk/tc-collectibles.git
+ ! [rejected]        main -> main (non-fast-forward)
+error: failed to push some refs to 'https://github.com/techcraftlabbkk/tc-collectibles.git'
+hint: Updates were rejected because a pushed branch tip is behind its remote
+hint: counterpart. If you want to integrate the remote changes, use 'git pull'
+hint: before pushing again.
+hint: See the 'Note about fast-forwards' in 'git push --help' for details.
+===== EXITCODE 0 =====
+===== DONE =====

@@ -39,6 +39,7 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const {
       modelSource, modelFileUrl, meshyJobId, modelPreviewUrl, modelName,
+      catalogueModelId = null, estGrams = null, estHours = null,
       material = 'pla', color = 'white', scaleCm = 15,
       infillPercent = 20, quantity = 1,
       customerName, customerEmail, deliveryAddress,
@@ -72,6 +73,9 @@ export async function POST(req: NextRequest) {
       infill_percent: infillPercent,
       quantity,
       token_cost: tokenCost,
+      catalogue_model_id: catalogueModelId,
+      est_grams: estGrams,
+      est_hours: estHours,
       customer_email: customerEmail ?? session.user.email,
       customer_name: customerName ?? null,
       delivery_address: deliveryAddress ?? null,

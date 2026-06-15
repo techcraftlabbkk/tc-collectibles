@@ -4,10 +4,11 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
-import { calculateTokenCost } from '@/lib/printingUtils';
+import { calculateTokenCost, estimateFilament } from '@/lib/printingUtils';
+import CatalogueTab, { CatalogueModel } from '@/components/CatalogueTab';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
-type Tab = 'upload' | 'ai_text' | 'ai_image';
+type Tab = 'upload' | 'ai_text' | 'ai_image' | 'catalogue';
 type Material = 'pla' | 'resin' | 'metal';
 
 interface Config {
@@ -58,6 +59,9 @@ export default function ThreeDStudioPage() {
   const [aiJob, setAiJob] = useState<AIJob | null>(null);
   const pollRef = useRef<NodeJS.Timeout | null>(null);
 
+  // Catalogue state
+  const [catalogueModel, setCatalogueModel] = useState<CatalogueModel | null>(null);
+
   // AI Image state
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -98,13 +102,29 @@ export default function ThreeDStudioPage() {
 
   const activeModel = tab === 'upload' ? uploadedUrl
     : tab === 'ai_text' ? (aiJob?.status === 'succeeded' ? aiJob.modelUrl : null)
-    : (imageJob?.status === 'succeeded' ? imageJob.modelUrl : null);
+    : tab === 'ai_image' ? (imageJob?.status === 'succeeded' ? imageJob.modelUrl : null)
+    : (catalogueModel ? (catalogueModel.file_url ?? catalogueModel.id) : null);
 
   const activePreview = tab === 'ai_text' ? aiJob?.thumbnailUrl
     : tab === 'ai_image' ? imageJob?.thumbnailUrl
+    : tab === 'catalogue' ? catalogueModel?.thumbnail_url
     : null;
 
   const canOrder = !!activeModel && balance !== null && balance >= tokenCost;
+
+  // ── Live filament + time estimate (shown to the customer for every model)
+  const filament = estimateFilament({
+    scaleCm: config.scaleCm,
+    infillPercent: config.infillPercent,
+    baseGrams: tab === 'catalogue' && catalogueModel ? catalogueModel.base_grams : 45,
+    quantity: config.quantity,
+  });
+
+  // ── Pick a catalogue model: select it and apply its recommended settings
+  const handleCatalogueSelect = (m: CatalogueModel) => {
+    setCatalogueModel(m);
+    setConfig(c => ({ ...c, scaleCm: m.rec_scale_cm, infillPercent: m.rec_infill_percent || c.infillPercent }));
+  };
 
   // ── File upload to Supabase storage
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -216,10 +236,18 @@ export default function ThreeDStudioPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           modelSource: tab,
-          modelFileUrl: tab === 'upload' ? uploadedUrl : activeJob?.modelUrl,
+          modelFileUrl: tab === 'upload' ? uploadedUrl
+            : tab === 'catalogue' ? (catalogueModel?.file_url ?? catalogueModel?.source_url ?? null)
+            : activeJob?.modelUrl,
           meshyJobId: activeJob?.jobId ?? null,
+          catalogueModelId: tab === 'catalogue' ? catalogueModel?.id ?? null : null,
           modelPreviewUrl: activePreview ?? null,
-          modelName: tab === 'upload' ? uploadedFile?.name : tab === 'ai_text' ? prompt : imageFile?.name,
+          modelName: tab === 'upload' ? uploadedFile?.name
+            : tab === 'ai_text' ? prompt
+            : tab === 'catalogue' ? catalogueModel?.name
+            : imageFile?.name,
+          estGrams: filament.grams,
+          estHours: filament.hours,
           ...config,
           customerEmail: user.email,
         }),
@@ -255,7 +283,7 @@ export default function ThreeDStudioPage() {
             <Link href={`/${locale}/3d-studio/orders`} className="bg-cyan-500 text-black px-5 py-2.5 rounded-lg font-semibold hover:bg-cyan-400 transition-colors">
               Track Order
             </Link>
-            <button onClick={() => { setOrderSuccess(null); setUploadedFile(null); setUploadedUrl(null); setAiJob(null); setPrompt(''); }}
+            <button onClick={() => { setOrderSuccess(null); setUploadedFile(null); setUploadedUrl(null); setAiJob(null); setPrompt(''); setCatalogueModel(null); }}
               className="bg-gray-100 text-gray-700 px-5 py-2.5 rounded-lg font-semibold hover:bg-gray-200 transition-colors">
               New Print
             </button>
@@ -292,6 +320,7 @@ export default function ThreeDStudioPage() {
             <div className="bg-gray-900 rounded-2xl border border-gray-800 p-6">
               <div className="flex gap-2 mb-6">
                 {([
+                  { id: 'catalogue', label: '📚 Catalogue',    desc: '100 ready prints' },
                   { id: 'upload',   label: '📁 Upload File',   desc: 'STL / OBJ / GLB' },
                   { id: 'ai_text',  label: '✨ AI Generate',   desc: 'Text prompt' },
                   { id: 'ai_image', label: '📷 From Photo',    desc: 'Image → 3D' },
@@ -307,6 +336,15 @@ export default function ThreeDStudioPage() {
                   </button>
                 ))}
               </div>
+
+              {/* Catalogue tab */}
+              {tab === 'catalogue' && (
+                <CatalogueTab
+                  selectedId={catalogueModel?.id}
+                  config={{ scaleCm: config.scaleCm, infillPercent: config.infillPercent }}
+                  onSelect={handleCatalogueSelect}
+                />
+              )}
 
               {/* Upload tab */}
               {tab === 'upload' && (
@@ -581,6 +619,22 @@ export default function ThreeDStudioPage() {
                 <span className="text-gray-600 text-sm">Estimated cost</span>
                 <span className="text-2xl font-black text-cyan-400">⚡ {tokenCost}</span>
               </div>
+
+              {/* Filament + time estimate */}
+              <div className="grid grid-cols-2 gap-2 mb-4">
+                <div className="bg-gray-800 rounded-xl px-3 py-2.5 text-center">
+                  <div className="text-[11px] text-gray-500 uppercase tracking-wide">Filament</div>
+                  <div className="text-lg font-bold text-white">⚖️ {filament.grams} g</div>
+                </div>
+                <div className="bg-gray-800 rounded-xl px-3 py-2.5 text-center">
+                  <div className="text-[11px] text-gray-500 uppercase tracking-wide">Print time</div>
+                  <div className="text-lg font-bold text-white">⏱️ {filament.hours} h</div>
+                </div>
+              </div>
+              <p className="text-[11px] text-gray-500 mb-4 -mt-2">
+                Estimated for {config.quantity > 1 ? `${config.quantity} pcs · ` : ''}PLA on Bambu Lab · refined at slicing.
+              </p>
+
               <div className="flex items-center justify-between text-sm text-gray-500 mb-4">
                 <span>Your balance</span>
                 <span className={balance !== null && balance < tokenCost ? 'text-red-500 font-bold' : 'font-semibold text-gray-700'}>
